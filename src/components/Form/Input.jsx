@@ -4,11 +4,16 @@ class Input extends React.Component {
 
     render() {
         return (
-            <div>
+            <div className={ 'input-animated__container' }>
                 <input
+                    className={ 'input-animated' }
                     type={ this.props.type || 'text' }
                     placeholder={ this.props.placeholder }
                 />
+                <div className="input-animated__placeholder">
+                    { this.props.placeholder }
+                </div>
+                <div className="input-animated__underline"></div>
             </div>
         );
     }
