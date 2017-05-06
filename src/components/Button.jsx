@@ -1,22 +1,26 @@
 import React from 'react';
 
-function Button(props) {
-    return (
-        <button className={props.className} onClick={props.onClick} {...props}>
-            {props.icon ?
-                <i className="material-icons">{props.icon}</i>
-                :
-                props.children
-            }
-        </button>
-    );
+class Button extends React.Component {
+
+    render() {
+        return (
+            <button
+                type={ this.props.type }
+                className={ this.props.className }
+                onClick={ this.props.onClick }
+            >
+                { this.props.children }
+            </button>
+        );
+    }
+
 }
 
 Button.propTypes = {
     className: React.PropTypes.string,
-    icon: React.PropTypes.string,
-    onClick: React.PropTypes.func,
-    children: React.PropTypes.node
+    type: React.PropTypes.string,
+    children: React.PropTypes.string.isRequired,
+    onClick: React.PropTypes.func.isRequired
 };
 
 export default Button;

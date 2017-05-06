@@ -1,0 +1,59 @@
+@import "variables";
+@import "keyframes";
+
+/**
+ * Миксин устанавливает анимацию
+ * $name — имя keyframe
+ * $duration — время анимации
+ * $timeFunction — временная функция анимации
+ * $fillMode — animation-fill-mode
+ */
+@mixin get_animation($name, $duration: .5s, $delay: 300ms, $timeFunction: ease-in-out, $fillMode: forwards) {
+  animation: {
+    name: $name;
+    timing-function: $timeFunction;
+    delay: $delay;
+    fill-mode: $fillMode;
+    duration: $duration;
+  }
+}
+
+/**
+ * Миксин обнуляет все отступы
+ */
+@mixin zero_indent() {
+  padding: 0;
+  margin: 0;
+}
+
+/**
+ * Миксин устанавливает transition со всеми вендарными префиксами
+ * $time — время действия анимации
+ * $effect — функция анимации
+ */
+@mixin put_transition($time: .5s, $effect: ease-in-out) {
+  transition:         all $time $effect;
+}
+
+/**
+ * Миксин для дебага, устанавливает border
+ * $borderColor — цвет рамки
+ */
+@mixin put_border($borderColor: #000) {
+  border: 1px solid $borderColor;
+}
+
+/**
+ * Миксин предназначен для псевдоэлементов :before и :after
+ * $bgColor — цвет фона контента
+ * $content — текст контента
+ */
+@mixin put_content($bgColor: $mainColor, $content: '') {
+    content: '';
+    background-color: $bgColor;
+
+    position: absolute;
+    @content;
+
+    @include put_transition();
+}

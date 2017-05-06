@@ -1,0 +1,61 @@
+/**
+ * Переворот элемента по горизонтали
+ */
+@keyframes spinner_effect {
+  0% {
+    opacity: 0;
+    transform: rotateY(-90deg) translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: rotateY(0deg) translateY(0);
+  }
+}
+
+/**
+ * Переворот элемента по горизонтали
+ */
+@keyframes flipper_effect {
+  0% {
+    opacity: 0;
+    transform: rotateX(-90deg);
+  }
+  30% {
+    transform: rotateX(60deg);
+  }
+  100% {
+    opacity: 1;
+    transform: rotateX(0deg);
+  }
+}
+
+/**
+ * Анимация выдвижения элемента на передний план и обратно
+ */
+@keyframes box_effect {
+  0% {
+    opacity: 0;
+    transform: scale(.3) translateY(-30px);
+  }
+  80% {
+    transform: scale(1.2) translateY(10px);
+  }
+  100% {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+}
+
+/**
+ * Эффект разрезания снизу вверх
+ */
+@keyframes cut_effect {
+  0% {
+    opacity: 0;
+    transform: rotate(-30deg) translateX(30px);
+  }
+  100% {
+    transform: rotate(0) translateX(0);
+    opacity: 1;
+  }
+}

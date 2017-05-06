@@ -1,108 +1,108 @@
-$mainColor: #00b5ff;
+@import "../scss_partian/config";
 
-.form-container {
-  width: 300px;
-  margin: 0 auto;
+.form-section {
+  display: inline-block;
+  width: 400px;
+  background-color: $formColor;
+  padding: 25px 50px;
+  border-top: 5px solid $mainColor;
 
-  h1 {
+  h3 {
+    text-align: left;
+    margin-bottom: 20px;
     color: $mainColor;
-    text-align: center;
   }
 
-  form {
-    text-align: center;
+  input {
+    border: none;
+    border-bottom: 1px solid $borderColor;
+    padding: 5px 30px 5px 0;
+    width: 100%;
 
-    .input-animated {
-      width: 100%;
-      margin-top: 30px;
-      border: none;
-      border-bottom: 1px solid rgba(0, 0, 0, .4);
-      font-size: 18px;
+    &:focus {
+      outline: none;
+    }
+  }
 
-      &__container {
-        width: 100%;
-        position: relative;
+  .input-animated {
+    font-size: 18px;
 
-        transition: all .5s ease-in-out;
-      }
-
-      &__placeholder {
-        color: $mainColor;
-        width: 100%;
-        text-align: left;
-        position: absolute;
-        bottom: 2px;
-        font-size: 18px;
-        display: none;
-
-        transition: all .5s ease-in-out;
-
-        -webkit-transform: translateY(1);
-        -moz-transform: translateY(1);
-        -ms-transform: translateY(1);
-        -o-transform: translateY(1);
-        transform: translateY(1);
-      }
-
-      &__underline {
-        background-color: $mainColor;
-        width: 100%;
-        height: 2px;
-        position: absolute;
-        bottom: 0;
-
-        transition: all .5s ease-in-out;
-
-        -webkit-transform: scale(0);
-        -moz-transform: scale(0);
-        -ms-transform: scale(0);
-        -o-transform: scale(0);
-        transform: scale(0);
-      }
-
-      &:focus {
-         outline: none;
-      }
-
-      &:focus + div {
-        display: block;
-
-        margin-bottom: 25px;
-
-        font-style: italic;
-        font-size: 14px;
-      }
-
-      &:focus + div + div {
-        -webkit-transform: scale(1);
-        -moz-transform: scale(1);
-        -ms-transform: scale(1);
-        -o-transform: scale(1);
-        transform: scale(1);
-      }
+    &__container {
+      position: relative;
+      margin-bottom: 20px;
     }
 
-    button {
-      margin-top: 30px;
+    &__placeholder {
+      color: $mainColor;
       width: 100%;
-      padding: 10px 20px;
-      border: 3px solid $mainColor;
-      background-color: #fff;
+      text-align: left;
+      position: absolute;
+      bottom: 2px;
       font-size: 18px;
-      border-radius: 5px;
+      display: none;
 
       transition: all .5s ease-in-out;
-
-      &:hover {
-        color: #fff;
-        background-color: $mainColor;
-        box-shadow: 2px 2px 1px 1px rgba(0, 0, 0, .4);
-      }
-
-      &:focus {
-        outline: none;
-        box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, .1) inset;
-      }
     }
+
+    &__icon {
+      position: absolute;
+      font-size: 18px;
+      top: 5px;
+      right: 0;
+      color: darken($borderColor, 60%);
+    }
+  }
+
+  button {
+    width: 100%;
+
+    margin-top: 30px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+
+    background-color: $mainColor;
+    color: $formColor;
+    box-shadow: 2px 2px 1px 1px rgba(0, 0, 0, .4);
+
+    font-size: 18px;
+
+    @include put_transition();
+
+    &:hover {
+      color: #fff;
+      background-color: darken($mainColor, 10%);
+      box-shadow: 2px 2px 1px 1px rgba(0, 0, 0, .4);
+    }
+
+    &:focus {
+      outline: none;
+      box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, .1) inset;
+    }
+  }
+
+  &__table {
+    height: 100vh;
+    width: 100%;
+
+    display: table;
+
+    background-color: $backgroundColor;
+  }
+
+  &__row {
+    display: table-row;
+  }
+
+  &__cell {
+    display: table-cell;
+
+    text-align: center;
+    vertical-align: middle;
+  }
+
+  &__center {
+    display: inline-block;
+    width: 50%;
   }
 }

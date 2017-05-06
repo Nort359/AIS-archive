@@ -2,6 +2,14 @@ import React from 'react';
 
 class Input extends React.Component {
 
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            inputValue: ''
+        }
+    }
+
     render() {
         return (
             <div className={ 'input-animated__container' }>
@@ -9,11 +17,16 @@ class Input extends React.Component {
                     className={ 'input-animated' }
                     type={ this.props.type || 'text' }
                     placeholder={ this.props.placeholder }
+                    value={ this.state.inputValue }
+                    onChange={ (event) => { this.setState({ inputValue: event.target.value }) } }
+                    id={ this.props.inputId }
                 />
-                <div className="input-animated__placeholder">
+                <p className='input-animated__placeholder'>
                     { this.props.placeholder }
-                </div>
-                <div className="input-animated__underline"></div>
+                </p>
+                <div className='input-animated__underline'></div>
+
+                <i className={ this.props.icon + ' input-animated__icon' } aria-hidden="true"></i>
             </div>
         );
     }
@@ -22,7 +35,8 @@ class Input extends React.Component {
 
 Input.propTypes = {
     type: React.PropTypes.string,
-    placeholder: React.PropTypes.string
+    placeholder: React.PropTypes.string,
+    inputId: React.PropTypes.string
 };
 
 Input.defaultProps = {

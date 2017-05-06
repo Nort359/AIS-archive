@@ -6,7 +6,7 @@ module.exports = {
 
     output: {
         filename: 'bundle.js',
-        path: '/public'
+        path: __dirname + '/public'
     },
 
     devServer: {
