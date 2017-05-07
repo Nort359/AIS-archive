@@ -5,6 +5,14 @@ import './Header.scss';
 
 export default class Header extends React.Component {
 
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            authorization: false
+        };
+    }
+
     render() {
         return (
             <header>
@@ -14,14 +22,20 @@ export default class Header extends React.Component {
                         <li>Помощь</li>
                     </ul>
                     <ul className='main-menu__right'>
-                        <li>Личный кабинет
-                            <ul className="main-menu__drop-menu">
-                                <li>Настройка</li>
-                                <li>Выход</li>
-                            </ul>
-                        </li>
-                        <li>Авторизация</li>
-                        <li>Регистрация</li>
+                        {
+                            this.state.authorization ?
+                                <li>Личный кабинет
+                                    <ul className="main-menu__drop-menu">
+                                        <li>Настройка</li>
+                                        <li>Выход</li>
+                                    </ul>
+                                </li>
+                                :
+                                <div>
+                                    <Link to='/authorization' activeStyle={{ color: '#00b5ff' }}><li>Авторизация</li></Link>
+                                    <Link to='/registration' activeStyle={{ color: '#00b5ff' }}><li>Регистрация</li></Link>
+                                </div>
+                        }
                     </ul>
                 </nav>
             </header>

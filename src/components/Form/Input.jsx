@@ -7,7 +7,7 @@ class Input extends React.Component {
 
         this.state = {
             inputValue: ''
-        }
+        };
     }
 
     render() {
@@ -18,7 +18,15 @@ class Input extends React.Component {
                     type={ this.props.type || 'text' }
                     placeholder={ this.props.placeholder }
                     value={ this.state.inputValue }
-                    onChange={ (event) => { this.setState({ inputValue: event.target.value }) } }
+                    onChange={ event => {
+                        this.setState({ inputValue: event.target.value });
+                        if(this.props.onChange) {
+                            this.props.onChange(event);
+                        }
+
+                    } }
+                    onFocus={ this.props.onFocus }
+                    onBlur={ this.props.onBlur }
                     id={ this.props.inputId }
                 />
                 <p className='input-animated__placeholder'>
@@ -27,6 +35,7 @@ class Input extends React.Component {
                 <div className='input-animated__underline'></div>
 
                 <i className={ this.props.icon + ' input-animated__icon' } aria-hidden="true"></i>
+                <i className='input-animated__icon-status glyphicon'></i>
             </div>
         );
     }
@@ -36,7 +45,10 @@ class Input extends React.Component {
 Input.propTypes = {
     type: React.PropTypes.string,
     placeholder: React.PropTypes.string,
-    inputId: React.PropTypes.string
+    inputId: React.PropTypes.string,
+    onChange: React.PropTypes.func,
+    onBlur: React.PropTypes.func,
+    onFocus: React.PropTypes.func
 };
 
 Input.defaultProps = {

@@ -1,5 +1,12 @@
 @import "../scss_partian/config";
 
+.is-float-up {
+  @include get_animation($name: float_up,
+                         $delay: 0);
+  display: block;
+  color: #e23838;
+}
+
 .form-section {
   display: inline-block;
   width: 400px;
@@ -11,6 +18,41 @@
     text-align: left;
     margin-bottom: 20px;
     color: $mainColor;
+  }
+
+  a {
+    font: {
+      size: 14px;
+      style: italic;
+    }
+
+    margin-top: 5px;
+
+    :first-child {
+      margin-top: 15px;
+    }
+
+    color: $mainColor;
+    text-align: left;
+    display: block;
+    clear: both;
+
+    @include put_transition();
+
+    i {
+      margin-left: 10px;
+    }
+
+    &:hover {
+      color: darken($mainColor, 10%);
+      text-decoration: none;
+    }
+    &:focus {
+      color: $mainColor;
+    }
+    &:visited {
+      color: $mainColor;
+    }
   }
 
   input {
@@ -37,11 +79,11 @@
       width: 100%;
       text-align: left;
       position: absolute;
-      bottom: 2px;
+      bottom: -5px;
       font-size: 18px;
       display: none;
 
-      transition: all .5s ease-in-out;
+      @include put_transition();
     }
 
     &__icon {
@@ -50,7 +92,18 @@
       top: 5px;
       right: 0;
       color: darken($borderColor, 60%);
+      @include put_transition();
     }
+
+    &__icon-status {
+      position: absolute;
+      font-size: 14px;
+      top: 10px;
+      left: -25px;
+      display: none;
+      @include put_transition();
+    }
+
   }
 
   button {
@@ -105,4 +158,43 @@
     display: inline-block;
     width: 50%;
   }
+
+  form {
+    .input-animated {
+      &__container {
+        position: relative;
+      }
+
+      &__underline {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 3px;
+
+        background-color: $mainColor;
+
+        @include put_transition();
+
+        transform: scale(0);
+      }
+
+      &:focus ~ p {
+        @include get_animation($name: float_up,
+                               $delay: 0);
+        display: block;
+      }
+
+      &:focus ~ div {
+        transform: scale(1);
+      }
+
+      &:focus ~ i {
+        transform: scale(1.1);
+        color: $mainColor;
+      }
+    }
+  }
 }
+
+

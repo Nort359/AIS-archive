@@ -1,5 +1,11 @@
 @import "../scss_partian/config";
 
+.is-active-link {
+  color: $mainColor;
+  background-color: darken($headerColor, 5%);
+  cursor: pointer;
+}
+
 header {
   margin: 0;
   padding: 0;
@@ -11,6 +17,10 @@ header {
 
 .main-menu {
   margin: 0 auto;
+
+  a {
+    color: $formColor;
+  }
   
   &__left {
     float: left;
