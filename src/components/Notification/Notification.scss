@@ -1,0 +1,77 @@
+@import "../scss_partian/config";
+
+.notification {
+  background-color: $formColor;
+  width: $notificationWidth;
+  margin: 0 auto;
+  box-shadow: 2px 2px 3px 3px rgba(0, 0, 0, .2);
+
+  @include get_animation(notification_left, 1s, 0);
+
+  &__caption {
+    background-color: $mainColor;
+    color: $formColor;
+    padding: 15px 0;
+  }
+
+  &__img {
+    height: $notificationHeight - 59;
+    margin: 0;
+    display: inline-block;
+    float: left;
+  }
+
+  p {
+    text-align: left;
+    margin-left: 20px;
+    font-size: 18px;
+  }
+
+  &__userData {
+    font: {
+      style: italic;
+      weight: 100;
+    }
+    color: lighten($headerColor, 20%);
+  }
+
+  button {
+    @include default_style_button(150px);
+
+    margin: {
+      top: 0;
+      bottom: 15px;
+    }
+  }
+
+
+
+  &-section {
+    &__table {
+      height: 90vh;
+      width: 100%;
+
+      display: table;
+
+      background-color: $backgroundColor;
+
+      @include get_animation(background_dark, 1s, 0);
+    }
+
+    &__row {
+      display: table-row;
+    }
+
+    &__cell {
+      display: table-cell;
+
+      text-align: center;
+      vertical-align: middle;
+    }
+
+    &__center {
+      display: inline-block;
+      width: 50%;
+    }
+  }
+}

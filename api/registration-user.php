@@ -56,7 +56,9 @@
 			// Регистрируем админа
 			registration_user();
 
-			echo 'Вы успешно зарегистрировались';
+			$user = R::findOne( 'user', 'email = ?', [$_POST[ 'userEmail' ]] );
+
+			echo json_encode($user);
 		} else {
 			// Выводим ошибку
 			echo array_shift( $errors_sing_up );

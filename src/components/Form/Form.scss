@@ -107,31 +107,7 @@
   }
 
   button {
-    width: 100%;
-
-    margin-top: 30px;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-
-    background-color: $mainColor;
-    color: $formColor;
-    box-shadow: 2px 2px 1px 1px rgba(0, 0, 0, .4);
-
-    font-size: 18px;
-
-    @include put_transition();
-
-    &:hover {
-      color: #fff;
-      background-color: darken($mainColor, 10%);
-      box-shadow: 2px 2px 1px 1px rgba(0, 0, 0, .4);
-    }
-
-    &:focus {
-      outline: none;
-      box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, .1) inset;
-    }
+    @include default_style_button();
   }
 
   &__table {

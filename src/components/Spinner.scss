@@ -1,0 +1,26 @@
+@keyframes rotate {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+
+.mk-spinner-ring {
+  margin: 0;
+  padding: 0;
+  content: "";
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  z-index: 1;
+  border-radius: 50%;
+  border: 3px solid #00BCD4;
+  border-left-color: transparent;
+  background: transparent;
+  -webkit-animation: rotate 0.6s infinite linear;
+  animation: rotate 0.6s infinite linear;
+}

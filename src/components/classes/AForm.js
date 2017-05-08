@@ -1,4 +1,6 @@
 import React from 'react';
+import axios from 'axios';
+import querystring from 'querystring';
 
 export default class AForm extends React.Component {
     constructor(props) {
@@ -6,6 +8,7 @@ export default class AForm extends React.Component {
 
         this._changeUnderline = this._changeUnderline.bind(this);
         this._showIcon = this._showIcon.bind(this);
+        this._getIconSpinner = this._getIconSpinner.bind(this);
         this._hideIcon = this._hideIcon.bind(this);
         this._showPlaceholder = this._showPlaceholder.bind(this);
         this._hidePlaceholder = this._hidePlaceholder.bind(this);
@@ -23,8 +26,8 @@ export default class AForm extends React.Component {
      * @param color — Цвет, в который перекрасится underline
      * @param scale — 1 – если нужно показать underline или 0 – если скрыть
      */
-    _changeUnderline(event, color = '#00b5ff', scale = 0) {
-        const underline = document.querySelector('#' + event.target.id + ' ~ .input-animated__underline').style;
+    _changeUnderline(elementId, color = '#00b5ff', scale = 0) {
+        const underline = document.querySelector('#' + elementId + ' ~ .input-animated__underline').style;
 
         underline.backgroundColor = color;
         underline.transform = 'scale(' + scale + ')';
@@ -36,8 +39,8 @@ export default class AForm extends React.Component {
      * @param classIcon — Класс, который будет в icon
      * @param colorIcon — Цвет icon
      */
-    _showIcon(event, classIcon, colorIcon) {
-        const icon = document.querySelector('#' + event.target.id + ' ~ .input-animated__icon-status');
+    _showIcon(elementId, classIcon, colorIcon) {
+        const icon = document.querySelector('#' + elementId + ' ~ .input-animated__icon-status');
         const iconStyle = icon.style;
 
         icon.classList.remove('glyphicon-remove');
@@ -51,11 +54,35 @@ export default class AForm extends React.Component {
     }
 
     /**
+     * Показывает icon, преобразуя его в спинер
+     * @param event — Объект, на котором происходит событие
+     * @param classIcon — Класс, который будет в icon
+     * @param isShow — Флаг, true – показывать, false – не показывать
+     */
+    _getIconSpinner(elementId, classIcon, isShow = false) {
+        const icon = document.querySelector('#' + elementId + ' ~ .input-animated__icon-status');
+        const iconStyle = icon.style;
+
+        icon.classList.remove('glyphicon-remove');
+        icon.classList.remove('glyphicon-ok');
+        icon.classList.remove('glyphicon-warning-sign');
+        icon.classList.remove(classIcon);
+
+        if(isShow) {
+            icon.classList.add(classIcon);
+        }
+
+        let isDisplay = isShow ? 'block' : 'none';
+
+        iconStyle.display = isDisplay;
+    }
+
+    /**
      * Скрывает icon
      * @param event — Объект, на котором происходит событие
      */
-    _hideIcon(event) {
-        const icon = document.querySelector('#' + event.target.id + ' ~ .input-animated__icon-status').style;
+    _hideIcon(elementId) {
+        const icon = document.querySelector('#' + elementId + ' ~ .input-animated__icon-status').style;
 
         icon.display = 'none';
     }
@@ -66,8 +93,8 @@ export default class AForm extends React.Component {
      * @param placeholderText — Сообщение, которое следует поместить в placeholder
      * @param colorPlaceholder — Цвет placeholder
      */
-    _showPlaceholder(event, placeholderText, colorPlaceholder) {
-        const placeholder = document.querySelector('#' + event.target.id + ' ~ .input-animated__placeholder');
+    _showPlaceholder(elementId, placeholderText, colorPlaceholder) {
+        const placeholder = document.querySelector('#' + elementId + ' ~ .input-animated__placeholder');
         const placeholderStyle = placeholder.style;
 
         placeholder.innerText = placeholderText;
@@ -85,8 +112,8 @@ export default class AForm extends React.Component {
      * @param placeholderText — Сообщение, которое следует поместить в placeholder
      * @param colorPlaceholder — Цвет placeholder
      */
-    _hidePlaceholder(event, placeholderText, colorPlaceholder) {
-        const placeholder = document.querySelector('#' + event.target.id + ' ~ .input-animated__placeholder');
+    _hidePlaceholder(elementId, placeholderText, colorPlaceholder) {
+        const placeholder = document.querySelector('#' + elementId + ' ~ .input-animated__placeholder');
         const placeholderStyle = placeholder.style;
 
         placeholder.innerText = placeholderText;
@@ -103,12 +130,12 @@ export default class AForm extends React.Component {
      * @param event — Объект, на котором происходит событие
      * @param message — Сообщение, которое следует поместить в placeholder
      */
-    _acceptInput(event, message) {
+    _acceptInput(elementId, message) {
         const colorOk = '#53B73F';
 
-        this._changeUnderline(event, colorOk, 1);
-        this._showPlaceholder(event, message, colorOk);
-        this._showIcon(event, 'glyphicon-ok', colorOk);
+        this._changeUnderline(elementId, colorOk, 1);
+        this._showPlaceholder(elementId, message, colorOk);
+        this._showIcon(elementId, 'glyphicon-ok', colorOk);
     }
 
     /**
@@ -116,12 +143,12 @@ export default class AForm extends React.Component {
      * @param event — Объект, на котором происходит событие
      * @param message — Сообщение, которое следует поместить в placeholder
      */
-    _warnInput(event, message) {
+    _warnInput(elementId, message) {
         const colorWarning = '#EBBD32';
 
-        this._changeUnderline(event, colorWarning, 1);
-        this._showPlaceholder(event, message, colorWarning);
-        this._showIcon(event, 'glyphicon-warning-sign', colorWarning);
+        this._changeUnderline(elementId, colorWarning, 1);
+        this._showPlaceholder(elementId, message, colorWarning);
+        this._showIcon(elementId, 'glyphicon-warning-sign', colorWarning);
     }
 
     /**
@@ -129,12 +156,12 @@ export default class AForm extends React.Component {
      * @param event — Объект, на котором происходит событие
      * @param message — Сообщение, которое следует поместить в placeholder
      */
-    _rejectInput(event, message) {
+    _rejectInput(elementId, message) {
         const colorError = '#e23838';
 
-        this._changeUnderline(event, colorError, 1);
-        this._showPlaceholder(event, message, colorError);
-        this._showIcon(event, 'glyphicon-remove', colorError);
+        this._changeUnderline(elementId, colorError, 1);
+        this._showPlaceholder(elementId, message, colorError);
+        this._showIcon(elementId, 'glyphicon-remove', colorError);
     }
 
     /**
@@ -142,12 +169,12 @@ export default class AForm extends React.Component {
      * @param event — Объект, на котором происходит событие
      * @param message — Сообщение, которое следует поместить в placeholder
      */
-    _defaultInput(event, message) {
+    _defaultInput(elementId, message) {
         const colorDefault = '#00b5ff';
 
-        this._changeUnderline(event, colorDefault, 0);
-        this._hidePlaceholder(event, message, colorDefault);
-        this._hideIcon(event);
+        this._changeUnderline(elementId, colorDefault, 0);
+        this._hidePlaceholder(elementId, message, colorDefault);
+        this._hideIcon(elementId);
     }
 
     /**
@@ -159,16 +186,63 @@ export default class AForm extends React.Component {
      * @param messageDefault — Сообщение placeholder при пустом значении
      */
     checkValidTextInput(event, pattern, messageOk = 'Данные заполнены верно', messageError = 'Данные неккоректны', messageDefault = 'Введите свои данные') {
+        const elementId = event.target.id;
+
         // Проверка на совпадение с шаблоном
         if(pattern.test(event.target.value)) {
             // Поле заполненно верно. Совпадает с шаблоном
-            this._acceptInput(event, messageOk);
+            this._acceptInput(elementId, messageOk);
         } else if(event.target.value === '') {
             // Поле не заполненно.
-            this._defaultInput(event, messageDefault);
+            this._defaultInput(elementId, messageDefault);
         } else {
             // Поле заполненно неверно. Не совпадает с шаблоном
-            this._rejectInput(event, messageError);
+            this._rejectInput(elementId, messageError);
+        }
+    }
+
+    /**
+     * Проверяет input на валидность и перекрашивае underline в соответствующий цвет
+     * @param event — Объект, на котором происходит событие
+     * @param pattern — Регулярное выражение, на основе которого проверяется валидность поля input
+     * @param messageOk — Сообщение placeholder при успехе
+     * @param messageError — Сообщение placeholder при ошибке
+     * @param messageDefault — Сообщение placeholder при пустом значении
+     */
+    checkValidEmailInput(event, pattern, messageOk = 'Данные заполнены верно', messageError = 'Данные неккоректны', messageDefault = 'Введите свои данные') {
+        const elementId = event.target.id;
+
+        // Проверка на совпадение с шаблоном
+        if(pattern.test(event.target.value)) {
+            // Поле заполненно верно. Совпадает с шаблоном
+            let emailExist = false;
+
+            this._getIconSpinner(elementId, 'mk-spinner-ring', true);
+
+            axios.post('http://ais-archive/api/check_email.php', querystring.stringify({
+                checkEmail: event.target.value
+            }))
+                .then(res => {
+                    if (res.data === 'Ok') {
+                        emailExist = true;
+                    }
+                    setTimeout(() => {
+                        this._getIconSpinner(elementId, 'mk-spinner-ring', false);
+
+                        if(emailExist === true) {
+                            this._acceptInput(elementId, messageOk);
+                        } else {
+                            this._rejectInput(elementId, 'Такой Email уже зарегистрирован');
+                        }
+                    }, 500);
+                })
+                .catch(error => console.error(error));
+        } else if(event.target.value === '') {
+            // Поле не заполненно.
+            this._defaultInput(elementId, messageDefault);
+        } else {
+            // Поле заполненно неверно. Не совпадает с шаблоном
+            this._rejectInput(elementId, messageError);
         }
     }
 
@@ -177,25 +251,27 @@ export default class AForm extends React.Component {
      * @param event — Объект, на котором происходит событие
      * @param patternOk — Регулярное выражение, на основе которого проверяется валидность сильного пароля поля input
      * @param patternWarning — Регулярное выражение, на основе которого проверяется валидность сильного слабого поля input
-     * @param messageOk —
-     * @param messageWarning —
-     * @param messageError —
-     * @param messageDefault —
+     * @param messageOk — Сообщение placeholder при успехе
+     * @param messageWarning — Сообщение placeholder при предупреждении
+     * @param messageError — Сообщение placeholder при ошибке
+     * @param messageDefault — Сообщение placeholder по умолчанию
      */
     checkValidPasswordInput(event, patternOk, patternWarning, messageOk = 'Сильный пароль', messageWarning = 'Слабый пароль', messageError = 'Пароль слишком короткий', messageDefault = 'Введите пароль') {
+        const elementId = event.target.id;
+
         // Проверка пароля на совпадение с шаблонами
         if(patternOk.test(event.target.value)) {
             // Сильный пароль. Совпадает с шаблоном
-            this._acceptInput(event, messageOk);
+            this._acceptInput(elementId, messageOk);
         } else if(patternWarning.test(event.target.value)) {
             // Слабый пароль
-            this._warnInput(event, messageWarning);
+            this._warnInput(elementId, messageWarning);
         } else if(event.target.value === '') {
             // Поле не заполненно.
-            this._defaultInput(event, messageDefault);
+            this._defaultInput(elementId, messageDefault);
         } else {
             // Поле заполненно неверно. Не совпадает с шаблоном
-            this._rejectInput(event, messageError);
+            this._rejectInput(elementId, messageError);
         }
     }
 
@@ -206,9 +282,10 @@ export default class AForm extends React.Component {
      * @param message — Сообщение, которое следует поместить в placeholder
      */
     focusInput(event, message) {
+        const elementId = event.target.id;
         const colorDefault = '#00b5ff';
 
-        this._changeUnderline(event, colorDefault, 1);
-        this._showPlaceholder(event, message, colorDefault);
+        this._changeUnderline(elementId, colorDefault, 1);
+        this._showPlaceholder(elementId, message, colorDefault);
     }
 }

@@ -1,3 +1,5 @@
+@import "variables";
+
 /**
  * Переворот элемента по горизонтали
  */
@@ -72,5 +74,53 @@
       size: 14px;
       style: italic;
     }
+  }
+}
+
+@keyframes overlayAnim {
+  0%, 100% {
+    background-color: transparent;
+  }
+  15%, 85% {
+    background-color: rgba(0, 0, 0, 0.3);
+  }
+}
+
+@keyframes background_dark {
+  0% {
+    background-color: $backgroundColor;
+  }
+  100% {
+    background-color: darken($backgroundColor, 10%);
+  }
+}
+
+@keyframes background_light {
+  0% {
+    background-color: darken($backgroundColor, 10%);
+  }
+  100% {
+    background-color: $backgroundColor;
+  }
+}
+
+@keyframes notification_left {
+  0% {
+    transform: translateX(-200%) rotate(-90deg);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0) rotate(0);
+  }
+}
+
+@keyframes notification_right {
+  0% {
+    transform: translateX(0) rotate(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(200%) rotate(90deg);
+    opacity: 0;
   }
 }
