@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Button from './../Button';
+import Button from '../Button/Button';
 import './Notification.scss';
 
 class Notification extends React.Component {
@@ -46,21 +46,11 @@ class Notification extends React.Component {
 
     render() {
         return (
-            <main>
-                <div className='notification-section__table'>
-                    <div className='notification-section__row'>
-                        <div className='notification-section__cell'>
-                            <div className='notification-section'>
-                                <div className='notification'>
-                                    <h4 className='notification__caption'>{ this.props.header }</h4>
-                                    { this.props.children }
-                                    <Button onClick={ this.closeNotification }>{ this.props.btnText }</Button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </main>
+            <div className='notification'>
+                <h4 className='notification__caption'>{ this.props.header }</h4>
+                { this.props.children }
+                <Button onClick={ this.closeNotification }>{ this.props.btnText }</Button>
+            </div>
         );
     }
 }

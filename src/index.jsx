@@ -1,17 +1,20 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Router, Route, hashHistory } from 'react-router';
+import { Provider } from 'react-redux';
+import { Router, browserHistory } from 'react-router';
+import { syncHistoryWithStore } from 'react-router-redux';
 
-import App from './components/App';
-import Registration from './components/Registration';
-import Authorization from './components/Authorization';
+import configureStore from './store';
+import routes from './routes';
+
+const store = configureStore();
+const history = syncHistoryWithStore(browserHistory, store);
 
 ReactDOM.render(
-    <Router history={ hashHistory }>
-        <Route path={ '/' } component={ App } >
-            <Route path={ '/registration' } component={ Registration } />
-            <Route path={ '/authorization' } component={ Authorization } />
-        </Route>
-    </Router>,
+    <Provider store={ store }>
+        <Router history={ history }>
+            { routes }
+        </Router>
+    </Provider>,
     document.getElementById('app')
 );

@@ -1,4 +1,4 @@
-@import "../scss_partian/config";
+@import "../../scss_partian/config";
 
 .notification {
   background-color: $formColor;
@@ -41,37 +41,6 @@
     margin: {
       top: 0;
       bottom: 15px;
-    }
-  }
-
-
-
-  &-section {
-    &__table {
-      height: 90vh;
-      width: 100%;
-
-      display: table;
-
-      background-color: $backgroundColor;
-
-      @include get_animation(background_dark, 1s, 0);
-    }
-
-    &__row {
-      display: table-row;
-    }
-
-    &__cell {
-      display: table-cell;
-
-      text-align: center;
-      vertical-align: middle;
-    }
-
-    &__center {
-      display: inline-block;
-      width: 50%;
     }
   }
 }

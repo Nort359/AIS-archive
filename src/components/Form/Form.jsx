@@ -6,21 +6,13 @@ class Form extends React.Component {
 
     render() {
         return (
-            <main>
-                <div className='form-section__table'>
-                    <div className='form-section__row'>
-                        <div className='form-section__cell'>
-                            <div className='form-section'>
-                                <h3>{ this.props.header }</h3>
+            <div className='form-section'>
+                <h3>{ this.props.header }</h3>
 
-                                <form>
-                                    { this.props.children }
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </main>
+                <form>
+                    { this.props.children }
+                </form>
+            </div>
         );
     }
 

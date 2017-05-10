@@ -1,8 +1,12 @@
 import React from 'react';
 
-import Header from './header/Header';
+import Header from './components/Header/Header';
 
 class App extends React.Component {
+
+    constructor(props) {
+        super(props);
+    }
 
     render() {
 
@@ -15,5 +19,7 @@ class App extends React.Component {
     }
 
 }
+
+App.path = '/';
 
 export default App;

@@ -25,7 +25,7 @@ export default class Header extends React.Component {
                         {
                             this.state.authorization ?
                                 <li>Личный кабинет
-                                    <ul className="main-menu__drop-menu">
+                                    <ul className='main-menu__drop-menu'>
                                         <li>Настройка</li>
                                         <li>Выход</li>
                                     </ul>

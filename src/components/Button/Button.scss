@@ -1,0 +1,5 @@
+@import "../../scss_partian/config";
+
+.btn-main {
+  @include default_style_button();
+}
