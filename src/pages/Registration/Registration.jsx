@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router';
+import { connect } from 'react-redux';
 import axios from 'axios';
 import querystring from 'querystring';
 
@@ -11,7 +12,12 @@ import Button from '../../components/Button/Button';
 import Notification from '../../components/Notification/Notification';
 import Spinner from '../../components/Spinner/Spinner'; // используются стили данного компонента
 
+// Import data
+import { inputsData } from './inputsData';
+
 import AForm from '../../classes/AForm';
+
+import { addUser } from './actions';
 
 class Registration extends AForm {
 
@@ -23,9 +29,20 @@ class Registration extends AForm {
             userRegistration: false
         };
 
+        this.inputsData = inputsData;
+
         this.registrationUser = this.registrationUser.bind(this);
-        this.checkEmail = this.checkEmail.bind(this);
-        this.checkPassword = this.checkPassword.bind(this);
+    }
+
+    _checkInput(element, pattern) {
+        if (!pattern.test(element.value)) {
+            element.focus();
+            element.select();
+
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -35,6 +52,69 @@ class Registration extends AForm {
     registrationUser(event) {
         event.preventDefault();
 
+        
+
+        /*
+        const userLastName = document.getElementById('userLastName');
+        const userFirstName = document.getElementById('userFirstName');
+        const userMiddleName = document.getElementById('userMiddleName');
+        const userEmail = document.getElementById('userEmail');
+        const userPassword = document.getElementById('userPassword');
+        const userPasswordAgain = document.getElementById('userPasswordAgain');
+
+        const patternName = /^[a-zA-Zа-яА-Я]{3,}$/i;
+        const patternEmail = /^([a-z0-9_\.-])+@[a-z0-9-]+\.([a-z]{2,4}\.)?[a-z]{2,4}$/i;
+        const patternStrongPassword = /(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/;
+        const patternWeakPassword = /^.{6,}$/;
+
+        if (!this._checkInput(userLastName, patternName)) return;
+        if (!this._checkInput(userFirstName, patternName)) return;
+        if (!this._checkInput(userMiddleName, patternName)) return;
+        if (!this._checkInput(userEmail, patternEmail)) return;
+        if (!this._checkInput(userPassword, patternWeakPassword)) return;
+
+        if (userPasswordAgain.value !== userPassword.value) {
+            userPasswordAgain.focus();
+            userPasswordAgain.select();
+
+            return;
+        }
+
+        const emailId = 'userEmail';
+        let emailExist = false;
+
+        this._getIconSpinner(emailId, 'mk-spinner-ring', true);
+
+        axios.post('http://ais-archive/api/check_email.php', querystring.stringify({
+            checkEmail: userEmail.value
+        }))
+            .then(res => {
+                if (res.data === 'Ok') {
+                    emailExist = true;
+                }
+                this._getIconSpinner(emailId, 'mk-spinner-ring', false);
+
+                if(emailExist === true) {
+                    this._acceptInput(emailId, 'Email введён корректно');
+
+                    const newUser = {
+                        userLastName: userLastName.value,
+                        userFirstName: userFirstName.value,
+                        userMiddleName: userMiddleName.value,
+                        userEmail: userEmail.value,
+                        userPassword: userPassword.value
+                    };
+
+                    this.props.registrationUser(newUser);
+
+                    this.setState({ userRegistration: true });
+                } else {
+                    this._rejectInput(emailId, 'Такой Email уже зарегистрирован');
+                }
+            })
+            .catch(error => console.error(error));
+        */
+        /*
         axios.post('http://ais-archive/api/registration-user.php',
             querystring.stringify({
                 userFirstName: document.getElementById('userFirstName').value,
@@ -49,121 +129,68 @@ class Registration extends AForm {
                 this.setState({ userRegistration: true });
             })
             .catch(error => console.error(error));
+        */
     }
 
     /**
-     * Проверяет Email на валидность
-     * @param event — Объект, на котором происходит событие
+     * Вспомогательная функция, возвращает jsx объект
+     * @returns {XML} — Форма регистрации
+     * @private
      */
-    checkEmail(event) {
-        const patternEmail = /^([a-z0-9_\.-])+@[a-z0-9-]+\.([a-z]{2,4}\.)?[a-z]{2,4}$/i;
-
-        const messageOk = 'Email введён корректно';
-        const messageError = 'Email введён неккоректно';
-        const messageDefault = 'Ваш Email';
-
-        this.checkValidEmailInput(event, patternEmail, messageOk, messageError, messageDefault);
-    }
-
-    /**
-     * Проверяет пароль на валидность
-     * @param event — Объект, на котором происходит событие
-     */
-    checkPassword(event) {
-        const patternStrongPassword = /(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/;
-        const patternWeakPassword = /^.{6,}$/;
-
-        this.checkValidPasswordInput(event, patternStrongPassword, patternWeakPassword);
-    }
-
-    checkEqualsInputs(event, idCheckInput) {
-        const checkInput = document.querySelector(`#${idCheckInput}`);
-        const elementId = event.target.id;
-
-        if (event.target.value === checkInput.value) {
-            // Пароли совпадают
-            this._acceptInput(elementId, 'Пароли совпадают');
-        } else {
-            // Пароли НЕ совпадают
-            this._rejectInput(elementId, 'Пароли не совпадают');
-        }
-    }
-
     _renderForm() {
-        const patternName = /^[a-zA-Zа-яА-Я]{3,}$/i;
+        const lastName = this.inputsData.lastName,
+              firstName = this.inputsData.firstName,
+              middleName = this.inputsData.middleName,
+              email = this.inputsData.email,
+              password = this.inputsData.password,
+              passwordAgain = this.inputsData.passwordAgain;
 
         return (
             <CenterScreenBlock>
                 <Form header={ 'Регистрация' }>
                     <Input
-                        placeholder={ 'Ваша фамилия' }
-                        inputId={ 'userLastName' }
+                        placeholder={ lastName.messageDefault }
+                        inputId={ lastName.id }
                         icon='glyphicon glyphicon-user'
-                        onBlur={ event => {
-                            const messageOk = 'Фамилия введёна корректно';
-                            const messageError = 'Фамилия введёна неккоректно';
-                            const messageDefault = 'Ваша фамилия';
-
-                            this.checkValidTextInput(event, patternName, messageOk, messageError, messageDefault);
-                        } }
-                        onFocus={ event => { this.focusInput(event, 'Ваша фамилия'); } }
+                        onBlur={ event => this.checkValidTextInput(event, lastName.patternOk, lastName.messageOk, lastName.messageError, lastName.messageDefault)}
+                        onFocus={ event => this.focusInput(event, lastName.messageDefault) }
                     />
                     <Input
-                        placeholder={ 'Ваше имя' }
-                        inputId={ 'userFirstName' }
-                        onBlur={ event => {
-                            const messageOk = 'Имя введёно корректно';
-                            const messageError = 'Имя введёно неккоректно';
-                            const messageDefault = 'Ваше имя';
-
-                            this.checkValidTextInput(event, patternName, messageOk, messageError, messageDefault);
-                        } }
-                        onFocus={ event => { this.focusInput(event, 'Ваше имя'); } }
+                        placeholder={ firstName.messageDefault }
+                        inputId={ firstName.id }
+                        onBlur={ event => this.checkValidTextInput(event, firstName.patternOk, firstName.messageOk, firstName.messageError, firstName.messageDefault) }
+                        onFocus={ event => this.focusInput(event, firstName.messageDefault) }
                     />
                     <Input
-                        placeholder={ 'Ваше отчество' }
-                        inputId={ 'userMiddleName' }
-                        onBlur={ event => {
-                            const messageOk = 'Отчество введёно корректно';
-                            const messageError = 'Отчество введёно неккоректно';
-                            const messageDefault = 'Ваше отчество';
-
-                            this.checkValidTextInput(event, patternName, messageOk, messageError, messageDefault);
-                        } }
-                        onFocus={ event => { this.focusInput(event, 'Ваше отчество'); } }
+                        placeholder={ middleName.messageDefault }
+                        inputId={ middleName.id }
+                        onBlur={ event => this.checkValidTextInput(event, middleName.patternOk, middleName.messageOk, middleName.messageError, middleName.messageDefault) }
+                        onFocus={ event =>this.focusInput(event, middleName.messageDefault) }
                     />
                     <Input
                         type={ 'email' }
-                        placeholder={ 'Ваш Email' }
-                        inputId={ 'userEmail' }
-                        onBlur={ this.checkEmail }
-                        onFocus={ event => { this.focusInput(event, 'Ваш Email'); } }
+                        placeholder={ email.messageDefault }
+                        inputId={ email.id }
+                        onBlur={ event => this.checkValidEmailInput(event, email.patternOk) }
+                        onFocus={ event => this.checkValidEmailInput(event, email.patternOk, email.messageOk, email.messageError, email.messageDefault) }
                     />
                     <Input
                         type={ 'password' }
-                        placeholder={ 'Придумайте пароль' }
-                        inputId={ 'userPassword' }
+                        placeholder={ password.messageDefault }
+                        inputId={ password.id }
                         icon='glyphicon glyphicon-lock'
-                        onBlur={ this.checkPassword }
-                        onChange={ this.checkPassword }
-                        onFocus={ event => { this.focusInput(event, 'Придумайте пароль'); } }
+                        onBlur={ event => this.checkValidPasswordInput(event, password.patternOk, password.patternWarn) }
+                        onChange={ event => this.checkValidPasswordInput(event, password.patternOk, password.patternWarn) }
+                        onFocus={ event => this.focusInput(event, password.messageDefault) }
                     />
                     <Input
                         type={ 'password' }
-                        placeholder={ 'Повторите пароль' }
-                        inputId={ 'userPasswordAgain' }
+                        placeholder={ passwordAgain.messageDefault }
+                        inputId={ passwordAgain.id }
                         icon='glyphicon glyphicon-lock'
-                        onBlur={ event => {
-                            const idCheckInput = 'userPassword';
-
-                            this.checkEqualsInputs(event, idCheckInput);
-                        } }
-                        onChange={ event => {
-                            const idCheckInput = 'userPassword';
-
-                            this.checkEqualsInputs(event, idCheckInput);
-                        } }
-                        onFocus={ event => { this.focusInput(event, 'Придумайте пароль'); } }
+                        onBlur={ () => this.checkEqualsInputs(passwordAgain.id, password.id) }
+                        onChange={ () => this.checkEqualsInputs(passwordAgain.id, password.id) }
+                        onFocus={ event => this.focusInput(event, passwordAgain.messageDefault) }
                     />
 
                     <Button type="button" onClick={ this.registrationUser }>Зарегистрироваться</Button>
@@ -173,8 +200,13 @@ class Registration extends AForm {
         );
     }
 
+    /**
+     * Вспомогательная функция, возвращает jsx объект
+     * @returns {XML} — Уведомление о успешной регистрации
+     * @private
+     */
     _renderNotification() {
-        const user = this.state.userData;
+        const user = this.props.user;
 
         return (
             <CenterScreenBlock>
@@ -206,4 +238,16 @@ class Registration extends AForm {
 
 Registration.path = '/registration';
 
-export default Registration;
+function mapStateToProps(state) {
+    return {
+        user: state
+    }
+}
+
+function mapDispatchToProps(dispatch) {
+    return {
+        registrationUser: userData => dispatch(addUser(userData))
+    };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Registration);

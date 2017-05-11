@@ -3,6 +3,7 @@ import { Route, IndexRoute } from 'react-router';
 import App from './App';
 
 import Authorization from './pages/Authorization/Authorization';
+
 import AuthorizationRoutes from './pages/Authorization/routes';
 import RegistrationRoutes from './pages/Registration/routes';
 

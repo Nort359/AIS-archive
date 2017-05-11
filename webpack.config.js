@@ -1,5 +1,5 @@
 /**
- * Created by Nort3 on 01.05.2017.
+ * Created by Nort359@gmail.com on 01.05.2017.
  */
 module.exports = {
     entry: './src/index.jsx',

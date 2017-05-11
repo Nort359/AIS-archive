@@ -202,6 +202,37 @@ export default class AForm extends React.Component {
     }
 
     /**
+     * Проверяет поле email на существование введённого email в БД
+     * @param idEmailInput — ID input email
+     * @param messageOk — Сообщение об успехе(Email свободен)
+     */
+    checkAJAXEmail(idEmailInput, messageOk) {
+        const emailInput = document.querySelector(`#${idEmailInput}`);
+        let emailExist = false;
+
+        this._getIconSpinner(idEmailInput, 'mk-spinner-ring', true);
+
+        axios.post('http://ais-archive/api/check_email.php', querystring.stringify({
+            checkEmail: emailInput.value
+        }))
+            .then(answer => {
+                if (answer.data === 'Ok') {
+                    emailExist = true;
+                }
+                setTimeout(() => {
+                    this._getIconSpinner(idEmailInput, 'mk-spinner-ring', false);
+
+                    if (emailExist === true) {
+                        this._acceptInput(idEmailInput, messageOk);
+                    } else {
+                        this._rejectInput(idEmailInput, 'Такой Email уже зарегистрирован');
+                    }
+                }, 500);
+            })
+            .catch(error => console.error(error));
+    }
+
+    /**
      * Проверяет input на валидность и перекрашивае underline в соответствующий цвет
      * @param event — Объект, на котором происходит событие
      * @param pattern — Регулярное выражение, на основе которого проверяется валидность поля input
@@ -214,29 +245,7 @@ export default class AForm extends React.Component {
 
         // Проверка на совпадение с шаблоном
         if(pattern.test(event.target.value)) {
-            // Поле заполненно верно. Совпадает с шаблоном
-            let emailExist = false;
-
-            this._getIconSpinner(elementId, 'mk-spinner-ring', true);
-
-            axios.post('http://ais-archive/api/check_email.php', querystring.stringify({
-                checkEmail: event.target.value
-            }))
-                .then(res => {
-                    if (res.data === 'Ok') {
-                        emailExist = true;
-                    }
-                    setTimeout(() => {
-                        this._getIconSpinner(elementId, 'mk-spinner-ring', false);
-
-                        if(emailExist === true) {
-                            this._acceptInput(elementId, messageOk);
-                        } else {
-                            this._rejectInput(elementId, 'Такой Email уже зарегистрирован');
-                        }
-                    }, 500);
-                })
-                .catch(error => console.error(error));
+            this.checkAJAXEmail(elementId, messageOk);
         } else if(event.target.value === '') {
             // Поле не заполненно.
             this._defaultInput(elementId, messageDefault);
@@ -271,6 +280,26 @@ export default class AForm extends React.Component {
             this._defaultInput(elementId, messageDefault);
         } else {
             // Поле заполненно неверно. Не совпадает с шаблоном
+            this._rejectInput(elementId, messageError);
+        }
+    }
+
+    /**
+     * Проверяет Input повторения пароля на совпадение с предыдущим паролем
+     * @param elementId — ID input, который нужно сравнивать
+     * @param idCheckInput — ID input, с которым нужно сравнивать
+     * @param messageOk — сообщение при совпадении полей
+     * @param messageError — сообщение при не совпадении полей
+     */
+    checkEqualsInputs(elementId, idCheckInput, messageOk = 'Пароли совпадают', messageError = 'Пароли не совпадают') {
+        const input = document.querySelector(`#${elementId}`);
+        const checkInput = document.querySelector(`#${idCheckInput}`);
+
+        if (input.value === checkInput.value) {
+            // Совпадают
+            this._acceptInput(elementId, messageOk);
+        } else {
+            // Не совпадают
             this._rejectInput(elementId, messageError);
         }
     }
