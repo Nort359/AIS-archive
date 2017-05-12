@@ -1,6 +1,6 @@
 import React from 'react';
+import { Link } from 'react-router';
 
-import Button from '../Button/Button';
 import './Notification.scss';
 
 class Notification extends React.Component {
@@ -38,10 +38,10 @@ class Notification extends React.Component {
         event.preventDefault();
 
         const notification = document.querySelector('.notification').style;
-        const background = document.querySelector('.notification-section__table').style;
+        //const background = document.querySelector('.notification-section__table').style;
 
         this._addAnimateElement(notification, 'notification_right', '1s');
-        this._addAnimateElement(background, 'background_light', '1s');
+        //this._addAnimateElement(background, 'background_light', '1s');
     }
 
     render() {
@@ -49,7 +49,6 @@ class Notification extends React.Component {
             <div className='notification'>
                 <h4 className='notification__caption'>{ this.props.header }</h4>
                 { this.props.children }
-                <Button onClick={ this.closeNotification }>{ this.props.btnText }</Button>
             </div>
         );
     }
@@ -57,7 +56,6 @@ class Notification extends React.Component {
 
 Notification.propTypes = {
     header: React.PropTypes.string.isRequired,
-    btnText: React.PropTypes.string.isRequired,
     children: React.PropTypes.any.isRequired
 };
 

@@ -1,8 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router';
 import { connect } from 'react-redux';
-import axios from 'axios';
-import querystring from 'querystring';
 
 // Import components
 import CenterScreenBlock from '../../components/CenterScreenBlock/CenterScreenBlock';
@@ -17,7 +15,7 @@ import { inputsData } from './inputsData';
 
 import AForm from '../../classes/AForm';
 
-import { addUser } from './actions';
+import { registrationUser } from './actions';
 
 class Registration extends AForm {
 
@@ -34,17 +32,6 @@ class Registration extends AForm {
         this.registrationUser = this.registrationUser.bind(this);
     }
 
-    _checkInput(element, pattern) {
-        if (!pattern.test(element.value)) {
-            element.focus();
-            element.select();
-
-            return false;
-        }
-
-        return true;
-    }
-
     /**
      * Метод отправляет AJAX запрос и регистрирует пользоватея в базе данных
      * @param event — объект события клика по кнопке
@@ -52,84 +39,66 @@ class Registration extends AForm {
     registrationUser(event) {
         event.preventDefault();
 
-        
+        const newUser = {
+            userFirstName: '1',
+            userMiddleName: '2',
+            userLastName: '3',
+            userEmail: '4',
+            userPassword: '5'
+        };
 
-        /*
-        const userLastName = document.getElementById('userLastName');
-        const userFirstName = document.getElementById('userFirstName');
-        const userMiddleName = document.getElementById('userMiddleName');
-        const userEmail = document.getElementById('userEmail');
-        const userPassword = document.getElementById('userPassword');
-        const userPasswordAgain = document.getElementById('userPasswordAgain');
+        const eventBlur = new Event('blur');
 
-        const patternName = /^[a-zA-Zа-яА-Я]{3,}$/i;
-        const patternEmail = /^([a-z0-9_\.-])+@[a-z0-9-]+\.([a-z]{2,4}\.)?[a-z]{2,4}$/i;
-        const patternStrongPassword = /(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/;
-        const patternWeakPassword = /^.{6,}$/;
+        const lastName = this.inputsData.lastName,
+              firstName = this.inputsData.firstName,
+              middleName = this.inputsData.middleName,
+              email = this.inputsData.email,
+              password = this.inputsData.password,
+              passwordAgain = this.inputsData.passwordAgain,
 
-        if (!this._checkInput(userLastName, patternName)) return;
-        if (!this._checkInput(userFirstName, patternName)) return;
-        if (!this._checkInput(userMiddleName, patternName)) return;
-        if (!this._checkInput(userEmail, patternEmail)) return;
-        if (!this._checkInput(userPassword, patternWeakPassword)) return;
+              // Inputs
+              inputLastName = document.querySelector(`#${lastName.id}`),
+              inputFirstName = document.querySelector(`#${firstName.id}`),
+              inputMiddleName = document.querySelector(`#${middleName.id}`),
+              inputEmail = document.querySelector(`#${email.id}`),
+              inputPassword = document.querySelector(`#${password.id}`),
+              inputPasswordAgain = document.querySelector(`#${passwordAgain.id}`); // TODO доделать проверку повторения пароля
 
-        if (userPasswordAgain.value !== userPassword.value) {
-            userPasswordAgain.focus();
-            userPasswordAgain.select();
 
-            return;
-        }
 
-        const emailId = 'userEmail';
-        let emailExist = false;
+        if (!lastName.patternOk.test(inputLastName.value))
+            return inputLastName.dispatchEvent(eventBlur);
 
-        this._getIconSpinner(emailId, 'mk-spinner-ring', true);
+        if (!firstName.patternOk.test(inputFirstName.value))
+            return inputFirstName.dispatchEvent(eventBlur);
 
-        axios.post('http://ais-archive/api/check_email.php', querystring.stringify({
-            checkEmail: userEmail.value
-        }))
-            .then(res => {
-                if (res.data === 'Ok') {
-                    emailExist = true;
+        if (!middleName.patternOk.test(inputMiddleName.value))
+            return inputMiddleName.dispatchEvent(eventBlur);
+
+        if (!email.patternOk.test(inputEmail.value))
+            return inputEmail.dispatchEvent(eventBlur);
+
+        if (!password.patternWarn.test(inputPassword.value))
+            return inputPassword.dispatchEvent(eventBlur);
+
+        Promise.all([this.checkAJAXEmail(email.id, email.messageOk)])
+            .then(checkerEmail => {
+                if(checkerEmail[0] === false) {
+                    return;
                 }
-                this._getIconSpinner(emailId, 'mk-spinner-ring', false);
 
-                if(emailExist === true) {
-                    this._acceptInput(emailId, 'Email введён корректно');
+                const newUser = {
+                    userFirstName: inputFirstName.value,
+                    userMiddleName: inputMiddleName.value,
+                    userLastName: inputLastName.value,
+                    userEmail: inputEmail.value,
+                    userPassword: inputPassword.value
+                };
 
-                    const newUser = {
-                        userLastName: userLastName.value,
-                        userFirstName: userFirstName.value,
-                        userMiddleName: userMiddleName.value,
-                        userEmail: userEmail.value,
-                        userPassword: userPassword.value
-                    };
-
-                    this.props.registrationUser(newUser);
-
-                    this.setState({ userRegistration: true });
-                } else {
-                    this._rejectInput(emailId, 'Такой Email уже зарегистрирован');
-                }
+                // Все поля заполнены: регистрируем нового пользователя
+                this.props.addUserDataBase(newUser);
             })
             .catch(error => console.error(error));
-        */
-        /*
-        axios.post('http://ais-archive/api/registration-user.php',
-            querystring.stringify({
-                userFirstName: document.getElementById('userFirstName').value,
-                userMiddleName: document.getElementById('userMiddleName').value,
-                userLastName: document.getElementById('userLastName').value,
-                userEmail: document.getElementById('userEmail').value,
-                userPassword: document.getElementById('userPassword').value
-            }))
-            .then(user => {
-                console.log(user.data);
-                this.setState({ userData: user.data });
-                this.setState({ userRegistration: true });
-            })
-            .catch(error => console.error(error));
-        */
     }
 
     /**
@@ -206,16 +175,17 @@ class Registration extends AForm {
      * @private
      */
     _renderNotification() {
-        const user = this.props.user;
+        const user = this.props.userData;
 
         return (
             <CenterScreenBlock>
-                <Notification header={ 'Вы успешно зарегистрировались' } btnText={ 'Ок' }>
+                <Notification header={ 'Вы успешно зарегистрировались' }>
                     <img className='notification__img' src='img/no-profile-photo.jpg' alt='Нет изображения'/>
                     <p>ФИО: <span className='notification__userData'>{
                         user.surname + ' ' + user.name + ' ' + user.otchestvo
                     }</span></p>
                     <p>Email: <span className='notification__userData'>{ user.email }</span></p>
+                    <Link to='/'><Button>Ок</Button></Link>
                 </Notification>
             </CenterScreenBlock>
         );
@@ -225,7 +195,7 @@ class Registration extends AForm {
         return (
             <main>
                 {
-                    this.state.userRegistration ?
+                    this.props.userData.authorization ?
                         this._renderNotification()
                         :
                         this._renderForm()
@@ -238,16 +208,13 @@ class Registration extends AForm {
 
 Registration.path = '/registration';
 
-function mapStateToProps(state) {
-    return {
-        user: state
-    }
-}
-
-function mapDispatchToProps(dispatch) {
-    return {
-        registrationUser: userData => dispatch(addUser(userData))
-    };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Registration);
+export default connect(
+    state => ({
+        userData: state.userData
+    }),
+    dispatch => ({
+        addUserDataBase: (userData) => {
+            dispatch(registrationUser(userData));
+        }
+    })
+)(Registration);

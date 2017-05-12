@@ -22,12 +22,13 @@ export default class AForm extends React.Component {
 
     /**
      * Вложенная функция, перекрашивающая underline
-     * @param event — Объект события
+     * @param elementId — ID input,на котором происходит событие
      * @param color — Цвет, в который перекрасится underline
      * @param scale — 1 – если нужно показать underline или 0 – если скрыть
+     * @private
      */
     _changeUnderline(elementId, color = '#00b5ff', scale = 0) {
-        const underline = document.querySelector('#' + elementId + ' ~ .input-animated__underline').style;
+        const underline = document.querySelector(`#${elementId} ~ .input-animated__underline`).style;
 
         underline.backgroundColor = color;
         underline.transform = 'scale(' + scale + ')';
@@ -35,12 +36,13 @@ export default class AForm extends React.Component {
 
     /**
      * Показывает icon, изменяя его текст и стили
-     * @param event — Объект, на котором происходит событие
+     * @param elementId — ID input,на котором происходит событие
      * @param classIcon — Класс, который будет в icon
      * @param colorIcon — Цвет icon
+     * @private
      */
     _showIcon(elementId, classIcon, colorIcon) {
-        const icon = document.querySelector('#' + elementId + ' ~ .input-animated__icon-status');
+        const icon = document.querySelector(`#${elementId} ~ .input-animated__icon-status`);
         const iconStyle = icon.style;
 
         icon.classList.remove('glyphicon-remove');
@@ -55,12 +57,13 @@ export default class AForm extends React.Component {
 
     /**
      * Показывает icon, преобразуя его в спинер
-     * @param event — Объект, на котором происходит событие
+     * @param elementId — ID input,на котором происходит событие
      * @param classIcon — Класс, который будет в icon
      * @param isShow — Флаг, true – показывать, false – не показывать
+     * @private
      */
     _getIconSpinner(elementId, classIcon, isShow = false) {
-        const icon = document.querySelector('#' + elementId + ' ~ .input-animated__icon-status');
+        const icon = document.querySelector(`#${elementId} ~ .input-animated__icon-status`);
         const iconStyle = icon.style;
 
         icon.classList.remove('glyphicon-remove');
@@ -79,22 +82,24 @@ export default class AForm extends React.Component {
 
     /**
      * Скрывает icon
-     * @param event — Объект, на котором происходит событие
+     * @param elementId — ID input,на котором происходит событие
+     * @private
      */
     _hideIcon(elementId) {
-        const icon = document.querySelector('#' + elementId + ' ~ .input-animated__icon-status').style;
+        const icon = document.querySelector(`#${elementId} ~ .input-animated__icon-status`).style;
 
         icon.display = 'none';
     }
 
     /**
      * Показывает placeholder, изменяя его текст и стили
-     * @param event — Объект, на котором происходит событие
+     * @param elementId — ID input,на котором происходит событие
      * @param placeholderText — Сообщение, которое следует поместить в placeholder
      * @param colorPlaceholder — Цвет placeholder
+     * @private
      */
     _showPlaceholder(elementId, placeholderText, colorPlaceholder) {
-        const placeholder = document.querySelector('#' + elementId + ' ~ .input-animated__placeholder');
+        const placeholder = document.querySelector(`#${elementId} ~ .input-animated__placeholder`);
         const placeholderStyle = placeholder.style;
 
         placeholder.innerText = placeholderText;
@@ -108,12 +113,13 @@ export default class AForm extends React.Component {
 
     /**
      * Прячет placeholder, применяя к нему стили по-умолчанию
-     * @param event — Объект, на котором происходит событие
+     * @param elementId — ID input,на котором происходит событие
      * @param placeholderText — Сообщение, которое следует поместить в placeholder
      * @param colorPlaceholder — Цвет placeholder
+     * @private
      */
     _hidePlaceholder(elementId, placeholderText, colorPlaceholder) {
-        const placeholder = document.querySelector('#' + elementId + ' ~ .input-animated__placeholder');
+        const placeholder = document.querySelector(`#${elementId} ~ .input-animated__placeholder`);
         const placeholderStyle = placeholder.style;
 
         placeholder.innerText = placeholderText;
@@ -127,8 +133,9 @@ export default class AForm extends React.Component {
 
     /**
      * Метод переводит поле input в состояние успеха
-     * @param event — Объект, на котором происходит событие
+     * @param elementId — ID input,на котором происходит событие
      * @param message — Сообщение, которое следует поместить в placeholder
+     * @private
      */
     _acceptInput(elementId, message) {
         const colorOk = '#53B73F';
@@ -140,8 +147,9 @@ export default class AForm extends React.Component {
 
     /**
      * Метод переводит поле input в состояние предупреждения
-     * @param event — Объект, на котором происходит событие
+     * @param elementId — ID input,на котором происходит событие
      * @param message — Сообщение, которое следует поместить в placeholder
+     * @private
      */
     _warnInput(elementId, message) {
         const colorWarning = '#EBBD32';
@@ -153,8 +161,9 @@ export default class AForm extends React.Component {
 
     /**
      * Метод переводит поле input в состояние ошибки
-     * @param event — Объект, на котором происходит событие
+     * @param elementId — ID input,на котором происходит событие
      * @param message — Сообщение, которое следует поместить в placeholder
+     * @private
      */
     _rejectInput(elementId, message) {
         const colorError = '#e23838';
@@ -166,8 +175,9 @@ export default class AForm extends React.Component {
 
     /**
      * Метод переводит поле input в состояние по-умолчанию
-     * @param event — Объект, на котором происходит событие
+     * @param elementId — ID input,на котором происходит событие
      * @param message — Сообщение, которое следует поместить в placeholder
+     * @private
      */
     _defaultInput(elementId, message) {
         const colorDefault = '#00b5ff';
@@ -194,7 +204,11 @@ export default class AForm extends React.Component {
             this._acceptInput(elementId, messageOk);
         } else if(event.target.value === '') {
             // Поле не заполненно.
-            this._defaultInput(elementId, messageDefault);
+            this._rejectInput(elementId, 'Пожалуйста, заполните поле');
+
+            setTimeout(() => {
+                this._defaultInput(elementId, messageDefault);
+            }, 1000);
         } else {
             // Поле заполненно неверно. Не совпадает с шаблоном
             this._rejectInput(elementId, messageError);
@@ -212,15 +226,28 @@ export default class AForm extends React.Component {
 
         this._getIconSpinner(idEmailInput, 'mk-spinner-ring', true);
 
-        axios.post('http://ais-archive/api/check_email.php', querystring.stringify({
+        return axios.post('http://ais-archive/api/check_email.php', querystring.stringify({
             checkEmail: emailInput.value
         }))
             .then(answer => {
                 if (answer.data === 'Ok') {
                     emailExist = true;
                 }
+
+                this._getIconSpinner(idEmailInput, 'mk-spinner-ring', false);
+
+                if (emailExist === true) {
+                    this._acceptInput(idEmailInput, messageOk);
+                    return true;
+                } else {
+                    this._rejectInput(idEmailInput, 'Такой Email уже зарегистрирован');
+                    return false;
+                }
+
+                /*
                 setTimeout(() => {
-                    this._getIconSpinner(idEmailInput, 'mk-spinner-ring', false);
+                    // TODO есть возможность сделать прокрутку спинера на 500ms но тогда не успевают прогрузится стили, вылетает ошибка в консоли, проблема в асинхронности setTimeout, при возможности, подумать как исправить это
+                    //this._getIconSpinner(idEmailInput, 'mk-spinner-ring', false);
 
                     if (emailExist === true) {
                         this._acceptInput(idEmailInput, messageOk);
@@ -228,6 +255,13 @@ export default class AForm extends React.Component {
                         this._rejectInput(idEmailInput, 'Такой Email уже зарегистрирован');
                     }
                 }, 500);
+
+                if (emailExist === true) {
+                    return true;
+                } else {
+                    return false;
+                }
+                */
             })
             .catch(error => console.error(error));
     }
@@ -248,7 +282,11 @@ export default class AForm extends React.Component {
             this.checkAJAXEmail(elementId, messageOk);
         } else if(event.target.value === '') {
             // Поле не заполненно.
-            this._defaultInput(elementId, messageDefault);
+            this._rejectInput(elementId, 'Пожалуйста, укажите Email');
+
+            setTimeout(() => {
+                this._defaultInput(elementId, messageDefault);
+            }, 1000);
         } else {
             // Поле заполненно неверно. Не совпадает с шаблоном
             this._rejectInput(elementId, messageError);
@@ -277,7 +315,11 @@ export default class AForm extends React.Component {
             this._warnInput(elementId, messageWarning);
         } else if(event.target.value === '') {
             // Поле не заполненно.
-            this._defaultInput(elementId, messageDefault);
+            this._rejectInput(elementId, 'Пожалуйста, укажите пароль');
+
+            setTimeout(() => {
+                this._defaultInput(elementId, messageDefault);
+            }, 1000);
         } else {
             // Поле заполненно неверно. Не совпадает с шаблоном
             this._rejectInput(elementId, messageError);

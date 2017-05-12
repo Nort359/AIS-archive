@@ -1,27 +1,23 @@
 /**
  * Created by Nort359@gmail.com on 10.05.2017.
  */
-import axios from 'axios';
-import querystring from 'querystring';
+import { REGISTRATION_USER, AUTHORIZATION_USER } from './actions';
 
-import { ADD_USER, AUTHORIZATION_USER } from './actions';
-
-export default function userReducer(state = [], action) {
+function userReducer(state = [], action) {
     switch (action.type) {
-        case ADD_USER:
-            axios.post('http://ais-archive/api/registration-user.php',
-                querystring.stringify(action.userData))
-                .then(user => {
-                    console.log(user.data);
-                    return this.props.user = user.data;
-                })
-                .catch(error => console.error(error));
-            return action.userData;
+        case REGISTRATION_USER:
+            return Object.assign({}, state, action.userData);
 
         case AUTHORIZATION_USER:
-            return action.authorization;
+            const authorizationObject = {
+                authorization: action.authorization
+            };
+
+            return Object.assign({}, state, authorizationObject);
 
         default:
             return state;
     }
 }
+
+export const userData = userReducer;
