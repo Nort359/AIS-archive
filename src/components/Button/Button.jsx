@@ -21,8 +21,8 @@ class Button extends React.Component {
 Button.propTypes = {
     className: React.PropTypes.string,
     type: React.PropTypes.string,
-    children: React.PropTypes.string.isRequired,
-    onClick: React.PropTypes.func.isRequired
+    onClick: React.PropTypes.func,
+    children: React.PropTypes.string.isRequired
 };
 
 export default Button;

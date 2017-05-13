@@ -226,7 +226,7 @@ export default class AForm extends React.Component {
 
         this._getIconSpinner(idEmailInput, 'mk-spinner-ring', true);
 
-        return axios.post('http://ais-archive/api/check_email.php', querystring.stringify({
+        return axios.post('http://ais-archive/api/check-email.php', querystring.stringify({
             checkEmail: emailInput.value
         }))
             .then(answer => {
@@ -303,7 +303,7 @@ export default class AForm extends React.Component {
      * @param messageError — Сообщение placeholder при ошибке
      * @param messageDefault — Сообщение placeholder по умолчанию
      */
-    checkValidPasswordInput(event, patternOk, patternWarning, messageOk = 'Сильный пароль', messageWarning = 'Слабый пароль', messageError = 'Пароль слишком короткий', messageDefault = 'Введите пароль') {
+    checkValidPasswordInput(event, patternOk, patternWarning = /^.{6,}$/, messageOk = 'Сильный пароль', messageWarning = 'Слабый пароль', messageError = 'Пароль слишком короткий', messageDefault = 'Введите пароль') {
         const elementId = event.target.id;
 
         // Проверка пароля на совпадение с шаблонами

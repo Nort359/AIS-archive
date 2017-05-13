@@ -1,9 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router';
+import { connect } from 'react-redux';
 
 import './Header.scss';
 
-export default class Header extends React.Component {
+class Header extends React.Component {
 
     constructor(props) {
         super(props);
@@ -14,6 +15,8 @@ export default class Header extends React.Component {
     }
 
     render() {
+        const user = this.props.userData;
+
         return (
             <header>
                 <nav className='main-menu'>
@@ -23,10 +26,11 @@ export default class Header extends React.Component {
                     </ul>
                     <ul className='main-menu__right'>
                         {
-                            this.state.authorization ?
-                                <li>Личный кабинет
+                            user.authorization ?
+                                <li><i className='main-menu__user-icon glyphicon glyphicon-user'></i>{ `${user.name} ${user.otchestvo}` }
                                     <ul className='main-menu__drop-menu'>
-                                        <li>Настройка</li>
+                                        <li>Личный кабинет</li>
+                                        <li>Мои документы</li>
                                         <li>Выход</li>
                                     </ul>
                                 </li>
@@ -43,3 +47,13 @@ export default class Header extends React.Component {
     }
 
 }
+
+export default connect(
+    state => ({
+        userData: state.userData
+    }),
+    dispatch => ({
+
+    })
+)(Header);
+

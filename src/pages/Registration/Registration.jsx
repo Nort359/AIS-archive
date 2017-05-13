@@ -39,14 +39,6 @@ class Registration extends AForm {
     registrationUser(event) {
         event.preventDefault();
 
-        const newUser = {
-            userFirstName: '1',
-            userMiddleName: '2',
-            userLastName: '3',
-            userEmail: '4',
-            userPassword: '5'
-        };
-
         const eventBlur = new Event('blur');
 
         const lastName = this.inputsData.lastName,
@@ -179,13 +171,20 @@ class Registration extends AForm {
 
         return (
             <CenterScreenBlock>
-                <Notification header={ 'Вы успешно зарегистрировались' }>
+                <Notification
+                    header={ 'Вы успешно зарегистрировались' }
+                    btnText={ 'Ок' }
+                    btnEvent={ () => {
+                        setTimeout(() => {
+                            window.location = '/public/#/'; // TODO Убрать хэш, когда в роутах его не будет
+                        }, 1000);
+                    } }
+                >
                     <img className='notification__img' src='img/no-profile-photo.jpg' alt='Нет изображения'/>
                     <p>ФИО: <span className='notification__userData'>{
                         user.surname + ' ' + user.name + ' ' + user.otchestvo
                     }</span></p>
                     <p>Email: <span className='notification__userData'>{ user.email }</span></p>
-                    <Link to='/'><Button>Ок</Button></Link>
                 </Notification>
             </CenterScreenBlock>
         );

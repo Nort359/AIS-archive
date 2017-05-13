@@ -1,0 +1,16 @@
+@import '../../scss_partian/config';
+
+.start-page {
+  &__start-page__banner {
+
+  }
+
+  &__center-block {
+
+  }
+
+  &__btn-get-started {
+    @include default_style_button(250px);
+  }
+
+}

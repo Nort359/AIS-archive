@@ -17,6 +17,7 @@ header {
 
 .main-menu {
   margin: 0 auto;
+  width: $containerWidth;
 
   a {
     color: $formColor;
@@ -28,6 +29,10 @@ header {
 
   &__right {
     float: right;
+  }
+
+  &__user-icon {
+    margin-right: 10px;
   }
 
   &__left, &__right {

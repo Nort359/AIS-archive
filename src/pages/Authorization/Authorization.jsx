@@ -1,14 +1,21 @@
 import React from 'react';
 import { Link } from 'react-router';
+import { connect } from 'react-redux';
 
 // Import components
 import CenterScreenBlock from '../../components/CenterScreenBlock/CenterScreenBlock';
 import Form from '../../components/Form/Form';
 import Input from '../../components/Input/Input';
 import Button from '../../components/Button/Button';
+
 import Notification from '../../components/Notification/Notification';
 
 import AForm from '../../classes/AForm';
+
+import { authorizationUser } from './actions';
+
+// Import Data
+import { inputsData } from './inputsData';
 
 class Authorization extends AForm {
 
@@ -19,67 +26,33 @@ class Authorization extends AForm {
             isAuthorization: false
         };
 
-        this.checkEmail = this.checkEmail.bind(this);
-        this.checkPassword = this.checkPassword.bind(this);
+        this.inputsData = inputsData;
+
+        this.authorizationUser = this.authorizationUser.bind(this);
     }
 
-    /**
-     * Проверяет Email на валидность
-     * @param event — Объект, на котором происходит событие
-     */
-    checkEmail(event) {
-        const patternEmail = /^([a-z0-9_\.-])+@[a-z0-9-]+\.([a-z]{2,4}\.)?[a-z]{2,4}$/i;
+    authorizationUser() {
 
-        const messageOk = 'Email введён корректно';
-        const messageError = 'Email введён неккоректно';
-        const messageDefault = 'Ваш Email';
+        const eventBlur = new Event('blur');
 
-        this.checkValidTextInput(event, patternEmail, messageOk, messageError, messageDefault);
-    }
+        const email = this.inputsData.email,
+              password = this.inputsData.password;
 
-    /**
-     * Проверяет пароль на валидность
-     * @param event — Объект, на котором происходит событие
-     */
-    checkPassword(event) {
-        const patternStrongPassword = /(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/;
-        const patternWeakPassword = /^.{6,}$/;
+        const inputEmail = document.querySelector(`#${email.id}`),
+              inputPassword = document.querySelector(`#${password.id}`);
 
-        this.checkValidPasswordInput(event, patternStrongPassword, patternWeakPassword);
-    }
+        if (!email.patternOk.test(inputEmail.value))
+            return inputEmail.dispatchEvent(eventBlur);
 
-    /**
-     * Вспомогательная функция, возвращает jsx объект
-     * @returns {XML} — Форма авторизации
-     * @private
-     */
-    _renderForm() {
-        return (
-            <CenterScreenBlock>
-                <Form header={ 'Авторизация' }>
-                    <Input
-                        type={ 'email' }
-                        placeholder={ 'Ваш Email' }
-                        icon='glyphicon glyphicon-user'
-                        inputId={ 'userEmail' }
-                        onBlur={ this.checkEmail }
-                        onFocus={ event => { this.focusInput(event, 'Ваш Email'); } }
-                    />
-                    <Input
-                        type={ 'password' }
-                        placeholder={ 'Ваш пароль' }
-                        icon='glyphicon glyphicon-lock'
-                        inputId={ 'userPassword' }
-                        onChange={ this.checkPassword }
-                    />
+        if (!password.patternOk.test(inputPassword.value))
+            return inputPassword.dispatchEvent(eventBlur);
 
-                    <Button type="button" onClick={ () => { this.setState({ isAuthorization: true }) } }>Войти</Button>
+        const user = {
+            userEmail: inputEmail.value,
+            userPassword: inputPassword.value
+        };
 
-                    <Link to='/registration'>Ещё нет аккаунта? Создать<i className="glyphicon glyphicon-pencil"></i></Link>
-                    <Link to='#'>Забыли пароль?</Link>
-                </Form>
-            </CenterScreenBlock>
-        );
+        this.props.getUserDataBase(user); // Получение пользователя
     }
 
     /**
@@ -87,27 +60,75 @@ class Authorization extends AForm {
      * @returns {XML} — Уведомление о успешной авторизации
      * @private
      */
-    _renderNotification() {
+    _renderFormAuthorization() {
+        const email = this.inputsData.email,
+            password = this.inputsData.password;
+
         return (
             <CenterScreenBlock>
-                <Notification header={ 'Вы успешно авторизовались' } btnText={ 'Ок' }>
+                <Form header={ 'Авторизация' }>
+                    <Input
+                        type={ 'email' }
+                        placeholder={ email.messageDefault }
+                        icon='glyphicon glyphicon-user'
+                        inputId={ email.id }
+                        onBlur={ event => this.checkValidTextInput(event, email.patternOk, email.messageOk, email.messageError, email.messageDefault) }
+                        onFocus={ event => this.focusInput(event, email.messageDefault) }
+                    />
+                    <Input
+                        type={ 'password' }
+                        placeholder={ password.messageDefault }
+                        icon='glyphicon glyphicon-lock'
+                        inputId={ password.id }
+                        onChange={ event => this.checkValidPasswordInput(event, password.patternOk) }
+                    />
+
+                    <Button type="button" onClick={ this.authorizationUser }>Войти</Button>
+
+                    <Link to='/registration'>Ещё нет аккаунта? Создать<i className="glyphicon glyphicon-pencil"></i></Link>
+                    <Link to='/' className={ 'forgot-password' }>Забыли пароль?</Link>
+
+                </Form>
+            </CenterScreenBlock>
+        );
+    }
+
+    _renderNotification() {
+        const user = this.props.userData;
+
+        return (
+            <CenterScreenBlock>
+                <Notification
+                    header={ 'Вы успешно вошли в аккаунт' }
+                    btnText={ 'Ок' }
+                    btnEvent={ () => {
+                        setTimeout(() => {
+                            window.location = '/public/#/'; // TODO Убрать хэш, когда в роутах его не будет
+                        }, 1000);
+                    } }
+                >
                     <img className='notification__img' src='img/no-profile-photo.jpg' alt='Нет изображения'/>
-                    <p>ФИО: <span className='notification__userData'>Просвиркин Максим Васильевич</span></p>
-                    <p>Email: <span className='notification__userData'>Nort359@gmail.com</span></p>
+                    <p>ФИО: <span className='notification__userData'>{
+                        user.surname + ' ' + user.name + ' ' + user.otchestvo
+                    }</span></p>
+                    <p>Email: <span className='notification__userData'>{ user.email }</span></p>
                 </Notification>
             </CenterScreenBlock>
         );
     }
 
     render() {
+        // TODO реализовать вывод сообщения при непрвильном наборе данных
+        const user = this.props.userData;
+
         return (
             <div>
-                {
-                    this.state.isAuthorization === false ?
-                        this._renderForm()
+            {
+                user.authorization ?
+                    this._renderNotification()
                     :
-                        this._renderNotification()
-                }
+                    this._renderFormAuthorization()
+            }
             </div>
         );
     }
@@ -116,4 +137,13 @@ class Authorization extends AForm {
 
 Authorization.path = '/authorization';
 
-export default Authorization;
+export default connect(
+    state => ({
+        userData: state.userData
+    }),
+    dispatch => ({
+        getUserDataBase: (userData) => {
+            dispatch(authorizationUser(userData));
+        }
+    })
+)(Authorization);

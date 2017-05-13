@@ -2,8 +2,6 @@
 
 	require_once 'config.php';
 
-	//echo 'json' . json_encode($_POST);
-
 	/**
 	 * Регистрация нового пользователя
 	 * @return [ void ]

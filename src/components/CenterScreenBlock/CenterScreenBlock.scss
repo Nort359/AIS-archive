@@ -2,12 +2,13 @@
 
 .center-screen-block {
   &__table {
-    height: 100vh;
+    height: $mainHeightScreen;
     width: 100%;
 
     display: table;
 
     background-color: $backgroundColor;
+    background-size: cover;
   }
 
   &__row {

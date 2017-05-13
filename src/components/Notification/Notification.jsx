@@ -1,5 +1,6 @@
 import React from 'react';
-import { Link } from 'react-router';
+
+import Button from '../Button/Button';
 
 import './Notification.scss';
 
@@ -30,6 +31,12 @@ class Notification extends React.Component {
         elementStyle.animationDuration = duration;
     }
 
+    componentDidMount() {
+        const background = document.querySelector('.center-screen-block__table').style;
+
+        this._addAnimateElement(background, 'background_dark', '1s');
+    }
+
     /**
      * Метод, закрывающий уведомление (notification)
      * @param event — Объект елемента, на котором происходит событие
@@ -38,10 +45,10 @@ class Notification extends React.Component {
         event.preventDefault();
 
         const notification = document.querySelector('.notification').style;
-        //const background = document.querySelector('.notification-section__table').style;
+        const background = document.querySelector('.center-screen-block__table').style;
 
         this._addAnimateElement(notification, 'notification_right', '1s');
-        //this._addAnimateElement(background, 'background_light', '1s');
+        this._addAnimateElement(background, 'background_light', '1s');
     }
 
     render() {
@@ -49,6 +56,10 @@ class Notification extends React.Component {
             <div className='notification'>
                 <h4 className='notification__caption'>{ this.props.header }</h4>
                 { this.props.children }
+                <Button onClick={ event => {
+                    this.closeNotification(event);
+                    { this.props.btnEvent() }
+                } }>{ this.props.btnText }</Button>
             </div>
         );
     }
@@ -56,7 +67,9 @@ class Notification extends React.Component {
 
 Notification.propTypes = {
     header: React.PropTypes.string.isRequired,
-    children: React.PropTypes.any.isRequired
+    btnText: React.PropTypes.string.isRequired,
+    btnEvent: React.PropTypes.func,
+    children: React.PropTypes.any.isRequired,
 };
 
 export default Notification;

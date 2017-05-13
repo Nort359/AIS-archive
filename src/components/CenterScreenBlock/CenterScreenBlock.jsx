@@ -7,7 +7,7 @@ class CenterScreenBlock extends React.Component {
     render() {
         return (
             <main>
-                <div className='center-screen-block__table'>
+                <div className='center-screen-block__table' style={ { backgroundImage: `url(${this.props.bgImage})` } }>
                     <div className='center-screen-block__row'>
                         <div className='center-screen-block__cell'>
                             <div className='center-screen-block__center'>
@@ -23,6 +23,7 @@ class CenterScreenBlock extends React.Component {
 }
 
 CenterScreenBlock.propTypes = {
+    bgImage: React.PropTypes.string,
     children: React.PropTypes.any.isRequired
 };
 
