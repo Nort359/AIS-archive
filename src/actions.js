@@ -8,15 +8,6 @@ import { AUTHORIZATION_USER } from './pages/Registration/actions';
 export const EXISTS_USER = 'EXISTS_USER';
 
 export const getUserFromSession = () => dispatch => {
-    console.log('getUserFromSession');
-
-    window.sessionData = '<?php echo json_encode($_SESSION); ?>';
-    console.log('window.sessionData', window.sessionData);
-
-    const sessionUserData = window.sessionData;
-
-    console.log('sessionUserData', sessionUserData);
-    /*
     axios.get('http://ais-archive/api/get-user-from-session.php')
         .then(response => response.data)
         .then(userData => {
@@ -35,5 +26,4 @@ export const getUserFromSession = () => dispatch => {
             }
         })
         .catch(error => console.error(error));
-        */
 };

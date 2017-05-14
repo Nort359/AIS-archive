@@ -1,6 +1,6 @@
 <?php
 
-	session_start();
+	//session_start();
 
 	require_once 'config.php';
 
@@ -11,9 +11,9 @@
 
 	if ($user > 0) {
 		if (password_verify($password, $user->password)) {
-			$_SESSION['userData'] = $user;
-			
-			echo json_encode($user);
+			setcookie('user_logged', $user, time() + 3600 * 24 * 31 * 3, '/');  /* срок действия 3 месяца */
+
+			echo $_COOKIE['user_logged'];
 		} else {
 			echo 'Неверный пароль';
 		}

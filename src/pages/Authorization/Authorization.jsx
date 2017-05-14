@@ -80,7 +80,7 @@ class Authorization extends AForm {
                         placeholder={ password.messageDefault }
                         icon='glyphicon glyphicon-lock'
                         inputId={ password.id }
-                        onChange={ event => this.checkValidPasswordInput(event, password.patternOk) }
+                        onChange={ event => this.checkValidPasswordInput(event, password.patternOk, null, '') }
                     />
 
                     <Button type="button" onClick={ this.authorizationUser }>Войти</Button>

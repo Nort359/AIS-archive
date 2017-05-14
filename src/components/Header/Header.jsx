@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 
 import './Header.scss';
 
+import { exitUser } from './actions';
+
 class Header extends React.Component {
 
     constructor(props) {
@@ -31,7 +33,7 @@ class Header extends React.Component {
                                     <ul className='main-menu__drop-menu'>
                                         <li>Личный кабинет</li>
                                         <li>Мои документы</li>
-                                        <li>Выход</li>
+                                        <li onClick={ this.props.exitUser }>Выход</li>
                                     </ul>
                                 </li>
                                 :
@@ -53,7 +55,9 @@ export default connect(
         userData: state.userData
     }),
     dispatch => ({
-
+        exitUser: () => {
+            dispatch(exitUser());
+        }
     })
 )(Header);
 

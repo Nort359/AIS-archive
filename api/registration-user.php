@@ -53,12 +53,16 @@
 		}
 
 		if ( empty( $errors_sing_up ) ) {
-			// Регистрируем админа
+			// Регистрируем пользователя
 			registration_user();
 
-			$user = R::findOne( 'user', 'email = ?', [$_POST[ 'userEmail' ]] );
+			$email = $_POST['userEmail'];
 
-			echo json_encode($user);
+			$user = R::findOne('user', 'email = ?', [ $email ]);
+
+			setcookie('user_logged', $user, time() + 3600 * 24 * 31 * 3, '/');  /* срок действия 3 месяца */
+
+			echo $_COOKIE['user_logged'];
 		} else {
 			// Выводим ошибку
 			echo array_shift( $errors_sing_up );

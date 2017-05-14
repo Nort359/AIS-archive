@@ -2,18 +2,13 @@ import React from 'react';
 
 import CenterScreenBlock from '../../components/CenterScreenBlock/CenterScreenBlock';
 import Button from '../../components/Button/Button';
-import Notification from '../../components/Notification/Notification';
 import { connect } from 'react-redux';
-
-import { toggleNotification } from './actions';
 
 import './StartPage.scss';
 
 class StartPage extends React.Component {
 
     render() {
-        const user = this.props.userData;
-
         return (
             <main className='start-page'>
 
@@ -39,8 +34,5 @@ export default connect(
         userData: state.userData
     }),
     dispatch => ({
-        acceptNotification: () => {
-            dispatch(toggleNotification());
-        }
     })
 )(StartPage);

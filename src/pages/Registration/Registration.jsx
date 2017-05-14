@@ -73,6 +73,9 @@ class Registration extends AForm {
         if (!password.patternWarn.test(inputPassword.value))
             return inputPassword.dispatchEvent(eventBlur);
 
+        if (password.value !== inputPasswordAgain.value)
+            return inputPasswordAgain.dispatchEvent(eventBlur);
+
         Promise.all([this.checkAJAXEmail(email.id, email.messageOk)])
             .then(checkerEmail => {
                 if(checkerEmail[0] === false) {
