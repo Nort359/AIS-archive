@@ -1,0 +1,77 @@
+@import '../../scss_partian/config';
+@import './keyframes';
+
+@mixin styling_icons($top: 0, $right: 0) {
+  &_icon {
+    color: $headerColor;
+
+    font-size: 26px;
+
+    position: absolute;
+    top: $top;
+    right: $right;
+
+    cursor: pointer;
+    @include put_transition();
+
+    &:hover {
+      color: $mainColor;
+    }
+  }
+
+  &_container {
+    position: relative;
+
+    width: 100%;
+    height: 60px;
+  }
+}
+
+.sidebar {
+  margin: 0;
+  padding-left: 30px;
+
+  position: fixed;
+  top: $headerHeight;
+  left: -($widthSideBar - 60px);
+
+  width: $widthSideBar;
+  height: $mainHeightScreen;
+
+  box-shadow: 2px 2px 2px 2px $borderColor;
+  border-right: 1px solid $borderColor;
+
+  &__hamburger {
+    @include styling_icons(20px, 20px);
+  }
+
+  &__caption {
+    width: 100%;
+
+    font: {
+      size: 22px;
+      weight: bold;
+    }
+    color: $mainColor;
+
+    position: relative;
+    left: -($widthSideBar - 60px);
+
+    @include put_transition();
+  }
+
+  .input-animated {
+    &__container {
+      width: 80%;
+      top: 10px;
+    }
+  }
+
+  &__search {
+    @include styling_icons(20px, 20px);
+  }
+
+  &__filter {
+    @include styling_icons(5px, 20px);
+  }
+}

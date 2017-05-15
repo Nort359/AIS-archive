@@ -4,31 +4,13 @@ import Button from '../Button/Button';
 
 import './Notification.scss';
 
+import Animation from '../../classes/Animation';
+
 class Notification extends React.Component {
 
     constructor(props) {
         super(props);
-
-        this._addAnimateElement = this._addAnimateElement.bind(this);
         this.closeNotification = this.closeNotification.bind(this);
-    }
-
-    /**
-     * Вспомогательный метод, добавляющий анимацию переданному элементу
-     * @param elementStyle — Стиль элемента в DOM дереве
-     * @param name — Имя @keyframe, который будет использоваться в качестве анимации
-     * @param duration — Время продолжительности анимации
-     * @param delay — Время задержки анимации
-     * @param timingFunction — Временная функция анимации
-     * @param fillMode — fillMode анимации
-     * @private
-     */
-    _addAnimateElement(elementStyle, name, duration = '1s', delay = '0', timingFunction = 'ease-in-out', fillMode = 'forwards') {
-        elementStyle.animationName = name;
-        elementStyle.animationTimingFunction = timingFunction;
-        elementStyle.animationDelay = delay;
-        elementStyle.animationFillMode = fillMode;
-        elementStyle.animationDuration = duration;
     }
 
     componentDidMount() {
@@ -47,8 +29,8 @@ class Notification extends React.Component {
         const notification = document.querySelector('.notification').style;
         const background = document.querySelector('.center-screen-block__table').style;
 
-        this._addAnimateElement(notification, 'notification_right', '1s');
-        this._addAnimateElement(background, 'background_light', '1s');
+        Animation.addAnimateElement(notification, 'notification_right', '1s');
+        Animation.addAnimateElement(background, 'background_light', '1s');
     }
 
     render() {

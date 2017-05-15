@@ -23,7 +23,7 @@ class Header extends React.Component {
             <header>
                 <nav className='main-menu'>
                     <ul className='main-menu__left'>
-                        <li>Документы</li>
+                        <Link to={ '/documents' }><li>Документы</li></Link>
                         <li>Помощь</li>
                     </ul>
                     <ul className='main-menu__right'>

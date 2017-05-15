@@ -19,7 +19,7 @@ class Input extends React.Component {
                     className={ 'input-animated' }
                     type={ this.props.type || 'text' }
                     placeholder={ this.props.placeholder }
-                    value={ this.state.inputValue }
+                    value={ this.props.value ? this.props.value : this.state.inputValue }
                     onChange={ event => {
                         this.setState({ inputValue: event.target.value });
                         if(this.props.onChange) {
@@ -46,6 +46,7 @@ class Input extends React.Component {
 
 Input.propTypes = {
     type: React.PropTypes.string,
+    value: React.PropTypes.string,
     placeholder: React.PropTypes.string,
     inputId: React.PropTypes.string,
     onChange: React.PropTypes.func,

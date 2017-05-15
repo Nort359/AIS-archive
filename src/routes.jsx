@@ -7,6 +7,7 @@ import StartPage from './pages/StartPage/StartPage';
 import StartPageRoutes from './pages/StartPage/routes';
 import AuthorizationRoutes from './pages/Authorization/routes';
 import RegistrationRoutes from './pages/Registration/routes';
+import Documents from './pages/Documents/routes';
 
 export default (
     <Route component={ App } path={ App.path } >
@@ -15,5 +16,6 @@ export default (
         { StartPageRoutes }
         { AuthorizationRoutes }
         { RegistrationRoutes }
+        { Documents }
     </Route>
 );

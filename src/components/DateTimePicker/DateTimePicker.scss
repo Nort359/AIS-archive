@@ -1,0 +1,296 @@
+@import '../../scss_partian/config';
+
+.b-datetime {
+  position: relative;
+
+  .input-animated {
+    &__container {
+      i {
+        color: lighten($headerColor, 40%);
+      }
+    }
+
+    &:focus ~ i {
+      color: $mainColor;
+    }
+  }
+
+  .dt-input {
+    position: relative;
+
+    > i {
+      position: absolute;
+      right: 10px;
+      font-size: 20px;
+      bottom: 7px;
+      cursor: pointer;
+    }
+  }
+
+  .dt-popup {
+    position: absolute;
+    top: 0;
+    left: $widthDateTimePicker;
+    display: none;
+    width: $widthDateTimePicker;
+    padding: 12px 15px;
+    border-radius: 3px;
+    border: 1px solid #dfe0e4;
+    background-color: #ffffff;
+
+    .dt-btn {
+      display: inline-block;
+      background-color: #ffffff;
+      border: 0;
+      outline: 0;
+      cursor: pointer;
+      line-height: 1;
+
+      box-shadow: none;
+
+      &:focus {
+        box-shadow: 1px 1px 1px 1px lighten($borderColor, 20%) inset;
+      }
+
+      &:before {
+        margin-right: 6px;
+      }
+    }
+
+    .dt-btn-save {
+      display: block;
+      margin-top: 10px;
+      width: 100%;
+      background-color: $mainColor;
+      padding: 12px 0;
+      text-align: center;
+      color: #ffffff;
+      font-size: 16px;
+      border-radius: 3px;
+    }
+
+    .options {
+      width: 100%;
+      display: inline-block;
+      margin-bottom: 4px;
+
+      button {
+        float: left;
+        width: 50%;
+        color: $mainColor;
+        text-align: center;
+        font-size: 16px;
+        padding: 7px;
+        border: 1px solid $mainColor;
+        border-radius: 3px;
+
+        &:first-child {
+          border-top-right-radius: 0;
+          border-bottom-right-radius: 0;
+        }
+
+        &:last-child {
+          border-top-left-radius: 0;
+          border-bottom-left-radius: 0;
+        }
+      }
+
+      button.is-active {
+        color: #ffffff;
+        background-color: $mainColor;
+      }
+    }
+
+    .tabs {
+      margin-bottom: 11px;
+
+      .tab {
+        display: none;
+        height: 310px;
+      }
+
+      .tab.is-active {
+        display: block;
+      }
+
+      .tab-time {
+        color: #ffffff;
+        padding-top: 50px;
+
+        .showtime {
+          text-align: center;
+        }
+
+        .separator {
+          display: inline-block;
+          font-size: 32px;
+          font-weight: bold;
+          color: $mainColor;
+          width: 32px;
+          height: 65px;
+          line-height: 65px;
+          text-align: center;
+        }
+
+        .time {
+          width: 65px;
+          height: 65px;
+          display: inline-block;
+          font-size: 38px;
+          line-height: 65px;
+          background-color: $mainColor;
+          border-radius: 3px;
+          text-align: center;
+        }
+
+        .sliders {
+          padding: 0 10px;
+        }
+
+        .time-text {
+          position: relative;
+          left: -10px;
+          font-size: 15px;
+          color: $mainColor;
+          margin-top: 7px;
+          margin-bottom: 10px;
+        }
+      }
+
+      .tab-calendar {
+
+        .toolbar {
+          line-height: 30px;
+          color: $mainColor;
+          text-align: center;
+          margin-bottom: 13px;
+
+          .prev-month {
+            float: left;
+            color: #ffffff;
+          }
+
+          .current-date {
+            color: $mainColor;
+            text-transform: capitalize;
+          }
+
+          .next-month {
+            float: right;
+            color: #ffffff;
+          }
+
+          button {
+            position: relative;
+            width: 30px;
+            height: 30px;
+            line-height: 30px;
+            color: #ffffff;
+            border: 1px solid $mainColor;
+            border-radius: 50%;
+            background: $mainColor;
+            font-size: 20px;
+            padding: 0;
+            text-align: center;
+            outline: 0;
+            z-index: 5;
+            cursor: pointer;
+          }
+        }
+
+        .current-day {
+          color: $mainColor;
+          font-weight: bold;
+        }
+
+        table {
+          width: 100%;
+          border-collapse: collapse;
+          border-spacing: 0;
+          table-layout: fixed;
+        }
+
+        td {
+          padding: 8px 0;
+          text-align: center;
+          cursor: pointer;
+          color: #dfe0e4;
+          border: 1px solid #dfe0e4;
+        }
+
+        thead {
+
+          td {
+            color: $mainColor;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 12px;
+          }
+        }
+
+        tbody {
+
+          td {
+            color: #666666;
+            &:hover {
+              background: $mainColor;
+              border-color: $mainColor;
+              color: #ffffff;
+              opacity: 1;
+            }
+          }
+
+          td.prev-month {
+            opacity: .4;
+          }
+
+          td.next-month {
+            opacity: .4;
+          }
+        }
+      }
+    }
+  }
+
+  .dt-popup.is-open {
+    display: inline-block;
+  }
+}
+
+.u-slider-time {
+  position: relative;
+  display: inline-block;
+  background-color: #dfe0e4;
+  border-radius: 3px;
+  height: 4px;
+  width: 100%;
+  cursor: pointer;
+
+  .value {
+    position: absolute;
+    background-color: $mainColor;
+    border-radius: 3px;
+    top: 0;
+    height: 100%;
+  }
+
+  .handle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+
+    &:after {
+      position: relative;
+      display: block;
+      content: '';
+      top: -10px;
+      left: -12px;
+      width: 24px;
+      height: 24px;
+      background-color: #fff;
+      border: 3px solid $mainColor;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+  }
+}

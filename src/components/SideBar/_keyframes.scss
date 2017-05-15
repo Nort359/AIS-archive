@@ -1,0 +1,37 @@
+@import '../../scss_partian/config';
+
+@keyframes slideLeftSideBar {
+  0% {
+    left: 0;
+  }
+  100% {
+    left: -($widthSideBar - 60px);
+  }
+}
+
+@keyframes slideRightSideBar {
+  0% {
+    left: -($widthSideBar - 60px);
+  }
+  100% {
+    left: 0;
+  }
+}
+
+@keyframes slideLeftSideBarElement {
+  0% {
+    left: -($widthSideBar - 60px);
+  }
+  100% {
+    left: 0;
+  }
+}
+
+@keyframes slideRightSideBarElement {
+  0% {
+    left: 0;
+  }
+  100% {
+    left: -($widthSideBar - 60px);
+  }
+}
