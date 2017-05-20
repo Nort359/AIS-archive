@@ -31,7 +31,7 @@ class Header extends React.Component {
                             user.authorization ?
                                 <li><i className='main-menu__user-icon glyphicon glyphicon-user'></i>{ `${user.name} ${user.otchestvo}` }
                                     <ul className='main-menu__drop-menu'>
-                                        <li>Личный кабинет</li>
+                                        <Link to='/my-office'><li>Личный кабинет</li></Link>
                                         <li>Мои документы</li>
                                         <li onClick={ this.props.exitUser }>Выход</li>
                                     </ul>

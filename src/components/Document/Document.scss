@@ -1,0 +1,38 @@
+@import '../../scss_partian/config';
+
+.document {
+  width: 600px;
+  padding: 20px 20px;
+
+  &__container {
+    @include zero_indent();
+    @include put_transition();
+
+    margin-left: 120px;
+
+    position: relative;
+    z-index: 1;
+
+    &:hover {
+      background-color: lighten($borderColor, 30%);
+    }
+  }
+
+  &__icon {
+    margin-right: 20px;
+
+    &_arrow {
+      font-size: 16px;
+    }
+  }
+
+  &__caption {
+    @include zero_indent();
+
+    font: {
+      size: 20px;
+      weight: bold;
+    }
+  }
+
+}

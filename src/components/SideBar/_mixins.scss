@@ -1,0 +1,27 @@
+@import '../../scss_partian/config';
+
+@mixin styling_icons($top: 0, $right: 0) {
+  &_icon {
+    color: $headerColor;
+
+    font-size: 26px;
+
+    position: absolute;
+    top: $top;
+    right: $right;
+
+    cursor: pointer;
+    @include put_transition();
+
+    &:hover {
+      color: $mainColor;
+    }
+  }
+
+  &_container {
+    position: relative;
+
+    width: 100%;
+    height: 60px;
+  }
+}

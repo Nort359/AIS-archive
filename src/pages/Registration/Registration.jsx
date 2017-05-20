@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import CenterScreenBlock from '../../components/CenterScreenBlock/CenterScreenBlock';
 import Form from '../../components/Form/Form';
 import Input from '../../components/Input/Input';
+import SelectInput from '../../components/SelectInput/SelectInput';
 import Button from '../../components/Button/Button';
 import Notification from '../../components/Notification/Notification';
 import Spinner from '../../components/Spinner/Spinner'; // используются стили данного компонента
@@ -41,22 +42,25 @@ class Registration extends AForm {
 
         const eventBlur = new Event('blur');
 
-        const lastName = this.inputsData.lastName,
-              firstName = this.inputsData.firstName,
-              middleName = this.inputsData.middleName,
-              email = this.inputsData.email,
-              password = this.inputsData.password,
-              passwordAgain = this.inputsData.passwordAgain,
+        const lastName              = this.inputsData.lastName,
+              firstName             = this.inputsData.firstName,
+              middleName            = this.inputsData.middleName,
+              email                 = this.inputsData.email,
+              password              = this.inputsData.password,
+              passwordAgain         = this.inputsData.passwordAgain,
+              department            = this.inputsData.department,
+              position              = this.inputsData.position,
 
               // Inputs
-              inputLastName = document.querySelector(`#${lastName.id}`),
-              inputFirstName = document.querySelector(`#${firstName.id}`),
-              inputMiddleName = document.querySelector(`#${middleName.id}`),
-              inputEmail = document.querySelector(`#${email.id}`),
-              inputPassword = document.querySelector(`#${password.id}`),
-              inputPasswordAgain = document.querySelector(`#${passwordAgain.id}`); // TODO доделать проверку повторения пароля
+              inputLastName         = document.querySelector(`#${lastName.id}`),
+              inputFirstName        = document.querySelector(`#${firstName.id}`),
+              inputMiddleName       = document.querySelector(`#${middleName.id}`),
+              inputEmail            = document.querySelector(`#${email.id}`),
+              inputPassword         = document.querySelector(`#${password.id}`),
+              inputPasswordAgain    = document.querySelector(`#${passwordAgain.id}`),
 
-
+              selectDepartment      = document.getElementById(department.id),
+              selectPosition        = document.getElementById(position.id);
 
         if (!lastName.patternOk.test(inputLastName.value))
             return inputLastName.dispatchEvent(eventBlur);
@@ -76,18 +80,24 @@ class Registration extends AForm {
         if (password.value !== inputPasswordAgain.value)
             return inputPasswordAgain.dispatchEvent(eventBlur);
 
+        if (selectDepartment.value === department.placeholder)
+            return selectDepartment.dispatchEvent(eventBlur);
+
+        if (selectPosition.value === position.placeholder)
+            return selectPosition.dispatchEvent(eventBlur);
+
         Promise.all([this.checkAJAXEmail(email.id, email.messageOk)])
             .then(checkerEmail => {
-                if(checkerEmail[0] === false) {
-                    return;
-                }
+                if(checkerEmail[0] === false) return;
 
                 const newUser = {
                     userFirstName: inputFirstName.value,
                     userMiddleName: inputMiddleName.value,
                     userLastName: inputLastName.value,
                     userEmail: inputEmail.value,
-                    userPassword: inputPassword.value
+                    userPassword: inputPassword.value,
+                    userDepartment: selectDepartment.value,
+                    userPosition: selectPosition.value
                 };
 
                 // Все поля заполнены: регистрируем нового пользователя
@@ -107,7 +117,9 @@ class Registration extends AForm {
               middleName = this.inputsData.middleName,
               email = this.inputsData.email,
               password = this.inputsData.password,
-              passwordAgain = this.inputsData.passwordAgain;
+              passwordAgain = this.inputsData.passwordAgain,
+              department = this.inputsData.department,
+              position = this.inputsData.position;
 
         return (
             <CenterScreenBlock>
@@ -156,6 +168,24 @@ class Registration extends AForm {
                         onChange={ () => this.checkEqualsInputs(passwordAgain.id, password.id) }
                         onFocus={ event => this.focusInput(event, passwordAgain.messageDefault) }
                     />
+                    <SelectInput
+                        selectId={ department.id }
+                        placeholder={ department.placeholder }
+                    >
+                        <option value={ 'СИТ' }>СИТ</option>
+                        <option value={ 'Отдел кадров' }>Отдел кадров</option>
+                        <option value={ 'Отдел обслуживания' }>Отдел обслуживания</option>
+                    </SelectInput>
+                    <SelectInput
+                        selectId={ position.id }
+                        placeholder={ position.placeholder }
+                    >
+                        <option value={ 'Программист' }>Программист</option>
+                        <option value={ 'Инжинер' }>Инжинер</option>
+                        <option value={ 'Системный администратор' }>Системный администратор</option>
+                        <option value={ 'Бухгалтер' }>Бухгалтер</option>
+                        <option value={ 'Охранник' }>Охранник</option>
+                    </SelectInput>
 
                     <Button type="button" onClick={ this.registrationUser }>Зарегистрироваться</Button>
                     <Link to='/authorization'>Уже есть аккаунт? Войти</Link>

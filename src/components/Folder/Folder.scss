@@ -1,0 +1,44 @@
+@import '../../scss_partian/config';
+@import './keyframes';
+
+.folder {
+  width: 600px;
+  padding: 20px 20px;
+
+  cursor: pointer;
+
+  &__container {
+    @include zero_indent();
+    @include put_transition();
+
+    margin-left: 120px;
+    background-color: lighten($borderColor, 80%);
+
+    &:hover {
+      background-color: lighten($borderColor, 50%);
+    }
+  }
+
+  &__icon {
+    margin-right: 20px;
+
+    &_arrow {
+      font-size: 16px;
+    }
+  }
+
+  &__caption {
+    @include zero_indent();
+
+    font: {
+      size: 20px;
+      weight: bold;
+    }
+  }
+
+  &__content {
+    display: none;
+    transform: scale(0);
+  }
+
+}

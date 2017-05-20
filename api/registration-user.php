@@ -11,9 +11,17 @@
 		
 		$user->surname = $_POST[ 'userLastName' ];
 		$user->name = $_POST[ 'userFirstName' ];
-		$user->otchestvo = $_POST[ 'userMiddleName' ];
+		$user->middlename = $_POST[ 'userMiddleName' ];
+		
+		$user->photo = 'img/no-profile-photo.jpg';
+		
 		$user->email = $_POST[ 'userEmail' ];
 		$user->password = password_hash( $_POST[ 'userPassword' ], PASSWORD_DEFAULT );
+
+		$user->department_id = $_POST[ 'userDepartment' ];
+		$user->position_id = $_POST[ 'userPosition' ];
+
+		$user->admin = false;
 
 		R::store( $user );
 	}

@@ -44,5 +44,13 @@ export const inputsData = {
         messageDefault: 'Повторите пароль',
         messageOk: 'Пароли совпадают',
         messageError: 'Пароли не совпадают'
+    },
+    department: {
+        id: 'department-select',
+        placeholder: 'Выберите отдел'
+    },
+    position: {
+        id: 'position-select',
+        placeholder: 'Выберите должность'
     }
 };

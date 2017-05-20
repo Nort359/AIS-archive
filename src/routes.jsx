@@ -7,6 +7,7 @@ import StartPage from './pages/StartPage/StartPage';
 import StartPageRoutes from './pages/StartPage/routes';
 import AuthorizationRoutes from './pages/Authorization/routes';
 import RegistrationRoutes from './pages/Registration/routes';
+import MyOffice from './pages/MyOffice/routes';
 import Documents from './pages/Documents/routes';
 
 export default (
@@ -16,6 +17,7 @@ export default (
         { StartPageRoutes }
         { AuthorizationRoutes }
         { RegistrationRoutes }
+        { MyOffice }
         { Documents }
     </Route>
 );

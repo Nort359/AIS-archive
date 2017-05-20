@@ -1,31 +1,6 @@
 @import '../../scss_partian/config';
 @import './keyframes';
-
-@mixin styling_icons($top: 0, $right: 0) {
-  &_icon {
-    color: $headerColor;
-
-    font-size: 26px;
-
-    position: absolute;
-    top: $top;
-    right: $right;
-
-    cursor: pointer;
-    @include put_transition();
-
-    &:hover {
-      color: $mainColor;
-    }
-  }
-
-  &_container {
-    position: relative;
-
-    width: 100%;
-    height: 60px;
-  }
-}
+@import './mixins';
 
 .sidebar {
   margin: 0;
@@ -34,12 +9,21 @@
   position: fixed;
   top: $headerHeight;
   left: -($widthSideBar - 60px);
+  z-index: 25;
 
   width: $widthSideBar;
   height: $mainHeightScreen;
 
   box-shadow: 2px 2px 2px 2px $borderColor;
   border-right: 1px solid $borderColor;
+  background-color: $formColor;
+
+  &__container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 21;
+  }
 
   &__hamburger {
     @include styling_icons(20px, 20px);
