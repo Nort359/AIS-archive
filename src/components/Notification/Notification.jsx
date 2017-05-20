@@ -13,12 +13,6 @@ class Notification extends React.Component {
         this.closeNotification = this.closeNotification.bind(this);
     }
 
-    componentDidMount() {
-        const background = document.querySelector('.center-screen-block__table').style;
-
-        this._addAnimateElement(background, 'background_dark', '1s');
-    }
-
     /**
      * Метод, закрывающий уведомление (notification)
      * @param event — Объект елемента, на котором происходит событие

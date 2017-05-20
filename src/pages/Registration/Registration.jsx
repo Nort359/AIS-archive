@@ -10,13 +10,14 @@ import SelectInput from '../../components/SelectInput/SelectInput';
 import Button from '../../components/Button/Button';
 import Notification from '../../components/Notification/Notification';
 import Spinner from '../../components/Spinner/Spinner'; // используются стили данного компонента
+import './Registration.scss';
 
 // Import data
 import { inputsData } from './inputsData';
 
 import AForm from '../../classes/AForm';
 
-import { registrationUser } from './actions';
+import { registrationUserDB } from './actions';
 
 class Registration extends AForm {
 
@@ -40,7 +41,8 @@ class Registration extends AForm {
     registrationUser(event) {
         event.preventDefault();
 
-        const eventBlur = new Event('blur');
+        const eventBlur             = new Event('blur'),
+              eventFocus            = new Event('focus');
 
         const lastName              = this.inputsData.lastName,
               firstName             = this.inputsData.firstName,
@@ -74,18 +76,20 @@ class Registration extends AForm {
         if (!email.patternOk.test(inputEmail.value))
             return inputEmail.dispatchEvent(eventBlur);
 
+        console.log('email');
         if (!password.patternWarn.test(inputPassword.value))
             return inputPassword.dispatchEvent(eventBlur);
 
-        if (password.value !== inputPasswordAgain.value)
+        if (inputPassword.value !== inputPasswordAgain.value)
             return inputPasswordAgain.dispatchEvent(eventBlur);
 
         if (selectDepartment.value === department.placeholder)
-            return selectDepartment.dispatchEvent(eventBlur);
+            return selectDepartment.dispatchEvent(eventFocus);
 
         if (selectPosition.value === position.placeholder)
-            return selectPosition.dispatchEvent(eventBlur);
+            return selectPosition.dispatchEvent(eventFocus);
 
+        console.log('Position');
         Promise.all([this.checkAJAXEmail(email.id, email.messageOk)])
             .then(checkerEmail => {
                 if(checkerEmail[0] === false) return;
@@ -99,6 +103,12 @@ class Registration extends AForm {
                     userDepartment: selectDepartment.value,
                     userPosition: selectPosition.value
                 };
+
+                const buttonSpinner  = document.getElementsByClassName('registration__button_spinner')[0];
+                buttonSpinner.classList.add('mk-spinner-ring');
+
+                const buttonSpinnerStyle = buttonSpinner.style;
+                buttonSpinnerStyle.display = 'block';
 
                 // Все поля заполнены: регистрируем нового пользователя
                 this.props.addUserDataBase(newUser);
@@ -187,7 +197,10 @@ class Registration extends AForm {
                         <option value={ 'Охранник' }>Охранник</option>
                     </SelectInput>
 
-                    <Button type="button" onClick={ this.registrationUser }>Зарегистрироваться</Button>
+                    <div className='registration__button_container'>
+                        <div className='registration__button_spinner'></div>
+                        <Button type='button' onClick={ this.registrationUser }>Зарегистрироваться</Button>
+                    </div>
                     <Link to='/authorization'>Уже есть аккаунт? Войти</Link>
                 </Form>
             </CenterScreenBlock>
@@ -246,7 +259,7 @@ export default connect(
     }),
     dispatch => ({
         addUserDataBase: (userData) => {
-            dispatch(registrationUser(userData));
+            dispatch(registrationUserDB(userData));
         }
     })
 )(Registration);

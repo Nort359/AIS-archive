@@ -1,0 +1,14 @@
+.sidebar {
+  &__add {
+    &_data {
+      padding-left: 0;
+      margin-left: 0;
+    }
+  }
+
+  &__list {
+    &_element {
+      margin-left: 0;
+    }
+  }
+}

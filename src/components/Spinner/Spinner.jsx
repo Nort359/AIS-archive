@@ -2,7 +2,7 @@ import React from 'react';
 
 import './Spinner.scss';
 
-export default class Name extends React.Component {
+export default class Spinner extends React.Component {
 
     render() {
         return (

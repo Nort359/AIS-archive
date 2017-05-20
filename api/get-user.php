@@ -11,7 +11,7 @@
 
 	if ($user > 0) {
 		if (password_verify($password, $user->password)) {
-			setcookie('user_logged', $user, time() + 3600 * 24 * 31 * 3, '/');  /* срок действия 3 месяца */
+			setcookie('user_logged', $user, time() + 3600 * 24 * 31 * 3, '/'); // срок действия 3 месяца
 
 			echo $_COOKIE['user_logged'];
 		} else {

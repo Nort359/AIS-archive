@@ -28,8 +28,14 @@ class Header extends React.Component {
                     </ul>
                     <ul className='main-menu__right'>
                         {
+                            user.admin ?
+                                <Link to={ '/AdminPanel' }><li>Панель администратора</li></Link>
+                                :
+                                null
+                        }
+                        {
                             user.authorization ?
-                                <li><i className='main-menu__user-icon glyphicon glyphicon-user'></i>{ `${user.name} ${user.otchestvo}` }
+                                <li><i className='main-menu__user-icon glyphicon glyphicon-user'></i>{ `${user.name} ${user.middlename}` }
                                     <ul className='main-menu__drop-menu'>
                                         <Link to='/my-office'><li>Личный кабинет</li></Link>
                                         <li>Мои документы</li>

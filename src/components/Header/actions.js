@@ -14,4 +14,5 @@ export const exitUser = () => dispatch => {
             });
         })
         .catch(error => console.error(error));
+    // TODO Файл куки всё-равно остаётся, исправить по возможности
 };

@@ -1,0 +1,18 @@
+.registration {
+  &__button {
+    &_container {
+      position: relative;
+    }
+
+    &_spinner {
+      width: 20px;
+      height: 20px;
+
+      position: absolute;
+      top: 20px;
+      left: -35px;
+
+      display: none;
+    }
+  }
+}

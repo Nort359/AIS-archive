@@ -8,6 +8,7 @@ import StartPageRoutes from './pages/StartPage/routes';
 import AuthorizationRoutes from './pages/Authorization/routes';
 import RegistrationRoutes from './pages/Registration/routes';
 import MyOffice from './pages/MyOffice/routes';
+import AdminPanel from './pages/AdminPanel/routes';
 import Documents from './pages/Documents/routes';
 
 export default (
@@ -18,6 +19,7 @@ export default (
         { AuthorizationRoutes }
         { RegistrationRoutes }
         { MyOffice }
+        { AdminPanel }
         { Documents }
     </Route>
 );

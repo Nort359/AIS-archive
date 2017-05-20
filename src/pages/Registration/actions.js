@@ -7,7 +7,7 @@ import querystring from 'querystring';
 export const REGISTRATION_USER = 'REGISTRATION_USER';
 export const AUTHORIZATION_USER = 'AUTHORIZATION_USER';
 
-export const registrationUser = newUser => dispatch => {
+export const registrationUserDB = newUser => dispatch => {
     axios.post('http://ais-archive/api/registration-user.php', querystring.stringify(newUser))
         .then(response => response.data)
         .then(userData => {

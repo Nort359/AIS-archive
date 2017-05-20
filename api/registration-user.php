@@ -1,30 +1,31 @@
 <?php
 
 	require_once 'config.php';
-
+	
 	/**
 	 * Регистрация нового пользователя
 	 * @return [ void ]
 	 */
 	function registration_user() {
-		$user = R::dispense( 'user' );
+		$user = R::dispense('user');
 		
-		$user->surname = $_POST[ 'userLastName' ];
-		$user->name = $_POST[ 'userFirstName' ];
+		$user->surname = $_POST['userLastName'];
+		$user->name = $_POST['userFirstName'];
 		$user->middlename = $_POST[ 'userMiddleName' ];
-		
+
 		$user->photo = 'img/no-profile-photo.jpg';
 		
-		$user->email = $_POST[ 'userEmail' ];
+		$user->email = $_POST['userEmail'];
 		$user->password = password_hash( $_POST[ 'userPassword' ], PASSWORD_DEFAULT );
 
-		$user->department_id = $_POST[ 'userDepartment' ];
-		$user->position_id = $_POST[ 'userPosition' ];
+		$user->department_id = 1; //$_POST['userDepartment'];
+		$user->position_id = 2; //$_POST['userPosition'];
 
 		$user->admin = false;
 
-		R::store( $user );
+		return R::store($user);
 	}
+
 
 	// Регистрация нового пользователя
 	if ( isset( $_POST ) ) {
@@ -62,15 +63,14 @@
 
 		if ( empty( $errors_sing_up ) ) {
 			// Регистрируем пользователя
-			registration_user();
+			$userId = registration_user();
 
-			$email = $_POST['userEmail'];
+			$user = R::findOne('user', 'id = ?', [ $userId ]);
 
-			$user = R::findOne('user', 'email = ?', [ $email ]);
+			setcookie('user_logged', $user, time() + 3600 * 24 * 31 * 3, '/'); // срок действия 3 месяца
 
-			setcookie('user_logged', $user, time() + 3600 * 24 * 31 * 3, '/');  /* срок действия 3 месяца */
-
-			echo $_COOKIE['user_logged'];
+			echo json_encode($user);
+			
 		} else {
 			// Выводим ошибку
 			echo array_shift( $errors_sing_up );
