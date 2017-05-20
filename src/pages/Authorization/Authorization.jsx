@@ -62,23 +62,23 @@ class Authorization extends AForm {
      */
     _renderFormAuthorization() {
         const email = this.inputsData.email,
-            password = this.inputsData.password;
+              password = this.inputsData.password;
 
         return (
             <CenterScreenBlock>
                 <Form header={ 'Авторизация' }>
                     <Input
-                        type={ 'email' }
+                        type={ email.type }
                         placeholder={ email.messageDefault }
-                        icon='glyphicon glyphicon-user'
+                        icon={ email.icon }
                         inputId={ email.id }
                         onBlur={ event => this.checkValidTextInput(event, email.patternOk, email.messageOk, email.messageError, email.messageDefault) }
                         onFocus={ event => this.focusInput(event, email.messageDefault) }
                     />
                     <Input
-                        type={ 'password' }
+                        type={ password.type }
                         placeholder={ password.messageDefault }
-                        icon='glyphicon glyphicon-lock'
+                        icon={ password.icon }
                         inputId={ password.id }
                         onChange={ event => this.checkValidPasswordInput(event, password.patternOk, null, '') }
                     />
@@ -107,9 +107,9 @@ class Authorization extends AForm {
                         }, 1000);
                     } }
                 >
-                    <img className='notification__img' src='img/no-profile-photo.jpg' alt='Нет изображения'/>
+                    <img className='notification__img' src={ user.photo } alt='Фото пользователя'/>
                     <p>ФИО: <span className='notification__userData'>{
-                        user.surname + ' ' + user.name + ' ' + user.otchestvo
+                        user.surname + ' ' + user.name + ' ' + user.middlename
                     }</span></p>
                     <p>Email: <span className='notification__userData'>{ user.email }</span></p>
                 </Notification>

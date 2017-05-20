@@ -127,7 +127,7 @@ class Registration extends AForm {
                     <Input
                         placeholder={ lastName.messageDefault }
                         inputId={ lastName.id }
-                        icon='glyphicon glyphicon-user'
+                        icon={ lastName.icon }
                         onBlur={ event => this.checkValidTextInput(event, lastName.patternOk, lastName.messageOk, lastName.messageError, lastName.messageDefault)}
                         onFocus={ event => this.focusInput(event, lastName.messageDefault) }
                     />
@@ -151,19 +151,19 @@ class Registration extends AForm {
                         onFocus={ event => this.checkValidEmailInput(event, email.patternOk, email.messageOk, email.messageError, email.messageDefault) }
                     />
                     <Input
-                        type={ 'password' }
+                        type={ password.type }
                         placeholder={ password.messageDefault }
                         inputId={ password.id }
-                        icon='glyphicon glyphicon-lock'
+                        icon={ password.icon }
                         onBlur={ event => this.checkValidPasswordInput(event, password.patternOk, password.patternWarn) }
                         onChange={ event => this.checkValidPasswordInput(event, password.patternOk, password.patternWarn) }
                         onFocus={ event => this.focusInput(event, password.messageDefault) }
                     />
                     <Input
-                        type={ 'password' }
+                        type={ passwordAgain.type }
                         placeholder={ passwordAgain.messageDefault }
                         inputId={ passwordAgain.id }
-                        icon='glyphicon glyphicon-lock'
+                        icon={ passwordAgain.icon }
                         onBlur={ () => this.checkEqualsInputs(passwordAgain.id, password.id) }
                         onChange={ () => this.checkEqualsInputs(passwordAgain.id, password.id) }
                         onFocus={ event => this.focusInput(event, passwordAgain.messageDefault) }
@@ -213,9 +213,9 @@ class Registration extends AForm {
                         }, 1000);
                     } }
                 >
-                    <img className='notification__img' src='img/no-profile-photo.jpg' alt='Нет изображения'/>
+                    <img className='notification__img' src={ user.photo } alt='Нет изображения'/>
                     <p>ФИО: <span className='notification__userData'>{
-                        user.surname + ' ' + user.name + ' ' + user.otchestvo
+                        user.surname + ' ' + user.name + ' ' + user.middlename
                     }</span></p>
                     <p>Email: <span className='notification__userData'>{ user.email }</span></p>
                 </Notification>

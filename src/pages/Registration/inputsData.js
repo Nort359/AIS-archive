@@ -4,6 +4,7 @@
 export const inputsData = {
     lastName: {
         id: 'userLastName',
+        icon: 'glyphicon-user',
         patternOk: /^[a-zA-Zа-яА-Я]{3,}$/i,
         messageDefault: 'Ваша фамилия',
         messageOk: 'Фамилия введёна корректно',
@@ -32,6 +33,8 @@ export const inputsData = {
     },
     password: {
         id: 'userPassword',
+        type: 'password',
+        icon: 'glyphicon-lock',
         patternOk: /(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/,
         patternWarn: /^.{6,}$/,
         messageDefault: 'Введите пароль',
@@ -41,6 +44,8 @@ export const inputsData = {
     },
     passwordAgain: {
         id: 'userPasswordAgain',
+        type: 'password',
+        icon: 'glyphicon-lock',
         messageDefault: 'Повторите пароль',
         messageOk: 'Пароли совпадают',
         messageError: 'Пароли не совпадают'

@@ -36,7 +36,7 @@ class Input extends React.Component {
                 </p>
                 <div className='input-animated__underline'></div>
 
-                <i className={ this.props.icon + ' input-animated__icon' } aria-hidden="true"></i>
+                <i className={ `glyphicon ${this.props.icon} input-animated__icon` } aria-hidden="true"></i>
                 <i className='input-animated__icon-status glyphicon'></i>
             </div>
         );
