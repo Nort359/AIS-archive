@@ -1,21 +1,20 @@
-import React from 'react';
+import React, { Component } from 'react';
 
 // Import components
-import CenterScreenBlock from '../../../components/CenterScreenBlock/CenterScreenBlock';
-import Form from '../../../components/Form/Form';
-import Input from '../../../components/Input/Input';
-import Button from '../../../components/Button/Button';
+import Adder from '../Adder/Adder';
+import { department } from '../adminPanelData';
 
-class AddDepartment extends React.Component {
+class AddDepartment extends Component {
 
     render() {
         return (
-            <CenterScreenBlock>
-                <Form header={ 'Добавление отдела' }>
-                    <Input placeholder={ 'Название отдела' } />
-                    <Button>Создать</Button>
-                </Form>
-            </CenterScreenBlock>
+            <div>
+                <Adder
+                    pathCheck={ department.pathServerCheckExist }
+                    pathAdd={ department.pathServerAdd }
+                    adderData={ department.inputValid }
+                />
+            </div>
         );
     }
 

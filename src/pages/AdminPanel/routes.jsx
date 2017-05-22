@@ -8,10 +8,9 @@ import AddType from './AddType/AddType';
 
 export default (
     <Route>
-        <Route component={ AdminPanel } path={ AdminPanel.path }>
-            <Route component={ AddDepartment } path={ AddDepartment.path } />
-            <Route component={ AddPosition } path={ AddPosition.path } />
-            <Route component={ AddType } path={ AddType.path } />
-        </Route>
+        <Route component={ AdminPanel } path={ AdminPanel.path } />
+        <Route component={ AddDepartment } path={ AddDepartment.path } />
+        <Route component={ AddPosition } path={ AddPosition.path } />
+        <Route component={ AddType } path={ AddType.path } />
     </Route>
 );

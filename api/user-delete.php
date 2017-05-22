@@ -1,6 +1,6 @@
 <?php
 
-	require_once 'config.php';
+	require_once $_SERVER['DOCUMENT_ROOT'] . '/api/config.php';
 
 	if (!empty($_COOKIE['user_logged'])) {
 		setcookie('user_logged', $user, time() - 1, '/');  // удаление куки

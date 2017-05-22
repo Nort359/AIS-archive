@@ -1,6 +1,6 @@
 <?php
 
-	require_once './../libs/rb.php';
+	require_once $_SERVER['DOCUMENT_ROOT'] . '/libs/rb.php';
 	
 	// Данные для подключения к базе данных
 	define( 'HOST', 'localhost' );

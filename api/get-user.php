@@ -1,8 +1,6 @@
 <?php
 
-	//session_start();
-
-	require_once 'config.php';
+	require_once $_SERVER['DOCUMENT_ROOT'] . '/api/config.php';
 
 	$email = $_POST['userEmail'];
 	$password = $_POST[ 'userPassword' ];

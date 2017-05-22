@@ -12,3 +12,22 @@
     }
   }
 }
+
+.add-button {
+  &__container {
+    position: relative;
+  }
+
+  &__spinner {
+    width: 20px;
+    height: 20px;
+
+    color: #53B73F;
+
+    position: absolute;
+    top: 20px;
+    left: -35px;
+
+    display: none;
+  }
+}

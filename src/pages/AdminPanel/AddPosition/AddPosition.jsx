@@ -1,21 +1,20 @@
 import React from 'react';
 
 // Import components
-import CenterScreenBlock from '../../../components/CenterScreenBlock/CenterScreenBlock';
-import Form from '../../../components/Form/Form';
-import Input from '../../../components/Input/Input';
-import Button from '../../../components/Button/Button';
+import Adder from '../Adder/Adder';
+import { position } from '../adminPanelData';
 
 class AddPosition extends React.Component {
 
     render() {
         return (
-            <CenterScreenBlock>
-                <Form header={ 'Добавление должности' }>
-                    <Input placeholder={ 'Название должности' } />
-                    <Button>Создать</Button>
-                </Form>
-            </CenterScreenBlock>
+            <div>
+                <Adder
+                    pathCheck={ position.pathServerCheckExist }
+                    pathAdd={ position.pathServerAdd }
+                    adderData={ position.inputValid }
+                />
+            </div>
         );
     }
 

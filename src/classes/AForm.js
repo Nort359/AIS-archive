@@ -25,7 +25,7 @@ export default class AForm extends React.Component {
      * @param elementId — ID input,на котором происходит событие
      * @param color — Цвет, в который перекрасится underline
      * @param scale — 1 – если нужно показать underline или 0 – если скрыть
-     * @private
+     * @protected
      */
     _changeUnderline(elementId, color = '#00b5ff', scale = 0) {
         const underline = document.querySelector(`#${elementId} ~ .input-animated__underline`).style;
@@ -39,7 +39,7 @@ export default class AForm extends React.Component {
      * @param elementId — ID input,на котором происходит событие
      * @param classIcon — Класс, который будет в icon
      * @param colorIcon — Цвет icon
-     * @private
+     * @protected
      */
     _showIcon(elementId, classIcon, colorIcon) {
         const icon = document.querySelector(`#${elementId} ~ .input-animated__icon-status`);
@@ -60,7 +60,7 @@ export default class AForm extends React.Component {
      * @param elementId — ID input,на котором происходит событие
      * @param classIcon — Класс, который будет в icon
      * @param isShow — Флаг, true – показывать, false – не показывать
-     * @private
+     * @protected
      */
     _getIconSpinner(elementId, classIcon, isShow = false) {
         const icon = document.querySelector(`#${elementId} ~ .input-animated__icon-status`);
@@ -83,7 +83,7 @@ export default class AForm extends React.Component {
     /**
      * Скрывает icon
      * @param elementId — ID input,на котором происходит событие
-     * @private
+     * @protected
      */
     _hideIcon(elementId) {
         const icon = document.querySelector(`#${elementId} ~ .input-animated__icon-status`).style;
@@ -96,7 +96,7 @@ export default class AForm extends React.Component {
      * @param elementId — ID input,на котором происходит событие
      * @param placeholderText — Сообщение, которое следует поместить в placeholder
      * @param colorPlaceholder — Цвет placeholder
-     * @private
+     * @protected
      */
     _showPlaceholder(elementId, placeholderText, colorPlaceholder) {
         const placeholder = document.querySelector(`#${elementId} ~ .input-animated__placeholder`);
@@ -116,7 +116,7 @@ export default class AForm extends React.Component {
      * @param elementId — ID input,на котором происходит событие
      * @param placeholderText — Сообщение, которое следует поместить в placeholder
      * @param colorPlaceholder — Цвет placeholder
-     * @private
+     * @protected
      */
     _hidePlaceholder(elementId, placeholderText, colorPlaceholder) {
         const placeholder = document.querySelector(`#${elementId} ~ .input-animated__placeholder`);
@@ -135,7 +135,7 @@ export default class AForm extends React.Component {
      * Метод переводит поле input в состояние успеха
      * @param elementId — ID input,на котором происходит событие
      * @param message — Сообщение, которое следует поместить в placeholder
-     * @private
+     * @protected
      */
     _acceptInput(elementId, message) {
         const colorOk = '#53B73F';
@@ -149,7 +149,7 @@ export default class AForm extends React.Component {
      * Метод переводит поле input в состояние предупреждения
      * @param elementId — ID input,на котором происходит событие
      * @param message — Сообщение, которое следует поместить в placeholder
-     * @private
+     * @protected
      */
     _warnInput(elementId, message) {
         const colorWarning = '#EBBD32';
@@ -163,7 +163,7 @@ export default class AForm extends React.Component {
      * Метод переводит поле input в состояние ошибки
      * @param elementId — ID input,на котором происходит событие
      * @param message — Сообщение, которое следует поместить в placeholder
-     * @private
+     * @protected
      */
     _rejectInput(elementId, message) {
         const colorError = '#e23838';
@@ -177,7 +177,7 @@ export default class AForm extends React.Component {
      * Метод переводит поле input в состояние по-умолчанию
      * @param elementId — ID input,на котором происходит событие
      * @param message — Сообщение, которое следует поместить в placeholder
-     * @private
+     * @protected
      */
     _defaultInput(elementId, message) {
         const colorDefault = '#00b5ff';
