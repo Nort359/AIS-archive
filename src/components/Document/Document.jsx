@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { Component, PropTypes } from 'react';
 
 import './Document.scss';
 
-export default class Document extends React.Component {
+class Document extends Component {
 
     render() {
         return (
@@ -11,7 +11,7 @@ export default class Document extends React.Component {
                     <div className='document__caption'>
                         <i className='document__icon document__icon_arrow glyphicon glyphicon-menu-right'></i>
                         <i className='document__icon document__icon_list glyphicon glyphicon-list-alt'></i>
-                        Документ по технике безопасности
+                        { this.props.caption }
                     </div>
                 </div>
             </div>
@@ -19,3 +19,9 @@ export default class Document extends React.Component {
     }
 
 }
+
+Document.propTypes = {
+    caption: PropTypes.string.isRequired
+};
+
+export default Document;

@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { Component, PropTypes } from 'react';
 
 import './Folder.scss';
 
 import Animation from '../../classes/Animation';
 
-class Folder extends React.Component {
+class Folder extends Component {
 
     constructor(props) {
         super(props);
@@ -37,7 +37,7 @@ class Folder extends React.Component {
                     <div className='folder__caption'>
                         <i className='folder__icon folder__icon_arrow glyphicon glyphicon-menu-right'></i>
                         <i className='folder__icon folder__icon_folder glyphicon glyphicon-folder-close'></i>
-                        Документы по технике безопасности
+                        { this.props.caption }
                     </div>
                 </div>
                 <div className='folder__content'>
@@ -48,5 +48,10 @@ class Folder extends React.Component {
     }
 
 }
+
+Folder.propTypes = {
+    caption: PropTypes.string.isRequired,
+    children: PropTypes.string.isRequired
+};
 
 export default Folder;
