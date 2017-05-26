@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-
+import { Link } from 'react-router';
 // Import components
 import CenterScreenBlock from '../../../components/CenterScreenBlock/CenterScreenBlock';
 import Form from '../../../components/Form/Form';
@@ -112,6 +112,7 @@ class Adder extends AForm {
                         <Button onClick={ event => {
                             this.addDepartment(adderData, this.props.pathCheck, this.props.pathAdd);
                         } }>Создать</Button>
+                        <Link to='/AdminPanel'>К списку справочников</Link>
                     </div>
                 </Form>
             </CenterScreenBlock>

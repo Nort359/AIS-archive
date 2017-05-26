@@ -32,7 +32,6 @@ class Authorization extends AForm {
     }
 
     authorizationUser() {
-
         const eventBlur = new Event('blur');
 
         const email = this.inputsData.email,
@@ -43,7 +42,6 @@ class Authorization extends AForm {
 
         if (!email.patternOk.test(inputEmail.value))
             return inputEmail.dispatchEvent(eventBlur);
-
         if (!password.patternOk.test(inputPassword.value))
             return inputPassword.dispatchEvent(eventBlur);
 
@@ -80,7 +78,7 @@ class Authorization extends AForm {
                         placeholder={ password.messageDefault }
                         icon={ password.icon }
                         inputId={ password.id }
-                        onChange={ event => this.checkValidPasswordInput(event, password.patternOk, null, '') }
+                        onChange={ event => this.checkValidPasswordInput(event, password.patternOk) }
                     />
 
                     <Button type="button" onClick={ this.authorizationUser }>Войти</Button>

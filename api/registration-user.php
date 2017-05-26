@@ -18,8 +18,8 @@
 		$user->email = $_POST['userEmail'];
 		$user->password = password_hash( $_POST[ 'userPassword' ], PASSWORD_DEFAULT );
 
-		$user->department_id = 1; //$_POST['userDepartment'];
-		$user->position_id = 2; //$_POST['userPosition'];
+		$user->department_id = $_POST['userDepartment'];
+		$user->position_id = $_POST['userPosition'];
 
 		$user->admin = false;
 

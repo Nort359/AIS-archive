@@ -28,7 +28,7 @@ class Header extends React.Component {
                     </ul>
                     <ul className='main-menu__right'>
                         {
-                            user.admin ?
+                            user.admin === '1' ?
                                 <Link to={ '/AdminPanel' }><li>Панель администратора</li></Link>
                                 :
                                 null

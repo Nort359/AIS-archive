@@ -5,7 +5,7 @@ import axios from 'axios';
 import querystring from 'querystring';
 
 export const GET_DEPARTMENT = 'GET_DEPARTMENT';
-export const DELETE_DEPARTMENT = 'GET_DEPARTMENT';
+export const DELETE_DEPARTMENT = 'DELETE_DEPARTMENT';
 
 export const getDepartment = () => dispatch => {
     axios.get('http://ais-archive/api/admin/department/department-get.php')
@@ -22,11 +22,13 @@ export const getDepartment = () => dispatch => {
 export const deleteDepartment = department => dispatch => {
     axios.post('http://ais-archive/api/admin/department/department-delete.php', querystring.stringify(department))
         .then(response => response.data)
-        .then(department => {
-            dispatch({
-                type: GET_DEPARTMENT,
-                department
-            });
+        .then(answer => {
+            if (answer === 'Ok') {
+                dispatch({
+                    type: DELETE_DEPARTMENT,
+                    departmentId : department.departmentId
+                });
+            }
         })
         .catch(error => console.error(error));
 };

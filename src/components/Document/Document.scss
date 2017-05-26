@@ -1,8 +1,26 @@
 @import '../../scss_partian/config';
 
 .document {
-  width: 600px;
+  width: 100%;
   padding: 20px 20px;
+
+  &__icon {
+    font-size: 20px;
+    cursor: pointer;
+    @include put_transition();
+
+    &_pencil {
+      &:hover {
+        color: $mainColor;
+      }
+    }
+
+    &_garbage {
+      &:hover {
+        color: $redColor;
+      }
+    }
+  }
 
   &__container {
     @include zero_indent();
@@ -28,6 +46,8 @@
 
   &__caption {
     @include zero_indent();
+    width: 600px;
+    float: left;
 
     font: {
       size: 20px;

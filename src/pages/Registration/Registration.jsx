@@ -16,6 +16,7 @@ import './Registration.scss';
 import { inputsData } from './inputsData';
 
 import AForm from '../../classes/AForm';
+import ObjectHandler from '../../classes/ObjectHandler';
 
 import { registrationUserDB } from './actions';
 
@@ -131,6 +132,9 @@ class Registration extends AForm {
               department = this.inputsData.department,
               position = this.inputsData.position;
 
+        let departments = ObjectHandler.getArrayFromObject(this.props.department),
+            positions = ObjectHandler.getArrayFromObject(this.props.position);
+
         return (
             <CenterScreenBlock>
                 <Form header={ 'Регистрация' }>
@@ -182,19 +186,17 @@ class Registration extends AForm {
                         selectId={ department.id }
                         placeholder={ department.placeholder }
                     >
-                        <option value={ 'СИТ' }>СИТ</option>
-                        <option value={ 'Отдел кадров' }>Отдел кадров</option>
-                        <option value={ 'Отдел обслуживания' }>Отдел обслуживания</option>
+                        { departments.map(department => {
+                            return <option key={ department.id } value={ department.id }>{ department.title }</option>
+                        }) }
                     </SelectInput>
                     <SelectInput
                         selectId={ position.id }
                         placeholder={ position.placeholder }
                     >
-                        <option value={ 'Программист' }>Программист</option>
-                        <option value={ 'Инжинер' }>Инжинер</option>
-                        <option value={ 'Системный администратор' }>Системный администратор</option>
-                        <option value={ 'Бухгалтер' }>Бухгалтер</option>
-                        <option value={ 'Охранник' }>Охранник</option>
+                        { positions.map(position => {
+                            return <option key={ position.id } value={ position.id }>{ position.title }</option>
+                        }) }
                     </SelectInput>
 
                     <div className='registration__button_container'>
@@ -255,7 +257,9 @@ Registration.path = '/registration';
 
 export default connect(
     state => ({
-        userData: state.userData
+        userData: state.userData,
+        department: state.department,
+        position: state.position
     }),
     dispatch => ({
         addUserDataBase: (userData) => {

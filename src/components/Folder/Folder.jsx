@@ -16,9 +16,8 @@ class Folder extends Component {
         this.openFolder = this.openFolder.bind(this);
     }
 
-    openFolder() {
-        console.log('Is`s DoubleClick baby');
-        const contentStyle = document.querySelector('div.folder__content').style;
+    openFolder(event, id) {
+        const contentStyle = document.querySelector(`#${id}`).style;
         const isShowContent = !this.state.isShowContent;
         const display = isShowContent ? 'block' : 'none';
 
@@ -33,14 +32,14 @@ class Folder extends Component {
     render() {
         return (
             <div className='folder__container'>
-                <div className='folder' onDoubleClick={ this.openFolder }>
-                    <div className='folder__caption'>
+                <div className='folder'>
+                    <div className='folder__caption' onClick={ event => this.openFolder(event, this.props.folderId) }>
                         <i className='folder__icon folder__icon_arrow glyphicon glyphicon-menu-right'></i>
                         <i className='folder__icon folder__icon_folder glyphicon glyphicon-folder-close'></i>
                         { this.props.caption }
                     </div>
                 </div>
-                <div className='folder__content'>
+                <div className='folder__content' id={ this.props.folderId }>
                     { this.props.children }
                 </div>
             </div>
@@ -51,7 +50,8 @@ class Folder extends Component {
 
 Folder.propTypes = {
     caption: PropTypes.string.isRequired,
-    children: PropTypes.string.isRequired
+    children: PropTypes.string.isRequired,
+    folderId: PropTypes.string.isRequired
 };
 
 export default Folder;

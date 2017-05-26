@@ -10,7 +10,11 @@ import Document from '../../components/Document/Document';
 
 import './AdminPanel.scss';
 
-import { getDepartment } from './AddDepartment/actions';
+import { getDepartment, deleteDepartment } from './AddDepartment/actions';
+import { getPosition, deletePosition } from './AddPosition/actions';
+import { getTypeDocument, deleteTypeDocument } from './AddType/actions';
+
+import ObjectHandler from '../../classes/ObjectHandler';
 
 class AdminPanel extends React.Component {
 
@@ -18,18 +22,45 @@ class AdminPanel extends React.Component {
         super(props);
 
         this.props.getDepartmentDB();
+        this.props.getPositionDB();
+        this.props.getTypeDocumentDB();
+
+        this.deleteDepartment   = this.deleteDepartment.bind(this);
+        this.deletePosition     = this.deletePosition.bind(this);
+        this.deleteTypeDocument = this.deleteTypeDocument.bind(this);
+    }
+
+    deleteDepartment(event) {
+        const departmentId = event.currentTarget.getAttribute('data-document-id'),
+              department = {
+                  departmentId
+              };
+
+        this.props.deleteDepartmentDB(department);
+    }
+
+    deletePosition(event) {
+        const positionId = event.currentTarget.getAttribute('data-document-id'),
+            position = {
+                positionId
+            };
+
+        this.props.deletePositionDB(position);
+    }
+
+    deleteTypeDocument(event) {
+        const typeDocumentId = event.currentTarget.getAttribute('data-document-id'),
+            typeDocument = {
+                typeDocumentId
+            };
+
+        this.props.deleteTypeDocumentDB(typeDocument);
     }
 
     render() {
-        let departments = [];
-
-        for(let department in this.props.department) {
-            if (this.props.department.hasOwnProperty(department)) {
-                departments.push(this.props.department[department]);
-            }
-        }
-
-
+        let departments = ObjectHandler.getArrayFromObject(this.props.department),
+            positions = ObjectHandler.getArrayFromObject(this.props.position),
+            typeDocuments = ObjectHandler.getArrayFromObject(this.props.typeDocument);
 
         return (
             <div>
@@ -42,9 +73,36 @@ class AdminPanel extends React.Component {
                     </List>
                 </SideBar>
 
-                <Folder caption={ 'Отделы' }>
+                <Folder caption={ 'Отделы' } folderId={ 'departmentsList' }>
                     { departments.map(department => {
-                        return <Document key={ department.id } caption={ department.title } />
+                        return <Document
+                            documentId={ department.id }
+                            key={ department.id }
+                            caption={ department.title }
+                            onDeleteClick={ this.deleteDepartment }
+                        />
+                    }) }
+                </Folder>
+
+                <Folder caption={ 'Должности' } folderId={ 'positionsList' }>
+                    { positions.map(position => {
+                        return <Document
+                            documentId={ position.id }
+                            key={ position.id }
+                            caption={ position.title }
+                            onDeleteClick={ this.deletePosition }
+                        />
+                    }) }
+                </Folder>
+
+                <Folder caption={ 'Типы документов' } folderId={ 'typeDocumentsList' }>
+                    { typeDocuments.map(typeDocument => {
+                        return <Document
+                            documentId={ typeDocument.id }
+                            key={ typeDocument.id }
+                            caption={ typeDocument.title }
+                            onDeleteClick={ this.deleteTypeDocument }
+                        />
                     }) }
                 </Folder>
             </div>
@@ -65,11 +123,20 @@ export default connect(
         getDepartmentDB: () => {
             dispatch(getDepartment());
         },
+        deleteDepartmentDB: (department) => {
+            dispatch(deleteDepartment(department));
+        },
         getPositionDB: () => {
-            dispatch(getDepartment());
+            dispatch(getPosition());
+        },
+        deletePositionDB: (position) => {
+            dispatch(deletePosition(position));
         },
         getTypeDocumentDB: () => {
-            dispatch(getDepartment());
+            dispatch(getTypeDocument());
+        },
+        deleteTypeDocumentDB: (typeDocument) => {
+            dispatch(deleteTypeDocument(typeDocument));
         }
     })
 )(AdminPanel);
