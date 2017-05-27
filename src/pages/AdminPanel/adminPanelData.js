@@ -18,6 +18,7 @@ export const department = {
 
 export const position = {
     pathServerAdd: 'http://ais-archive/api/admin/position/position-add.php',
+    pathServerUpdate: 'http://ais-archive/api/admin/position/position-update.php',
     pathServerCheckExist: 'http://ais-archive/api/admin/position/position-check-exist.php',
     inputValid: {
         id: 'position-title',

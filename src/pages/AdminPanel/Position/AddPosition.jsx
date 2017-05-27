@@ -10,6 +10,7 @@ class AddPosition extends React.Component {
         return (
             <div>
                 <Adder
+                    headerForm={ 'Добавление должности' }
                     pathCheck={ position.pathServerCheckExist }
                     pathAdd={ position.pathServerAdd }
                     adderData={ position.inputValid }

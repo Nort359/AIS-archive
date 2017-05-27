@@ -2,9 +2,11 @@ import React from 'react';
 import { Route } from 'react-router';
 
 import AdminPanel from './AdminPanel';
-import AddDepartment from './AddDepartment/AddDepartment';
-import AddPosition from './AddPosition/AddPosition';
-import AddType from './AddType/AddType';
+import AddDepartment from './Department/AddDepartment';
+import AddPosition from './Position/AddPosition';
+import AddType from './TypeDocument/AddType';
+import UpdatePosition from './Position/UpdatePosition';
+
 
 export default (
     <Route>
@@ -12,5 +14,6 @@ export default (
         <Route component={ AddDepartment } path={ AddDepartment.path } />
         <Route component={ AddPosition } path={ AddPosition.path } />
         <Route component={ AddType } path={ AddType.path } />
+        <Route component={ UpdatePosition } path={ UpdatePosition.path } />
     </Route>
 );

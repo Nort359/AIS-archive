@@ -10,6 +10,7 @@ class AddDepartment extends Component {
         return (
             <div>
                 <Adder
+                    headerForm={ 'Добавление отдела' }
                     pathCheck={ department.pathServerCheckExist }
                     pathAdd={ department.pathServerAdd }
                     adderData={ department.inputValid }

@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { Link } from 'react-router';
+
 // Import components
 import CenterScreenBlock from '../../../components/CenterScreenBlock/CenterScreenBlock';
 import Form from '../../../components/Form/Form';
@@ -11,7 +12,7 @@ import '../AdminPanel.scss';
 import AForm from '../../../classes/AForm';
 import Async from '../../../classes/Async';
 
-class Adder extends AForm {
+class Updater extends AForm {
 
     constructor(props) {
         super(props);
@@ -21,7 +22,7 @@ class Adder extends AForm {
         };
 
         this.checkDepartmentOnExist = this.checkDepartmentOnExist.bind(this);
-        this.addDepartment = this.addDepartment.bind(this);
+        this.updateRecord = this.updateRecord.bind(this);
     }
 
     checkDepartmentOnExist(adder, pathCheck) {
@@ -40,7 +41,7 @@ class Adder extends AForm {
             .catch(error => console.error(error));
     }
 
-    addDepartment(adder, pathCheck, pathAdd) {
+    updateRecord(adder, oldObject, pathCheck, pathUpdate) {
         const eventBlur = new Event('blur');
         const inputDepartment = document.getElementById(adder.id);
 
@@ -53,7 +54,7 @@ class Adder extends AForm {
         ])
             .then(answer => {
                 if (answer[0] !== 'Ok') {
-                    this._rejectInput(adder.id, 'Такой отдел существует');
+                    this._rejectInput(adder.id, adder.messageError);
                     return false;
                 }
                 const spinner = document.getElementsByClassName('add-button__spinner')[0];
@@ -63,23 +64,14 @@ class Adder extends AForm {
 
                 spinnerStyle.display = 'block';
 
-                Promise.all([ Async.addInputValueDB(adder.id, pathAdd) ])
+                Promise.all([ Async.updateInputValueDB(adder.id, oldObject, pathUpdate) ])
                     .then(answer => {
-                        if (answer[0] !== 'Ok') return false;
+                        if (answer[0] !== 'Ok') {
+                            console.log('answer[0]', answer[0]);
+                            return false;
+                        }
 
-                        this.setState({ isAdding: true });
-
-                        setTimeout(() => {
-                            const spinner = document.getElementsByClassName('add-button__spinner')[0];
-                            const spinnerStyle = spinner.style;
-
-                            spinnerStyle.display = 'none';
-                        }, 2000);
-
-                        const inputDepartment = document.getElementById(adder.id);
-
-                        inputDepartment.value = '';
-                        inputDepartment.focus();
+                        window.history.back();
 
                     })
                     .catch(error => console.error(error));
@@ -111,7 +103,7 @@ class Adder extends AForm {
                                 <Spinner className='add-button__spinner'></Spinner>
                         }
                         <Button onClick={ event => {
-                            this.addDepartment(adderData, this.props.pathCheck, this.props.pathAdd);
+                            this.updateRecord(adderData, this.props.oldData, this.props.pathCheck, this.props.pathUpdate);
                         } }>Создать</Button>
                         <Link to='/AdminPanel'>К списку справочников</Link>
                     </div>
@@ -122,12 +114,13 @@ class Adder extends AForm {
 
 }
 
-Adder.propTypes = {
+Updater.propTypes = {
     pathCheck: PropTypes.string.isRequired,
-    pathAdd: PropTypes.string.isRequired,
+    pathUpdate: PropTypes.string.isRequired,
     adderData: PropTypes.object.isRequired,
+    oldData: PropTypes.object.isRequired,
     headerForm: PropTypes.string.isRequired,
     inputValue: PropTypes.string
 };
 
-export default Adder;
+export default Updater;

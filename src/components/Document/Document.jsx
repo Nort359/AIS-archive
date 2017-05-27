@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import { Link } from 'react-router';
 
 import './Document.scss';
 
@@ -14,11 +15,11 @@ class Document extends Component {
                         { this.props.caption }
                     </div>
                     <div className='document__action'>
-                        <i
+                        <Link to={ this.props.pathUpdate } ><i
                             className='document__icon document__icon_pencil glyphicon glyphicon-pencil'
                             data-document-id={ this.props.documentId }
                             onClick={ this.props.onUpdateClick }
-                        ></i>
+                        ></i></Link>
                         <i
                             className='document__icon document__icon_garbage glyphicon glyphicon-trash'
                             data-document-id={ this.props.documentId }
@@ -36,7 +37,8 @@ Document.propTypes = {
     caption: PropTypes.string.isRequired,
     documentId: PropTypes.string,
     onUpdateClick: PropTypes.func,
-    onDeleteClick: PropTypes.func
+    onDeleteClick: PropTypes.func,
+    pathUpdate: PropTypes.string
 };
 
 export default Document;

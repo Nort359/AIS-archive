@@ -5,8 +5,8 @@ import Header from './components/Header/Header';
 import DevTools from './utils/DevTools';
 
 import { getUserFromSession } from './actions';
-import { getDepartment } from './pages/AdminPanel/AddDepartment/actions';
-import { getPosition } from './pages/AdminPanel/AddPosition/actions';
+import { getDepartment } from './pages/AdminPanel/Department/actions';
+import { getPosition } from './pages/AdminPanel/Position/actions';
 
 class App extends React.Component {
 

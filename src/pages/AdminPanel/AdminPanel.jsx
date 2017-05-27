@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router';
 import { connect } from 'react-redux';
-import querystring from 'querystring';
 
 import SideBar from '../../components/SideBar/SideBar';
 import List from '../../components/List/List';
@@ -10,9 +9,9 @@ import Document from '../../components/Document/Document';
 
 import './AdminPanel.scss';
 
-import { getDepartment, deleteDepartment } from './AddDepartment/actions';
-import { getPosition, deletePosition } from './AddPosition/actions';
-import { getTypeDocument, deleteTypeDocument } from './AddType/actions';
+import { getDepartment, deleteDepartment } from './Department/actions';
+import { getPosition, getCurrentPosition, deletePosition, deleteCurrentPosition } from './Position/actions';
+import { getTypeDocument, deleteTypeDocument } from './TypeDocument/actions';
 
 import ObjectHandler from '../../classes/ObjectHandler';
 
@@ -25,9 +24,21 @@ class AdminPanel extends React.Component {
         this.props.getPositionDB();
         this.props.getTypeDocumentDB();
 
+        this.changePosition = this.changePosition.bind(this);
+
         this.deleteDepartment   = this.deleteDepartment.bind(this);
         this.deletePosition     = this.deletePosition.bind(this);
         this.deleteTypeDocument = this.deleteTypeDocument.bind(this);
+    }
+
+    changePosition(event) {
+        delete this.props.position.currentPosition;
+        const id = event.currentTarget.getAttribute('data-document-id'),
+              position = {
+                  id
+              };
+
+        this.props.getCurrentPositionDB(position);
     }
 
     deleteDepartment(event) {
@@ -90,6 +101,8 @@ class AdminPanel extends React.Component {
                             documentId={ position.id }
                             key={ position.id }
                             caption={ position.title }
+                            pathUpdate={ '/AdminPanel/UpdatePosition' }
+                            onUpdateClick={ this.changePosition }
                             onDeleteClick={ this.deletePosition }
                         />
                     }) }
@@ -129,8 +142,14 @@ export default connect(
         getPositionDB: () => {
             dispatch(getPosition());
         },
+        getCurrentPositionDB(position) {
+            dispatch(getCurrentPosition(position));
+        },
         deletePositionDB: (position) => {
             dispatch(deletePosition(position));
+        },
+        deleteCurrentPositionDB: () => {
+            dispatch(deleteCurrentPosition());
         },
         getTypeDocumentDB: () => {
             dispatch(getTypeDocument());

@@ -8,7 +8,7 @@ class Input extends React.Component {
         super(props);
 
         this.state = {
-            inputValue: ''
+            inputValue: this.props.value !== '' ? this.props.value : ''
         };
     }
 
@@ -19,7 +19,7 @@ class Input extends React.Component {
                     className={ 'input-animated' }
                     type={ this.props.type || 'text' }
                     placeholder={ this.props.placeholder }
-                    value={ this.props.value ? this.props.value : this.state.inputValue }
+                    value={  this.state.inputValue }
                     onChange={ event => {
                         this.setState({ inputValue: event.target.value });
                         if(this.props.onChange) {
@@ -52,6 +52,10 @@ Input.propTypes = {
     onChange: React.PropTypes.func,
     onBlur: React.PropTypes.func,
     onFocus: React.PropTypes.func
+};
+
+Input.defaultProps = {
+    value: ''
 };
 
 Input.defaultProps = {
