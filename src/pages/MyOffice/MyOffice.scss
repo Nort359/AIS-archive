@@ -1,0 +1,95 @@
+@import '../../scss_partian/config';
+
+body {
+  line-height: normal;
+}
+
+.center-screen-block__cell {
+  vertical-align: top;
+  padding-top: 100px;
+}
+
+.my-office {
+  width: $containerWidth;
+  margin: 0 auto;
+
+  &__container {
+    width: 100%;
+    height: $mainHeightScreen;
+
+    background-color: $backgroundColor;
+  }
+
+  &__photo {
+    width: 100%;
+    height: 100%;
+
+    border-radius: 5px;
+
+    &_container {
+      width: 300px;
+      height: 300px;
+
+      padding: 15px;
+      display: inline-block;
+
+      float: left;
+
+      line-height: 0;
+
+      background-color: $formColor;
+
+      @include put_border(rgba(0, 0, 0, .2));
+    }
+  }
+
+  &__data {
+    width: 500px;
+    height: 300px;
+
+    margin-left: 15px;
+    padding: 15px;
+
+    color: $lightFontColor;
+    background-color: $formColor;
+
+    text-align: left;
+
+    font-size: $fontSize;
+
+    float: left;
+
+    @include put_border(rgba(0, 0, 0, .2));
+
+    &_email {
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+
+    span {
+      width: 200px;
+      display: block;
+      float: left;
+    }
+  }
+
+  &__btn-update {
+
+    &_container {
+      width: 815px;
+
+      margin-top: 15px;
+      padding: 5px 15px 15px;
+
+      float: left;
+
+      color: $lightFontColor;
+      background-color: $formColor;
+
+      font-size: $fontSize;
+
+      @include put_border(rgba(0, 0, 0, .2));
+    }
+  }
+
+}

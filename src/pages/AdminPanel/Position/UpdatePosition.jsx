@@ -7,18 +7,8 @@ import { position } from '../adminPanelData';
 
 class UpdatePosition extends React.Component {
 
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            currentPosition: this.props.position.currentPosition
-        };
-    }
-
     render() {
         const currentPosition = this.props.position.currentPosition;
-
-        console.log('currentPosition', currentPosition);
 
         if(typeof currentPosition === 'object') {
             return (

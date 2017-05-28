@@ -5,6 +5,7 @@ import axios from 'axios';
 import querystring from 'querystring';
 
 export const GET_TYPE_DOCUMENT = 'GET_TYPE_DOCUMENT';
+export const GET_CURRENT_TYPE_DOCUMENT = 'GET_CURRENT_TYPE_DOCUMENT';
 export const DELETE_TYPE_DOCUMENT = 'DELETE_TYPE_DOCUMENT';
 
 export const getTypeDocument = () => dispatch => {
@@ -14,6 +15,18 @@ export const getTypeDocument = () => dispatch => {
             dispatch({
                 type: GET_TYPE_DOCUMENT,
                 typeDocument
+            });
+        })
+        .catch(error => console.error(error));
+};
+
+export const getCurrentTypeDocument = typeDocument => dispatch => {
+    axios.post('http://ais-archive/api/admin/document-type/document-type-get-current.php', querystring.stringify(typeDocument))
+        .then(response => response.data)
+        .then(currentTypeDocument => {
+            dispatch({
+                type: GET_CURRENT_TYPE_DOCUMENT,
+                currentTypeDocument
             });
         })
         .catch(error => console.error(error));

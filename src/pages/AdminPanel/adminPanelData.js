@@ -4,6 +4,7 @@
 
 export const department = {
     pathServerAdd: 'http://ais-archive/api/admin/department/department-add.php',
+    pathServerUpdate: 'http://ais-archive/api/admin/department/department-update.php',
     pathServerCheckExist: 'http://ais-archive/api/admin/department/department-check-exist.php',
     inputValid: {
         id: 'department-title',
@@ -33,6 +34,7 @@ export const position = {
 
 export const typeDocument = {
     pathServerAdd: 'http://ais-archive/api/admin/document-type/document-type-add.php',
+    pathServerUpdate: 'http://ais-archive/api/admin/document-type/document-type-update.php',
     pathServerCheckExist: 'http://ais-archive/api/admin/document-type/document-type-check-exist.php',
     inputValid: {
         id: 'typeDocument-title',

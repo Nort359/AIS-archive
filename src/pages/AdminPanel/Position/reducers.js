@@ -1,7 +1,7 @@
 /**
  * Created by Nort359@gmail.com on 24.05.2017.
  */
-import { GET_POSITION, GET_CURRENT_POSITION, DELETE_POSITION, DELETE_CURRENT_POSITION } from './actions';
+import { GET_POSITION, GET_CURRENT_POSITION, DELETE_POSITION } from './actions';
 
 function positionReducer(state = [], action) {
     let positions = [];
@@ -24,17 +24,6 @@ function positionReducer(state = [], action) {
                     if (state[position].id !== action.positionId) {
                         positions.push(state[position]);
                     }
-                }
-            }
-
-            return positions;
-
-        case DELETE_CURRENT_POSITION:
-            positions = [];
-
-            for (let position in state) {
-                if (state.hasOwnProperty(position) && position !== 'currentPosition' && position !== '0') {
-                    positions.push(state[position]);
                 }
             }
 

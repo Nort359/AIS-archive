@@ -3,19 +3,20 @@ $mainColor: #00b5ff;
 $greenColor: #53B73F;
 $yellowColor: #EBBD32;
 $redColor: #e23838;
-$headerColor: #222;
 $backgroundColor: #e9e9e9;
 $formColor: white;
 $borderColor: rgba(0, 0, 0, .3);
-
-$headerColor: #2B2B2B;
+$lightFontColor: #686868;
 
 // Fonts
 $fontSize: 18px;
 
 // General settings
+$containerWidth: 80%;
+
+// Header
+$headerColor: #2B2B2B;
 $headerHeight: 70px;
-$containerWidth: 1270px;
 
 // Notification
 $notificationWidth: 400px;

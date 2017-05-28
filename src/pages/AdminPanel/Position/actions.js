@@ -6,7 +6,6 @@ import querystring from 'querystring';
 
 export const GET_POSITION = 'GET_POSITION';
 export const GET_CURRENT_POSITION = 'GET_CURRENT_POSITION';
-export const DELETE_CURRENT_POSITION = 'DELETE_CURRENT_POSITION';
 export const DELETE_POSITION = 'DELETE_POSITION';
 
 export const getPosition = () => dispatch => {
@@ -45,10 +44,4 @@ export const deletePosition = position => dispatch => {
             }
         })
         .catch(error => console.error(error));
-};
-
-export const deleteCurrentPosition = position => dispatch => {
-    dispatch({
-        type: DELETE_CURRENT_POSITION
-    });
 };

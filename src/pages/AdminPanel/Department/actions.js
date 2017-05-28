@@ -5,6 +5,7 @@ import axios from 'axios';
 import querystring from 'querystring';
 
 export const GET_DEPARTMENT = 'GET_DEPARTMENT';
+export const GET_CURRENT_DEPARTMENT = 'GET_CURRENT_DEPARTMENT';
 export const DELETE_DEPARTMENT = 'DELETE_DEPARTMENT';
 
 export const getDepartment = () => dispatch => {
@@ -14,6 +15,18 @@ export const getDepartment = () => dispatch => {
             dispatch({
                 type: GET_DEPARTMENT,
                 department
+            });
+        })
+        .catch(error => console.error(error));
+};
+
+export const getCurrentDepartment = department => dispatch => {
+    axios.post('http://ais-archive/api/admin/department/department-get-current.php', querystring.stringify(department))
+        .then(response => response.data)
+        .then(currentDepartment => {
+            dispatch({
+                type: GET_CURRENT_DEPARTMENT,
+                currentDepartment
             });
         })
         .catch(error => console.error(error));

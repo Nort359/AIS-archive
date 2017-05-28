@@ -41,6 +41,7 @@ class Adder extends AForm {
     }
 
     addDepartment(adder, pathCheck, pathAdd) {
+        // TODO не работают стили для спинера ( должна появляться галочка после успешнйо проверки )
         const eventBlur = new Event('blur');
         const inputDepartment = document.getElementById(adder.id);
 

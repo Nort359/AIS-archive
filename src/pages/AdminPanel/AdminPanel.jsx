@@ -9,9 +9,9 @@ import Document from '../../components/Document/Document';
 
 import './AdminPanel.scss';
 
-import { getDepartment, deleteDepartment } from './Department/actions';
-import { getPosition, getCurrentPosition, deletePosition, deleteCurrentPosition } from './Position/actions';
-import { getTypeDocument, deleteTypeDocument } from './TypeDocument/actions';
+import { getDepartment, deleteDepartment, getCurrentDepartment } from './Department/actions';
+import { getPosition, getCurrentPosition, deletePosition } from './Position/actions';
+import { getTypeDocument, deleteTypeDocument, getCurrentTypeDocument } from './TypeDocument/actions';
 
 import ObjectHandler from '../../classes/ObjectHandler';
 
@@ -24,21 +24,24 @@ class AdminPanel extends React.Component {
         this.props.getPositionDB();
         this.props.getTypeDocumentDB();
 
-        this.changePosition = this.changePosition.bind(this);
+        this.updateRecord = this.updateRecord.bind(this);
 
         this.deleteDepartment   = this.deleteDepartment.bind(this);
         this.deletePosition     = this.deletePosition.bind(this);
         this.deleteTypeDocument = this.deleteTypeDocument.bind(this);
     }
 
-    changePosition(event) {
-        delete this.props.position.currentPosition;
+    updateRecord(event, deleteObject, callback) {
+        if (deleteObject.hasOwnProperty('currentDepartment')) delete deleteObject.currentDepartment;
+        else if (deleteObject.hasOwnProperty('currentPosition')) delete deleteObject.currentPosition;
+        else if (deleteObject.hasOwnProperty('currentTypeDocument')) delete deleteObject.currentTypeDocument;
+
         const id = event.currentTarget.getAttribute('data-document-id'),
               position = {
                   id
               };
 
-        this.props.getCurrentPositionDB(position);
+        callback(position);
     }
 
     deleteDepartment(event) {
@@ -80,7 +83,7 @@ class AdminPanel extends React.Component {
                     <List className={ 'sidebar__add_data' }>
                         <Link to='/AdminPanel/AddDepartment'><li className='sidebar__caption sidebar__list_element'>Отделы</li></Link>
                         <Link to='/AdminPanel/AddPosition'><li className='sidebar__caption sidebar__list_element'>Доожности</li></Link>
-                        <Link to='/AdminPanel/AddType'><li className='sidebar__caption sidebar__list_element'>Типы документов</li></Link>
+                        <Link to='/AdminPanel/TypeDocument'><li className='sidebar__caption sidebar__list_element'>Типы документов</li></Link>
                     </List>
                 </SideBar>
 
@@ -90,6 +93,8 @@ class AdminPanel extends React.Component {
                             documentId={ department.id }
                             key={ department.id }
                             caption={ department.title }
+                            pathUpdate={ '/AdminPanel/UpdateDepartment' }
+                            onUpdateClick={ event => this.updateRecord(event, this.props.department, this.props.getCurrentDepartmentDB) }
                             onDeleteClick={ this.deleteDepartment }
                         />
                     }) }
@@ -102,7 +107,7 @@ class AdminPanel extends React.Component {
                             key={ position.id }
                             caption={ position.title }
                             pathUpdate={ '/AdminPanel/UpdatePosition' }
-                            onUpdateClick={ this.changePosition }
+                            onUpdateClick={ event => this.updateRecord(event, this.props.position, this.props.getCurrentPositionDB) }
                             onDeleteClick={ this.deletePosition }
                         />
                     }) }
@@ -114,6 +119,8 @@ class AdminPanel extends React.Component {
                             documentId={ typeDocument.id }
                             key={ typeDocument.id }
                             caption={ typeDocument.title }
+                            pathUpdate={ '/AdminPanel/UpdateTypeDocument' }
+                            onUpdateClick={ event => this.updateRecord(event, this.props.typeDocument, this.props.getCurrentTypeDocumentDB) }
                             onDeleteClick={ this.deleteTypeDocument }
                         />
                     }) }
@@ -136,26 +143,37 @@ export default connect(
         getDepartmentDB: () => {
             dispatch(getDepartment());
         },
+
+        getCurrentDepartmentDB: department => {
+            dispatch(getCurrentDepartment(department));
+        },
+
         deleteDepartmentDB: (department) => {
             dispatch(deleteDepartment(department));
         },
+
         getPositionDB: () => {
             dispatch(getPosition());
         },
+
         getCurrentPositionDB(position) {
             dispatch(getCurrentPosition(position));
         },
+
         deletePositionDB: (position) => {
             dispatch(deletePosition(position));
         },
-        deleteCurrentPositionDB: () => {
-            dispatch(deleteCurrentPosition());
-        },
+
         getTypeDocumentDB: () => {
             dispatch(getTypeDocument());
         },
+
         deleteTypeDocumentDB: (typeDocument) => {
             dispatch(deleteTypeDocument(typeDocument));
-        }
+        },
+
+        getCurrentTypeDocumentDB: typeDocument => {
+            dispatch(getCurrentTypeDocument(typeDocument));
+        },
     })
 )(AdminPanel);
