@@ -79,7 +79,7 @@ class ChangePasswordForm extends AForm {
 
         return (
             <CenterScreenBlock>
-                <Form header={ 'Авторизация' }>
+                <Form header={ 'Изменение пароля' }>
                     <Input
                         type={ oldPassword.type }
                         placeholder={ oldPassword.messageDefault }

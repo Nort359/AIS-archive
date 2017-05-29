@@ -7,7 +7,15 @@ import Button from '../../components/Button/Button';
 
 import './MyOffice.scss';
 
+import { getUserFromSession } from './../../actions';
+
 class MyOffice extends React.Component {
+
+    constructor(props) {
+        super(props);
+
+        this.props.getUserSession();
+    }
 
     render() {
         const user = this.props.userData;
@@ -39,9 +47,9 @@ class MyOffice extends React.Component {
                         </div>
 
                         <div className='my-office__btn-update_container'>
-                            <Button className={ 'my-office__btn-update_user-data' }>
+                            <Link to={ '/my-office/ChangeUserData' }><Button className={ 'my-office__btn-update_user-data' }>
                                 Изменить данные
-                            </Button>
+                            </Button></Link>
                             <Link to={ '/my-office/ChangePassword' }><Button className={ 'my-office__btn-update_user-password' }>
                                 Изменить пароль
                             </Button></Link>
@@ -59,5 +67,9 @@ export default connect(
     state => ({
         userData: state.userData
     }),
-    dispatch => ({})
+    dispatch => ({
+        getUserSession: () => {
+            dispatch(getUserFromSession());
+        },
+    })
 )(MyOffice);
