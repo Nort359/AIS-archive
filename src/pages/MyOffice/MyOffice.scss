@@ -90,6 +90,21 @@ body {
 
       @include put_border(rgba(0, 0, 0, .2));
     }
+
+    &_user-data, &_user-password {
+      width: 200px;
+      margin-left: 50px;
+    }
+
+    &_user-password {
+      background-color: $formColor;
+      border: 3px solid $mainColor;
+      color: $mainColor;
+
+      &:hover {
+        background-color: $mainColor;
+      }
+    }
   }
 
 }

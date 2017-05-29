@@ -12,10 +12,12 @@ export const authorizationUser = user => dispatch => {
     axios.post('http://ais-archive/api/get-user.php', querystring.stringify(user))
         .then(response => response.data)
         .then(userData => {
-            dispatch({
-                type: GET_USER,
-                userData
-            });
+            if (typeof userData === 'object') {
+                dispatch({
+                    type: GET_USER,
+                    userData
+                });
+            }
             return userData;
         })
         .then(userData => {

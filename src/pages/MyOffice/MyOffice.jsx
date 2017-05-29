@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router';
 import { connect } from 'react-redux';
 
 import CenterScreenBlock from '../../components/CenterScreenBlock/CenterScreenBlock';
@@ -38,9 +39,12 @@ class MyOffice extends React.Component {
                         </div>
 
                         <div className='my-office__btn-update_container'>
-                            <Button className={ 'my-office__btn-update' }>
+                            <Button className={ 'my-office__btn-update_user-data' }>
                                 Изменить данные
                             </Button>
+                            <Link to={ '/my-office/ChangePassword' }><Button className={ 'my-office__btn-update_user-password' }>
+                                Изменить пароль
+                            </Button></Link>
                         </div>
                     </CenterScreenBlock>
             </div>

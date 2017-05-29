@@ -216,6 +216,47 @@ export default class AForm extends React.Component {
     }
 
     /**
+     * Проверяет поле password на правильность введённого password в БД
+     * @param idPasswordInput — ID input password
+     * @param password — Шифрованный пароль
+     * @param messageOk — Сообщение об успехе(Password вопадает)
+     */
+    checkAJAXPassword(idPasswordInput, password, messageOk) {
+        const emailInput = document.querySelector(`#${idPasswordInput}`);
+        let emailExist = false;
+
+        console.log('It`s check begin');
+
+        this._getIconSpinner(idPasswordInput, 'mk-spinner-ring', true);
+
+        return axios.post('http://ais-archive/api/user/user-password-check.php', querystring.stringify({
+            checkPassword: emailInput.value,
+            password
+        }))
+            .then(answer => {
+                console.log('It`s answer server: ', answer.data);
+                if (answer.data === 'Ok') {
+                    emailExist = true;
+                }
+
+                this._getIconSpinner(idPasswordInput, 'mk-spinner-ring', false);
+
+                console.log('It`s spinner');
+
+                if (emailExist === true) {
+                    this._acceptInput(idPasswordInput, messageOk);
+                    console.log('It`s true');
+                    return true;
+                } else {
+                    this._rejectInput(idPasswordInput, 'Ваш старый пароль неверный');
+                    console.log('It`s false');
+                    return false;
+                }
+            })
+            .catch(error => console.error(error));
+    }
+
+    /**
      * Проверяет поле email на существование введённого email в БД
      * @param idEmailInput — ID input email
      * @param messageOk — Сообщение об успехе(Email свободен)

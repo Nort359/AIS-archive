@@ -9,9 +9,28 @@
 
 	if ($user > 0) {
 		if (password_verify($password, $user->password)) {
-			setcookie('user_logged', $user, time() + 3600 * 24 * 31 * 3, '/'); // срок действия 3 месяца
+			$user_department = R::findOne( 'department', 'id = ?', [ $user->department_id ] );
+			$user_position   = R::findOne( 'position', 'id = ?', [ $user->position_id ] );
 
-			echo json_encode($user);
+			$user_with_depart = array(
+				'id' 			=> $user->id,
+				'name' 			=> $user->name,
+				'surname' 		=> $user->surname,
+				'middlename' 	=> $user->middlename,
+				'photo' 		=> $user->photo,
+				'email' 		=> $user->email,
+				'password' 		=> $user->password,
+				'department_id' => $user->department_id,
+				'position_id' 	=> $user->position_id,
+				'admin' 		=> $user->admin,
+				'department' 	=> $user_department->title,
+				'position'   	=> $user_position->title
+			);
+
+
+			setcookie('user_logged', serialize($user_with_depart), time() + 3600 * 24 * 31 * 3, '/'); // срок действия 3 месяца
+
+			echo json_encode($user_with_depart);
 		} else {
 			echo 'Неверный пароль';
 		}

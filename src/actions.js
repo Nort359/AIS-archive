@@ -11,10 +11,12 @@ export const getUserFromSession = () => dispatch => {
     axios.get('http://ais-archive/api/get-user-from-session.php')
         .then(response => response.data)
         .then(userData => {
-            dispatch({
-                type: EXISTS_USER,
-                userData
-            });
+            if (typeof userData === 'object') {
+                dispatch({
+                    type: EXISTS_USER,
+                    userData
+                });
+            }
             return userData;
         })
         .then(userData => {
