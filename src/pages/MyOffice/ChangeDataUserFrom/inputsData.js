@@ -27,12 +27,8 @@ export const inputsData = {
         messageError: 'Отчество введёно неккоректно',
         messageDefault: 'Ваше отчество'
     },
-    email: {
-        id: 'userEmail',
-        patternOk: /^([a-z0-9_\.-])+@[a-z0-9-]+\.([a-z]{2,4}\.)?[a-z]{2,4}$/i,
-        messageOk: 'Email введён корректно',
-        messageError: 'Email введён неккоректно',
-        messageDefault: 'Ваш Email'
+    photo:{
+        id: 'userPhoto',
     },
     department: {
         id: 'department-select',

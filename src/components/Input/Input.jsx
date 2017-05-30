@@ -30,6 +30,7 @@ class Input extends React.Component {
                     onFocus={ this.props.onFocus }
                     onBlur={ this.props.onBlur }
                     id={ this.props.inputId }
+                    name={ this.props.inputId }
                 />
                 <p className='input-animated__placeholder'>
                     { this.props.placeholder }

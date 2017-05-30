@@ -40,7 +40,7 @@ header {
       float: left;
       list-style: none;
       font-size: $fontSize;
-      padding: ($headerHeight / 2 - ($fontSize / 1.45)) 20px;
+      padding: ($headerHeight / 2 - ($fontSize / 1.70)) 20px;
       position: relative;
 
       @include put_transition();

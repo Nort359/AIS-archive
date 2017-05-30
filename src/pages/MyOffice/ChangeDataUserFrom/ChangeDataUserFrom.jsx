@@ -3,6 +3,7 @@ import { Link } from 'react-router';
 import { connect } from 'react-redux';
 import axios from 'axios';
 import querystring from 'querystring';
+import $ from 'jquery';
 
 // Import components
 import CenterScreenBlock from '../../../components/CenterScreenBlock/CenterScreenBlock';
@@ -51,6 +52,7 @@ class ChangeDataUserFrom extends AForm {
               middleName            = this.inputsData.middleName,
               department            = this.inputsData.department,
               position              = this.inputsData.position,
+              photo                 = this.inputsData.photo,
 
               // Inputs
               inputLastName         = document.querySelector(`#${lastName.id}`),
@@ -75,14 +77,8 @@ class ChangeDataUserFrom extends AForm {
         if (selectPosition.value === position.placeholder)
             return selectPosition.dispatchEvent(eventFocus);
 
-        const newUserData = {
-            userId:         user.id,
-            userFirstName:  inputFirstName.value,
-            userMiddleName: inputMiddleName.value,
-            userLastName:   inputLastName.value,
-            userDepartment: selectDepartment.value,
-            userPosition:   selectPosition.value
-        };
+        let data = new FormData();
+        data.append('file', document.getElementById(photo.id).files[0]);
 
         const buttonSpinner  = document.getElementsByClassName('registration__button_spinner')[0];
         buttonSpinner.classList.add('mk-spinner-ring');
@@ -90,13 +86,36 @@ class ChangeDataUserFrom extends AForm {
         const buttonSpinnerStyle = buttonSpinner.style;
         buttonSpinnerStyle.display = 'block';
 
+        let $input = $(`#${photo.id}`);
+        let fd = new FormData;
+
+        fd.append('photo', $input.prop('files')[0]);
+        fd.append('userId', user.id);
+        fd.append('userFirstName', inputFirstName.value);
+        fd.append('userMiddleName', inputMiddleName.value);
+        fd.append('userLastName', inputLastName.value);
+        fd.append('userDepartment', selectDepartment.value);
+        fd.append('userPosition', selectPosition.value);
+
+        $.ajax({
+            url: 'http://ais-archive/api/user/user-data-update.php',
+            data: fd,
+            processData: false,
+            contentType: false,
+            type: 'POST'
+        });
+
+        this.setState({ userChangeDataUserFrom: true });
+
         // Все поля заполнены: регистрируем нового пользователя
         // this.props.updateUserDataDB(newUserData);
-
-        axios.post('http://ais-archive/api/user/user-data-update.php', querystring.stringify(newUserData))
+        /*
+        axios.post('http://ais-archive/api/user/user-data-update.php', querystring.stringify(data))
             .then(response => response.data)
+            .then(answer => console.log(answer) )
             .then(answer => this.setState({ userChangeDataUserFrom: true }) )
             .catch(error => console.error(error));
+        */
     }
 
     /**
@@ -111,7 +130,8 @@ class ChangeDataUserFrom extends AForm {
               firstName     = this.inputsData.firstName,
               middleName    = this.inputsData.middleName,
               department    = this.inputsData.department,
-              position      = this.inputsData.position;
+              position      = this.inputsData.position,
+              photo         = this.inputsData.photo;
 
         let departments     = ObjectHandler.getArrayFromObject(this.props.department),
             positions       = ObjectHandler.getArrayFromObject(this.props.position);
@@ -139,7 +159,11 @@ class ChangeDataUserFrom extends AForm {
                         inputId={ middleName.id }
                         value={ user.middlename }
                         onBlur={ event => this.checkValidTextInput(event, middleName.patternOk, middleName.messageOk, middleName.messageError, middleName.messageDefault) }
-                        onFocus={ event =>this.focusInput(event, middleName.messageDefault) }
+                        onFocus={ event => this.focusInput(event, middleName.messageDefault) }
+                    />
+                    <Input
+                        type={ 'file' }
+                        inputId={ photo.id }
                     />
                     <SelectInput
                         selectId={ department.id }
@@ -182,8 +206,6 @@ class ChangeDataUserFrom extends AForm {
      * @private
      */
     _renderNotification() {
-        const user = this.props.userData;
-
         return (
             <CenterScreenBlock>
                 <Notification
