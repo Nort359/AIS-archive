@@ -40,7 +40,8 @@ class Adder extends AForm {
             .catch(error => console.error(error));
     }
 
-    addDepartment(adder, pathCheck, pathAdd) {
+    addDepartment(event, adder, pathCheck, pathAdd) {
+        event.preventDefault();
         // TODO не работают стили для спинера ( должна появляться галочка после успешнйо проверки )
         const eventBlur = new Event('blur');
         const inputDepartment = document.getElementById(adder.id);
@@ -97,7 +98,6 @@ class Adder extends AForm {
                     <Input
                         inputId={ adderData.id }
                         placeholder={ adderData.messageDefault }
-                        value={ this.props.inputValue ? this.props.inputValue : '' }
                         icon={ adderData.icon }
                         onBlur={ event => {
                             this.checkDepartmentOnExist(adderData, this.props.pathCheck);
@@ -111,9 +111,7 @@ class Adder extends AForm {
                                 :
                                 <Spinner className='add-button__spinner'></Spinner>
                         }
-                        <Button onClick={ event => {
-                            this.addDepartment(adderData, this.props.pathCheck, this.props.pathAdd);
-                        } }>Создать</Button>
+                        <Button type={ 'button' } onClick={ event => this.addDepartment(event, adderData, this.props.pathCheck, this.props.pathAdd) }>Создать</Button>
                         <Link to='/AdminPanel'>К списку справочников</Link>
                     </div>
                 </Form>
@@ -127,8 +125,7 @@ Adder.propTypes = {
     pathCheck: PropTypes.string.isRequired,
     pathAdd: PropTypes.string.isRequired,
     adderData: PropTypes.object.isRequired,
-    headerForm: PropTypes.string.isRequired,
-    inputValue: PropTypes.string
+    headerForm: PropTypes.string.isRequired
 };
 
 export default Adder;

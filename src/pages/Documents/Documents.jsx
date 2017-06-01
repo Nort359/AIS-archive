@@ -1,8 +1,9 @@
 import React from 'react';
+import { Link } from 'react-router';
 
 import SideBar from '../../components/SideBar/SideBar';
 import Input from '../../components/Input/Input';
-import DateTimePicker from '../../components/DateTimePicker/DateTimePicker';
+import Button from '../../components/Button/Button';
 import Folder from '../../components/Folder/Folder';
 import Document from '../../components/Document/Document';
 
@@ -14,9 +15,17 @@ class Documents extends React.Component {
         return (
             <div>
                 <h2 className='documents__header'>Мои документы</h2>
+
+                <div className='documents__add-doc-btn_container'>
+                    <Link to={ '/documents/AddDocument' }>
+                        <Button className={ 'documents__add-doc-btn' } >Добавить документ</Button>
+                    </Link>
+                </div>
+
                 <Folder>
                     <Document/>
                 </Folder>
+
                 <SideBar>
                     <h3 className='sidebar__caption'>Действия над документами</h3>
 
@@ -33,13 +42,13 @@ class Documents extends React.Component {
                     <div className='sidebar__filter_item-container'>
                         <div className='sidebar__filter-date'>
                             <h4>По дате</h4>
-                            <DateTimePicker
-                                onSave={ val => console.log(val) }
-                                placeholder={ 'Начиная с:' }
+                            Начиная с числа:
+                            <Input
+                                type='date'
                             />
-                            <DateTimePicker
-                                onSave={ val => console.log(val) }
-                                placeholder={ 'До:' }
+                            Заканчивая числом:
+                            <Input
+                                type='date'
                             />
                         </div>
                         <div className='sidebar__filter-alphabed'>
@@ -55,4 +64,11 @@ class Documents extends React.Component {
 
 Documents.path = '/documents';
 
-export default Documents;
+export default connect(
+    state => ({
+        document: state.document
+    }),
+    dispatch => ({
+
+    })
+)(Documents);

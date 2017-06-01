@@ -12,6 +12,7 @@ import Input from '../../../components/Input/Input';
 import SelectInput from '../../../components/SelectInput/SelectInput';
 import Button from '../../../components/Button/Button';
 import Notification from '../../../components/Notification/Notification';
+import MessageBox from '../../../components/MessageBox/MessageBox';
 import Spinner from '../../../components/Spinner/Spinner'; // используются стили данного компонента
 
 // Import data
@@ -138,64 +139,67 @@ class ChangeDataUserFrom extends AForm {
 
         return (
             <CenterScreenBlock>
-                <Form header={ 'Изменение данных' }>
-                    <Input
-                        placeholder={ lastName.messageDefault }
-                        inputId={ lastName.id }
-                        icon={ lastName.icon }
-                        value={ user.surname }
-                        onBlur={ event => this.checkValidTextInput(event, lastName.patternOk, lastName.messageOk, lastName.messageError, lastName.messageDefault)}
-                        onFocus={ event => this.focusInput(event, lastName.messageDefault) }
-                    />
-                    <Input
-                        placeholder={ firstName.messageDefault }
-                        inputId={ firstName.id }
-                        value={ user.name }
-                        onBlur={ event => this.checkValidTextInput(event, firstName.patternOk, firstName.messageOk, firstName.messageError, firstName.messageDefault) }
-                        onFocus={ event => this.focusInput(event, firstName.messageDefault) }
-                    />
-                    <Input
-                        placeholder={ middleName.messageDefault }
-                        inputId={ middleName.id }
-                        value={ user.middlename }
-                        onBlur={ event => this.checkValidTextInput(event, middleName.patternOk, middleName.messageOk, middleName.messageError, middleName.messageDefault) }
-                        onFocus={ event => this.focusInput(event, middleName.messageDefault) }
-                    />
-                    <Input
-                        type={ 'file' }
-                        inputId={ photo.id }
-                    />
-                    <SelectInput
-                        selectId={ department.id }
-                        placeholder={ department.placeholder }
-                    >
-                        { departments.map(department => {
-                            return <option
-                                key={ department.id }
-                                value={ department.id }
-                                selected={ department.id === user.department_id ? 'selected' : null }
-                            >{ department.title }</option>
-                        }) }
-                    </SelectInput>
-                    <SelectInput
-                        selectId={ position.id }
-                        placeholder={ position.placeholder }
-                    >
-                        { positions.map(position => {
-                            return <option
-                                key={ position.id }
-                                value={ position.id }
-                                selected={ position.id === user.position_id ? 'selected' : null }
-                            >{ position.title }</option>
-                        }) }
-                    </SelectInput>
+                <div className='form_container'>
+                    <Form header={ 'Изменение данных' }>
+                        <Input
+                            placeholder={ lastName.messageDefault }
+                            inputId={ lastName.id }
+                            icon={ lastName.icon }
+                            value={ user.surname }
+                            onBlur={ event => this.checkValidTextInput(event, lastName.patternOk, lastName.messageOk, lastName.messageError, lastName.messageDefault)}
+                            onFocus={ event => this.focusInput(event, lastName.messageDefault) }
+                        />
+                        <Input
+                            placeholder={ firstName.messageDefault }
+                            inputId={ firstName.id }
+                            value={ user.name }
+                            onBlur={ event => this.checkValidTextInput(event, firstName.patternOk, firstName.messageOk, firstName.messageError, firstName.messageDefault) }
+                            onFocus={ event => this.focusInput(event, firstName.messageDefault) }
+                        />
+                        <Input
+                            placeholder={ middleName.messageDefault }
+                            inputId={ middleName.id }
+                            value={ user.middlename }
+                            onBlur={ event => this.checkValidTextInput(event, middleName.patternOk, middleName.messageOk, middleName.messageError, middleName.messageDefault) }
+                            onFocus={ event => this.focusInput(event, middleName.messageDefault) }
+                        />
+                        <Input
+                            type={ 'file' }
+                            inputId={ photo.id }
+                        />
+                        <SelectInput
+                            selectId={ department.id }
+                            placeholder={ department.placeholder }
+                        >
+                            { departments.map(department => {
+                                return <option
+                                    key={ department.id }
+                                    value={ department.id }
+                                    selected={ department.id === user.department_id ? 'selected' : null }
+                                >{ department.title }</option>
+                            }) }
+                        </SelectInput>
+                        <SelectInput
+                            selectId={ position.id }
+                            placeholder={ position.placeholder }
+                        >
+                            { positions.map(position => {
+                                return <option
+                                    key={ position.id }
+                                    value={ position.id }
+                                    selected={ position.id === user.position_id ? 'selected' : null }
+                                >{ position.title }</option>
+                            }) }
+                        </SelectInput>
 
-                    <div className='registration__button_container'>
-                        <div className='registration__button_spinner'></div>
-                        <Button type='button' onClick={ event => this.registrationUser(event, user) }>Изменить</Button>
-                    </div>
-                    <Link to='/my-office'>В личный кабинет</Link>
-                </Form>
+                        <div className='registration__button_container'>
+                            <div className='registration__button_spinner'></div>
+                            <Button type='button' onClick={ event => this.registrationUser(event, user) }>Изменить</Button>
+                        </div>
+                        <Link to='/my-office'>В личный кабинет</Link>
+                    </Form>
+                    <MessageBox>Для изображение доступны только расширения типа .jpg, .png</MessageBox>
+                </div>
             </CenterScreenBlock>
         );
     }

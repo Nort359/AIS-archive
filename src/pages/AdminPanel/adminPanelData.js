@@ -13,7 +13,7 @@ export const department = {
         messageDefault: 'Название отдела',
         messageExist: 'Такой отдел существует',
         messageOk: 'Корректно',
-        messageError: 'Кеккоректно'
+        messageError: 'Неккоректно'
     }
 };
 
@@ -28,7 +28,7 @@ export const position = {
         messageDefault: 'Название должности',
         messageExist: 'Такая должность существует',
         messageOk: 'Корректно',
-        messageError: 'Кеккоректно'
+        messageError: 'Неккоректно'
     }
 };
 
@@ -43,6 +43,6 @@ export const typeDocument = {
         messageDefault: 'Название типа документа',
         messageExist: 'Такой тип документа существует',
         messageOk: 'Корректно',
-        messageError: 'Кеккоректно'
+        messageError: 'Неккоректно'
     }
 };

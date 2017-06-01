@@ -1,0 +1,9 @@
+@import "../../../scss_partian/config";
+
+.document__description {
+  width: 100%;
+  border: 1px solid $borderColor;
+  padding: 5px;
+  margin-bottom: 20px;
+  font-size: 18px;
+}

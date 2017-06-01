@@ -41,7 +41,8 @@ class Updater extends AForm {
             .catch(error => console.error(error));
     }
 
-    updateRecord(adder, oldObject, pathCheck, pathUpdate) {
+    updateRecord(event, adder, oldObject, pathCheck, pathUpdate) {
+        event.preventDefault();
         const eventBlur = new Event('blur');
         const inputDepartment = document.getElementById(adder.id);
 
@@ -102,9 +103,7 @@ class Updater extends AForm {
                                 :
                                 <Spinner className='add-button__spinner'></Spinner>
                         }
-                        <Button onClick={ event => {
-                            this.updateRecord(adderData, this.props.oldData, this.props.pathCheck, this.props.pathUpdate);
-                        } }>Создать</Button>
+                        <Button type={ 'button' } onClick={ event => this.updateRecord(event, adderData, this.props.oldData, this.props.pathCheck, this.props.pathUpdate) }>Создать</Button>
                         <Link to='/AdminPanel'>К списку справочников</Link>
                     </div>
                 </Form>

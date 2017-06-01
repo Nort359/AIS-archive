@@ -7,6 +7,7 @@ import DevTools from './utils/DevTools';
 import { getUserFromSession } from './actions';
 import { getDepartment } from './pages/AdminPanel/Department/actions';
 import { getPosition } from './pages/AdminPanel/Position/actions';
+import { getTypeDocument } from './pages/AdminPanel/TypeDocument/actions';
 
 class App extends React.Component {
 
@@ -16,6 +17,7 @@ class App extends React.Component {
         this.props.getUserSession();
         this.props.getDepartmentDB();
         this.props.getPositionDB();
+        this.props.getTypeDocumentDB();
     }
 
     render() {
@@ -48,6 +50,9 @@ export default connect(
         },
         getPositionDB: () => {
             dispatch(getPosition());
+        },
+        getTypeDocumentDB: () => {
+            dispatch(getTypeDocument());
         }
     })
 )(App);

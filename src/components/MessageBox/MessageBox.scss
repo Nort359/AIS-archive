@@ -1,0 +1,63 @@
+@import "../../scss_partian/config";
+@import "./keyframes";
+
+.form_container {
+  width: 400px;
+  display: inline-block;
+}
+
+.message-box {
+  font-size: 18px;
+  width: 400px;
+  height: $headerHeight;
+  color: $formColor;
+  display: none;
+  clear: both;
+  margin: 15px 0;
+
+
+  transform-style: preserve-3d;
+
+  &__icon {
+    padding: 15px 0;
+    float: left;
+    width: 80px;
+    font-size: 26px;
+    margin: 0;
+    height: 100%;
+
+    background-color: $mainColor;
+
+    transform-style: preserve-3d;
+    transform-origin: bottom left;
+    perspective: 1000px;
+
+    @include get_animation(showBell, .5s, 0);
+
+    opacity: 0;
+
+    i {
+      display: inline-block;
+      vertical-align: middle;
+    }
+  }
+
+  &__text {
+
+    width: 320px;
+    float: right;
+    height: 100%;
+    margin: 0;
+    text-align: left;
+    padding: 15px 10px;
+    background-color: $headerColor;
+
+    perspective: 1000px;
+    transform-style: preserve-3d;
+    transform-origin: center left;
+
+    opacity: 0;
+
+    @include get_animation(showBell, .5s, .5s);
+  }
+}
