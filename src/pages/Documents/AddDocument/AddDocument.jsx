@@ -186,8 +186,6 @@ class AddDocument extends AForm {
             return false;
         }
 
-        console.log(inputDateEnd.value);
-
         axios.post('http://ais-archive/api/document/document-title-check.php', querystring.stringify({ title: inputTitle.value }))
             .then(response => response.data)
             .then(answer => {
@@ -223,8 +221,6 @@ class AddDocument extends AForm {
                     type: 'POST'
                 })
                     .done(data => {
-                        console.log(data);
-
                         // Останавливаем спинер
                         const buttonSpinner  = document.getElementsByClassName('registration__button_spinner')[0];
                         buttonSpinner.classList.add('mk-spinner-ring');
@@ -305,7 +301,6 @@ class AddDocument extends AForm {
                             type={ dateEnd.type }
                             icon={ dateEnd.icon }
                             onBlur={ event => {
-                                console.log(event.target.value);
                                 if (event.target.value === '') {
                                     // отображаем notification
                                     let messageBox = $('.message-box');

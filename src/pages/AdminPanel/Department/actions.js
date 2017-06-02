@@ -41,6 +41,8 @@ export const deleteDepartment = department => dispatch => {
                     type: DELETE_DEPARTMENT,
                     departmentId : department.departmentId
                 });
+            } else if (answer === 'К этому отделу привязаны пользователи') {
+                alert(answer);
             }
         })
         .catch(error => console.error(error));

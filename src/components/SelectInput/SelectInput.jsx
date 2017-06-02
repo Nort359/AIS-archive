@@ -16,7 +16,7 @@ class SelectInput extends React.Component {
                     <option
                         selected={ 'selected' }
                         disabled={ 'disabled' }
-                        value={ this.props.placeholder }
+                        value={ 0 }
                     >
                         { this.props.placeholder }
                     </option>

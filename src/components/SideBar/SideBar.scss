@@ -18,6 +18,8 @@
   border-right: 1px solid $borderColor;
   background-color: $formColor;
 
+  overflow: auto;
+
   &__container {
     position: absolute;
     top: 0;

@@ -30,7 +30,7 @@ export default class Animation {
      * @param timingFunction — Временная функция анимации (по умолчанию = ease-in-out)
      * @param fillMode — fillMode анимации (по умолчанию = forwards)
      */
-    static toggleAnimateElement(flag = false,elementStyle, nameFirstAnimation, nameSecondAnimation, duration = '1s', delay = '0', timingFunction = 'ease-in-out', fillMode = 'forwards') {
+    static toggleAnimateElement(flag = false, elementStyle, nameFirstAnimation, nameSecondAnimation, duration = '1s', delay = '0', timingFunction = 'ease-in-out', fillMode = 'forwards') {
         if (flag === false) {
             elementStyle.animationName = nameFirstAnimation;
         } else {

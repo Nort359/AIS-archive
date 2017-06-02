@@ -1,4 +1,5 @@
 @import '../../scss_partian/config';
+@import './keyframes';
 
 .document {
   width: 100%;
@@ -10,8 +11,9 @@
     @include put_transition();
 
     &_pencil {
+      color: $mainColor;
       &:hover {
-        color: $mainColor;
+        color: darken($mainColor, 10%);
       }
     }
 
@@ -52,6 +54,22 @@
     font: {
       size: 20px;
       weight: bold;
+    }
+  }
+
+  &__more {
+    clear: both;
+
+    margin: 20px 0 0 35px;
+
+    display: none;
+
+    span {
+      font-size: 16px;
+      color: $mainColor;
+      width: 230px;
+      margin-right: 10px;
+      display: inline-block;
     }
   }
 

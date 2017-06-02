@@ -5,9 +5,13 @@
 
 	$department_id = $_POST['departmentId'];
 
-	if ( delete_current_record( 'department', $department_id ) )
-		echo 'Ok';
-	else
-		echo 'Error';
+	if ( R::findOne( 'user', 'department_id = ?', [ $department_id ] ) > 0 ) {
+		echo 'К этому отделу привязаны пользователи';
+	} else {
+		if ( delete_current_record( 'department', $department_id ) )
+			echo 'Ok';
+		else
+			echo 'Error';
+	}
 
 ?>
