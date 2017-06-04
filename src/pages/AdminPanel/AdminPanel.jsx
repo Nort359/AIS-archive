@@ -72,9 +72,9 @@ class AdminPanel extends React.Component {
     }
 
     render() {
-        let departments = ObjectHandler.getArrayFromObject(this.props.department),
-            positions = ObjectHandler.getArrayFromObject(this.props.position),
-            typeDocuments = ObjectHandler.getArrayFromObject(this.props.typeDocument);
+        let departments     = ObjectHandler.getArrayFromObject(this.props.department),
+            positions       = ObjectHandler.getArrayFromObject(this.props.position),
+            typeDocuments   = ObjectHandler.getArrayFromObject(this.props.typeDocument);
 
         return (
             <div>

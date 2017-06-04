@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router';
 import { connect } from 'react-redux';
+import $ from 'jquery';
 
 import SideBar from '../../components/SideBar/SideBar';
 import Input from '../../components/Input/Input';
@@ -12,36 +13,106 @@ import ObjectHandler from '../../classes/ObjectHandler';
 
 import './Documents.scss';
 
-import { getDocuments, getDocumentsBySearch } from './actions';
+import { getDocuments, getDocumentsBySearch, getCurrentDocument } from './actions';
 
 class Documents extends React.Component {
 
     constructor(props) {
         super(props);
 
-        for (let i = 0; i < 5000; i += 1000) {
-            setTimeout(() => {
-                const user = this.props.userData;
-                this.props.getDocumentsDB({ userId: user.id });
-            }, i);
+        this.state = {
+            oderAlphabet:       false,
+            oderDateBegin:      false,
+            oderDateSignature:  false,
+            oderDateEnd:        false,
+
+            isShowContent:      false
+        };
+
+        if (this.props.document.hasOwnProperty('currentDocument'))
+            delete this.props.document.currentDepartment;
+
+        const user = this.props.userData;
+        this.props.getDocumentsDB({ userId: user.id });
+
+        this.showOldDocuments = this.showOldDocuments.bind(this);
+        this.searchDocument = this.searchDocument.bind(this);
+        this.replaceDocument = this.replaceDocument.bind(this);
+    }
+
+    showOldDocuments(event, id) {
+        const document = $(`#document-${id}`);
+        console.log('document', document);
+
+        const oldDocs = document.parents('.document-active');
+        console.log('oldDocs', oldDocs);
+
+        const siblings = oldDocs.prevAll('.document-old');
+        console.log('siblings', siblings);
+
+        let isShow = document.attr( 'data-old-docs-open' );
+        console.log('isShow', isShow);
+
+        if ( isShow === 'true' ){
+            siblings.hide();
+            document.attr( 'data-old-docs-open', 'false' );
+        } else {
+            siblings.fadeIn(500);
+            document.attr( 'data-old-docs-open', 'true' );
         }
 
-        this.searchDocument = this.searchDocument.bind(this);
+        //Animation.toggleAnimateElement(this.state.isShowContent, document, 'hideMoreInformation', 'showMoreInformation', '500ms');
+    }
+
+    replaceDocument(event, deleteObject, callback, path) {
+        if (deleteObject.hasOwnProperty('currentDocument')) delete deleteObject.currentDepartment;
+
+        const id = event.currentTarget.getAttribute('data-document-id'),
+              record = {
+                  id
+              };
+
+        callback(record, path);
     }
 
     searchDocument(event) {
-        const inputSearch = document.querySelector(`#${event.target.id}`);
-        const user = this.props.userData;
+        const inputSearch               = document.querySelector('#sidebar__search_document');
+        const inputDateBeginFrom        = document.querySelector('#dateBeginFrom');
+        const inputDateBeginTo          = document.querySelector('#dateBeginTo');
+        const inputDateSignatureFrom    = document.querySelector('#dateSignatureFrom');
+        const inputDateSignatureTo      = document.querySelector('#dateSignatureTo');
+        const inputDateEndFrom          = document.querySelector('#dateEndFrom');
+        const inputDateEndTo            = document.querySelector('#dateEndTo');
+
+        const oderAlphabet              = this.state.oderAlphabet;
+        const oderDateBegin             = this.state.oderDateBegin;
+        const oderDateSignature         = this.state.oderDateSignature;
+        const oderDateEnd               = this.state.oderDateEnd;
+
+        const user                      = this.props.userData;
 
         const search = {
             userId: user.id,
-            search: inputSearch.value
+            search: inputSearch.value,
+            dateBeginFrom: inputDateBeginFrom.value,
+            dateBeginTo: inputDateBeginTo.value,
+            dateSignatureFrom: inputDateSignatureFrom.value,
+            dateSignatureTo: inputDateSignatureTo.value,
+            dateEndFrom: inputDateEndFrom.value,
+            dateEndTo: inputDateEndTo.value,
+            oderAlphabet, oderDateBegin, oderDateSignature, oderDateEnd
         };
 
         this.props.getDocumentsDBBySearch(search);
     }
 
     render() {
+        if (this.props.document.length === 0 ) {
+            const user = this.props.userData;
+            this.props.getDocumentsDB({ userId: user.id });
+        }
+
+
         let documents = ObjectHandler.getArrayFromObject(this.props.document),
             typeDocuments = ObjectHandler.getArrayFromObject(this.props.typeDocument);
 
@@ -53,11 +124,13 @@ class Documents extends React.Component {
 
         typeDocuments.map( typeDocument => {
             documents.map( document => {
-                if ( document.type_id === typeDocument.id ) {
+                if ( document.type_id === typeDocument.id && document.document_old === '0' ) {
                     documentCountInFolder[typeDocument.id]++;
                 }
             } )
         } );
+
+        let oldDocs = [];
 
         return (
             <div>
@@ -74,33 +147,124 @@ class Documents extends React.Component {
                         caption={ typeDocument.title + ` (${documentCountInFolder[typeDocument.id]})` }
                         key={ typeDocument.id }
                         folderId={ 'folder-' + typeDocument.id }>
+
+                        { documents.map(document => {
+                            if ( document.type_id === typeDocument.id ) {
+                                oldDocs[document.id] = [];
+                            }
+                        } ) }
+
                     { documents.map(document => {
                         if ( document.type_id === typeDocument.id ) {
-                            return (
-                                    <Document
-                                        documentId={ document.id }
-                                        key={ document.id }
-                                        caption={ document.title }
-                                    >
-                                        <p><span>Полное название документа:</span> { document.path }</p>
-                                        <p><span>Краткое описание документа:</span> { document.description !== '' ? document.description : '[Описание отсутствует]'  }</p>
-                                        <p><span>Дата добавления документа:</span> { document.datebegin }</p>
-                                        <p><span>Дата подписания документа:</span> { document.datesignature }</p>
-                                        <p><span>Дата пересмотра документа:</span> { document.dateend }</p>
-                                    </Document>
-                            )
+                            if ( document.document_old === '1' ) {
+                                oldDocs[ document.old_id ][ document.id ] = document;
+                            } else if ( document.document_old === '0' && document.old_id === '0' ) {
+                                let expansionFile = /\.[^\.]*$/.exec(document.path); // расширение
+                                return (
+                                    <div className='document-container'>
+                                        <div className='document-active'>
+                                            <Document
+                                                documentId={ document.id }
+                                                key={ document.id }
+                                                caption={ document.title + ` (${expansionFile})` }
+                                                isReplace={ true }
+                                                onReplace={ event => this.replaceDocument(event, this.props.document, this.props.getCurrentDocumentDB, '/public/#/documents/ReplaceDocument') }
+                                            >
+                                                <p><span>Полное название документа:</span> { document.path }</p>
+                                                <p><span>Краткое описание документа:</span> { document.description !== '' ? document.description : '[Описание отсутствует]'  }</p>
+                                                <p><span>Дата добавления документа:</span> { document.datebegin }</p>
+                                                <p><span>Дата подписания документа:</span> { document.datesignature }</p>
+                                                <p><span>Дата пересмотра документа:</span> { document.dateend }</p>
+                                            </Document>
+                                        </div>
+                                    </div>
+                                )
+                            }
                         }
+
                     } ) }
+
+                        { documents.map(document => {
+                            if ( document.type_id === typeDocument.id ) {
+                                return (
+                                    <div className='document-container'>
+                                        {
+                                            Array.isArray( oldDocs[document.id] ) ?
+                                                <div>
+                                                    { oldDocs[document.id].map( (d, i, arr) => {
+                                                        let expansionFile = /\.[^\.]*$/.exec(d.path); // расширение
+                                                        if ( i !== arr.length - 1 ) {
+                                                            return (
+                                                                <div className='document-old'>
+                                                                    <Document
+                                                                        documentId={ d.id }
+                                                                        key={ d.id }
+                                                                        caption={ d.title + ` (${expansionFile})` + ' (не актуален)' }
+                                                                    >
+                                                                        <p><span>Полное название документа:</span> { d.path }</p>
+                                                                        <p><span>Краткое описание документа:</span> { d.description !== '' ? d.description : '[Описание отсутствует]'  }</p>
+                                                                        <p><span>Дата добавления документа:</span> { d.datebegin }</p>
+                                                                        <p><span>Дата подписания документа:</span> { d.datesignature }</p>
+                                                                        <p><span>Дата пересмотра документа:</span> { d.dateend }</p>
+                                                                    </Document>
+                                                                </div>
+                                                            );
+                                                        } else {
+                                                            return (
+                                                                <div>
+                                                                    <div className='document-old'>
+                                                                        <Document
+                                                                            documentId={ d.id }
+                                                                            key={ d.id }
+                                                                            caption={ d.title + ` (${expansionFile})` + ' (не актуален)' }
+                                                                        >
+                                                                            <p><span>Полное название документа:</span> { d.path }</p>
+                                                                            <p><span>Краткое описание документа:</span> { d.description !== '' ? d.description : '[Описание отсутствует]'  }</p>
+                                                                            <p><span>Дата добавления документа:</span> { d.datebegin }</p>
+                                                                            <p><span>Дата подписания документа:</span> { d.datesignature }</p>
+                                                                            <p><span>Дата пересмотра документа:</span> { d.dateend }</p>
+                                                                        </Document>
+                                                                    </div>
+                                                                    <div className='document-active'>
+                                                                        <Document
+                                                                            documentId={ document.id }
+                                                                            key={ document.id }
+                                                                            caption={ document.title + ` (${expansionFile = /\.[^\.]*$/.exec(document.path)})` }
+                                                                            isReplace={ true }
+                                                                            onReplace={ event => this.replaceDocument(event, this.props.document, this.props.getCurrentDocumentDB, '/public/#/documents/ReplaceDocument') }
+                                                                            onClickDocument={ event => this.showOldDocuments(event, document.id) }
+                                                                            oldDocsIsOpen={ false }
+                                                                        >
+                                                                            <p><span>Полное название документа:</span> { document.path }</p>
+                                                                            <p><span>Краткое описание документа:</span> { document.description !== '' ? document.description : '[Описание отсутствует]'  }</p>
+                                                                            <p><span>Дата добавления документа:</span> { document.datebegin }</p>
+                                                                            <p><span>Дата подписания документа:</span> { document.datesignature }</p>
+                                                                            <p><span>Дата пересмотра документа:</span> { document.dateend }</p>
+                                                                        </Document>
+                                                                    </div>
+                                                                </div>
+                                                            );
+                                                        }
+                                                    } ) }
+                                                </div>
+                                                :
+                                                null
+                                        }
+                                    </div>
+                                );
+                            }
+                        } ) }
                     </Folder>
                 } ) }
 
                 { documents.map(document => {
                     if ( document.type_id === '0') {
+                        let expansionFile = /\.[^\.]*$/.exec(document.path); // расширение
                         return (
                             <Document
                                 documentId={ document.id }
                                 key={ document.id }
-                                caption={ document.title }
+                                caption={ document.title + ` (${expansionFile})` }
                             >
                                 <p><span>Полное название документа:</span> { document.path }</p>
                                 <p><span>Краткое описание документа:</span> { document.description !== '' ? document.description : '[Описание отсутствует]'  }</p>
@@ -111,6 +275,36 @@ class Documents extends React.Component {
                         )
                     }
                 } ) }
+
+                <div className='document-container'>
+                    <div className='document-old'>
+                        <Document
+                            documentId={ 'test1' }
+                            key={ '21' }
+                            caption={ 'test2' }
+                        >
+                            <p><span>Полное название документа:</span> { '20' }</p>
+                            <p><span>Краткое описание документа:</span> { document.description !== '' ? document.description : '[Описание отсутствует]'  }</p>
+                            <p><span>Дата добавления документа:</span> { '20' }</p>
+                            <p><span>Дата подписания документа:</span> { '20' }</p>
+                            <p><span>Дата пересмотра документа:</span> { '20' }</p>
+                        </Document>
+                    </div>
+                    <div className='document-active'>
+                        <Document
+                            documentId={ 'test' }
+                            key={ '20' }
+                            caption={ 'test' }
+                            isReplace={ true }
+                        >
+                            <p><span>Полное название документа:</span> { '20' }</p>
+                            <p><span>Краткое описание документа:</span> { document.description !== '' ? document.description : '[Описание отсутствует]'  }</p>
+                            <p><span>Дата добавления документа:</span> { '20' }</p>
+                            <p><span>Дата подписания документа:</span> { '20' }</p>
+                            <p><span>Дата пересмотра документа:</span> { '20' }</p>
+                        </Document>
+                    </div>
+                </div>
 
                 <SideBar>
                     <h3 className='sidebar__caption'>Действия над документами</h3>
@@ -132,47 +326,63 @@ class Documents extends React.Component {
                     <div className='sidebar__filter_item-container'>
                         <div className='sidebar__filter-date'>
                             <div className='sidebar__filter-date_container'>
-                                <h4>По дате добавления</h4>
+                                <h4 className='sidebar__caption'>По дате добавления</h4>
                                 <p>Начиная с даты:</p>
                                 <Input
                                     inputId={ 'dateBeginFrom' }
                                     type='date'
+                                    onChange={ event => this.searchDocument(event) }
                                 />
                                 <p>Заканчивая датой:</p>
                                 <Input
                                     inputId={ 'dateBeginTo' }
                                     type='date'
+                                    onChange={ event => this.searchDocument(event) }
                                 />
                             </div>
                             <div className='sidebar__filter-date_container'>
-                                <h4>По дате подписания</h4>
+                                <h4 className='sidebar__caption'>По дате подписания</h4>
                                 <p>Начиная с даты:</p>
                                 <Input
                                     inputId={ 'dateSignatureFrom' }
                                     type='date'
+                                    onChange={ event => this.searchDocument(event) }
                                 />
                                 <p>Заканчивая датой:</p>
                                 <Input
-                                    inputId={ 'dateSignatureFrom' }
+                                    inputId={ 'dateSignatureTo' }
                                     type='date'
+                                    onChange={ event => this.searchDocument(event) }
                                 />
                             </div>
                             <div className='sidebar__filter-date_container'>
-                                <h4>По дате окончания срока годности</h4>
+                                <h4 className='sidebar__caption'>По дате окончания срока годности</h4>
                                 <p>Начиная с даты:</p>
                                 <Input
                                     inputId={ 'dateEndFrom' }
                                     type='date'
+                                    onChange={ event => this.searchDocument(event) }
                                 />
                                 <p>Заканчивая датой:</p>
                                 <Input
                                     inputId={ 'dateEndTo' }
                                     type='date'
+                                    onChange={ event => this.searchDocument(event) }
                                 />
                             </div>
                         </div>
-                        <div className='sidebar__filter-alphabed'>
-                            <h4>По алфавиту</h4>
+                        <div className='sidebar__filter-alphabet'>
+                            <h4 className='sidebar__caption'>Сортировка</h4>
+                            <p
+                                id={ 'oderAlphabet' }
+                                onClick={ event => {
+                                    this.setState({ oderAlphabet: !this.state.oderAlphabet });
+                                    this.searchDocument(event);
+                                } }
+                            >
+                                По алфавиту От А до Я
+                                <span className='glyphicon glyphicon-sort-by-alphabet'></span>
+                            </p>
                         </div>
                     </div>
                 </SideBar>
@@ -194,8 +404,11 @@ export default connect(
         getDocumentsDB: user => {
             dispatch(getDocuments(user));
         },
+        getCurrentDocumentDB: (document, path) => {
+            dispatch(getCurrentDocument(document, path));
+        },
         getDocumentsDBBySearch: search => {
             dispatch(getDocumentsBySearch(search));
-        },
+        }
     })
 )(Documents);

@@ -22,16 +22,16 @@ import { inputsData } from './inputsData';
 import AForm from '../../../classes/AForm';
 import ObjectHandler from '../../../classes/ObjectHandler';
 
-import './AddDocument.scss';
+import './UpdateDocument.scss';
 
-class AddDocument extends AForm {
+class UpdateDocument extends AForm {
 
     constructor(props) {
         super(props);
 
         this.state = {
             userData: {},
-            userAddDocument: false
+            userUpdateDocument: false
         };
 
         this.inputsData = inputsData;
@@ -79,19 +79,19 @@ class AddDocument extends AForm {
 
         const eventBlur             = new Event('blur'),
 
-              title                 = this.inputsData.documentTitle,
-              description           = this.inputsData.documentDescription,
-              file                  = this.inputsData.documentFile,
-              dateEnd               = this.inputsData.documentDateEnd,
-              dateSignature         = this.inputsData.documentDateSignature,
-              type                  = this.inputsData.documentType,
+            title                 = this.inputsData.documentTitle,
+            description           = this.inputsData.documentDescription,
+            file                  = this.inputsData.documentFile,
+            dateEnd               = this.inputsData.documentDateEnd,
+            dateSignature         = this.inputsData.documentDateSignature,
+            type                  = this.inputsData.documentType,
 
-              // Inputs
-              inputTitle            = document.querySelector(`#${title.id}`),
-              inputDescription      = document.querySelector(`#${description.id}`),
-              inputType             = document.querySelector(`#${type.id}`),
-              inputDateEnd          = document.querySelector(`#${dateEnd.id}`),
-              inputDateSignature    = document.querySelector(`#${dateSignature.id}`);
+            // Inputs
+            inputTitle            = document.querySelector(`#${title.id}`),
+            inputDescription      = document.querySelector(`#${description.id}`),
+            inputType             = document.querySelector(`#${type.id}`),
+            inputDateEnd          = document.querySelector(`#${dateEnd.id}`),
+            inputDateSignature    = document.querySelector(`#${dateSignature.id}`);
 
         let $input = $(`#${file.id}`);
         let fd = new FormData;
@@ -115,23 +115,23 @@ class AddDocument extends AForm {
         }
 
         /*
-        let expansionFile = /\.[^\.]*$/.exec(fileData.name);
+         let expansionFile = /\.[^\.]*$/.exec(fileData.name);
 
-        const expansions = [
-            '.jpg', '.docs', '.psd'
-        ];
+         const expansions = [
+         '.jpg', '.docs', '.psd'
+         ];
 
-        let expansionExist = false;
+         let expansionExist = false;
 
-        for(let i = 0; i > expansions; i++) {
-            if ( expansions[i] === expansionFile ) {
-                expansionExist = true;
-                break;
-            }
-        }
+         for(let i = 0; i > expansions; i++) {
+         if ( expansions[i] === expansionFile ) {
+         expansionExist = true;
+         break;
+         }
+         }
 
-        if ( expansionExist === false ) return false;
-        */
+         if ( expansionExist === false ) return false;
+         */
 
         if (!title.patternOk.test(inputTitle.value))
             return inputTitle.dispatchEvent(eventBlur);
@@ -261,11 +261,11 @@ class AddDocument extends AForm {
         const user = this.props.userData;
 
         const title         = this.inputsData.documentTitle,
-              description   = this.inputsData.documentDescription,
-              file          = this.inputsData.documentFile,
-              dateEnd       = this.inputsData.documentDateEnd,
-              dateSignature = this.inputsData.documentDateSignature,
-              type          = this.inputsData.documentType;
+            description   = this.inputsData.documentDescription,
+            file          = this.inputsData.documentFile,
+            dateEnd       = this.inputsData.documentDateEnd,
+            dateSignature = this.inputsData.documentDateSignature,
+            type          = this.inputsData.documentType;
 
         let typeDocuments = ObjectHandler.getArrayFromObject(this.props.typeDocument);
 
@@ -392,7 +392,7 @@ class AddDocument extends AForm {
         return (
             <main>
                 {
-                    this.state.userAddDocument ?
+                    this.state.userUpdateDocument ?
                         this._renderNotification()
                         :
                         this._renderForm()
@@ -403,7 +403,7 @@ class AddDocument extends AForm {
 
 }
 
-AddDocument.path = '/documents/AddDocument';
+UpdateDocument.path = '/documents/UpdateDocument';
 
 export default connect(
     state => ({
@@ -415,4 +415,4 @@ export default connect(
             dispatch(addDocumentDB(userData));
         }
     })
-)(AddDocument);
+)(UpdateDocument);

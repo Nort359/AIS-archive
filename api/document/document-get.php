@@ -5,7 +5,12 @@
 	if ( !empty( $_POST['userId'] ) ) {
 		$userId = $_POST['userId'];
 
-		$documents = R::findAll( 'document', 'user_id = ?', [ $userId ] );
+		$documents = R::getAll( 'SELECT *
+									FROM document
+										WHERE user_id = ?
+										ORDER BY title ASC',
+	        [ $userId ]
+	    );
 
 		if ($documents > 0)
 			echo json_encode($documents);

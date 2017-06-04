@@ -20,11 +20,11 @@ class SideBar extends Component {
 
         Animation.toggleAnimateElement(this.isOpenSideBar, sideBar, 'slideRightSideBar', 'slideLeftSideBar', '500ms');
 
-        let delay = this.isOpenSideBar ? 0 : 200;
+        let delay = this.isOpenSideBar ? 0 : 150;
 
         Array.prototype.forEach.call(captions, caption => {
             Animation.toggleAnimateElement(this.isOpenSideBar, caption.style, 'slideLeftSideBarElement', 'slideRightSideBarElement', '300ms', `${delay}ms`);
-            delay += this.isOpenSideBar ? 0 : 200;
+            delay += this.isOpenSideBar ? 0 : 150;
         });
 
         this.isOpenSideBar = !this.isOpenSideBar;

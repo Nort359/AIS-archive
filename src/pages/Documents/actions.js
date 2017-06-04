@@ -5,6 +5,7 @@ import axios from 'axios';
 import querystring from 'querystring';
 
 export const GET_DOCUMENTS = 'GET_DOCUMENTS';
+export const GET_CURRENT_DOCUMENT = 'GET_CURRENT_DOCUMENT';
 export const GET_DOCUMENTS_BY_SEARCH = 'GET_DOCUMENTS_BY_SEARCH';
 
 export const getDocuments = user => dispatch => {
@@ -29,6 +30,21 @@ export const getDocumentsBySearch = search => dispatch => {
                 type: GET_DOCUMENTS_BY_SEARCH,
                 documents
             });
+        })
+        .catch(error => console.error(error));
+};
+
+export const getCurrentDocument = (document, path) => dispatch => {
+    axios.post('http://ais-archive/api/document/document-get-current.php', querystring.stringify(document))
+        .then(response => response.data)
+        .then(currentDocument => {
+            dispatch({
+                type: GET_CURRENT_DOCUMENT,
+                currentDocument
+            });
+        })
+        .then(() => {
+            window.location = path;
         })
         .catch(error => console.error(error));
 };

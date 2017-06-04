@@ -5,13 +5,13 @@
     left: 0;
   }
   100% {
-    left: -($widthSideBar - 60px);
+    left: -($widthSideBar - 80px);
   }
 }
 
 @keyframes slideRightSideBar {
   0% {
-    left: -($widthSideBar - 60px);
+    left: -($widthSideBar - 80px);
   }
   100% {
     left: 0;
@@ -20,7 +20,7 @@
 
 @keyframes slideLeftSideBarElement {
   0% {
-    left: -($widthSideBar - 60px);
+    left: -($widthSideBar - 80px);
   }
   100% {
     left: 0;

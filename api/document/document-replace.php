@@ -3,6 +3,16 @@
 	require_once $_SERVER['DOCUMENT_ROOT'] . '/api/config.php';
 	require_once $_SERVER['DOCUMENT_ROOT'] . '/api/functions/translit.php';
 
+	function update_old_document( $id_old, $new_id ) {
+		$document = R::load( 'document', $id_old );
+
+		$document->document_old = true;
+		
+		$document->old_id = $new_id;
+
+		return R::store( $document );
+	}
+
 	function add_document() {
 		if ( !empty( $_FILES[ 'file' ][ 'name' ] ) ) {
 			$errors_by_send_img = array(
@@ -38,9 +48,13 @@
 		
 
 		if ( count($errors_get_photo) === 0 ) {
+			$document_old_id = $_POST[ 'oldDocument' ];
+
+			$old_doc = R::findOne( 'document', 'id = ?', [ $document_old_id ] );
+
 			$document 					= R::dispense( 'document' );
 
-			$document->title 			= $_POST[ 'title' ];
+			$document->title 			= $old_doc->title;
 			$document->description 		= $_POST[ 'description' ];
 
 			$document->datebegin 		= date( 'Y-m-d' );
@@ -53,17 +67,47 @@
 			$document->type_id 			= $type;
 
 			$document->user_id 			= $_POST[ 'user' ];
-			$document->document_old 	= false;
-			$document->old_id 			= 0;
+
+			$document->document_old 				= false;
+			$document->old_id 			= $document_old_id;
 
 			return R::store( $document );
 		} else
 			return false;
 	}
 
+	function update_old_id( $id ) {
+		$doc = R::findOne( 'document', 'id = ?', [ $id ] );
+
+	    $collection = R::findCollection( 'document', 'old_id = ?', [ $doc->old_id ] );
+
+	    while( $item = $collection->next() ) {
+	    	if ( $item->id != $id ) {
+	    		$document = R::load( 'document', $item->id );
+
+				if ( $item->old_id !== $id ) {
+					$document->old_id = $id;
+				}
+				
+				$document->document_old = true;
+
+				R::store( $document );
+			}
+	    }
+
+	}
+
+	$new_id = add_document();
+	$doc_old_id = $_POST[ 'oldDocument' ];
+
+	update_old_document( $doc_old_id, $new_id );
+
 	if ( !empty( $_POST ) ) {
-		if ( add_document() )
+		if ( $new_id > 0 ) {
+			update_old_id( (int)$new_id );
+
 			echo 'Ok';
+		}
 		else
 			echo array_shift( $errors_sing_up );
 	} else

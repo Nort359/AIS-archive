@@ -41,23 +41,43 @@ class Document extends Component {
     render() {
         return (
             <div className='document__container'>
-                <div className='document' id={ `document-${this.props.documentId}` }>
-                    <div className='document__caption' onClick={ event => this.showMoreInformation(event, this.props.documentId) }>
+                <div className='document' data-old-docs-open={ this.props.oldDocsIsOpen } id={ `document-${this.props.documentId}` }>
+                    <div className='document__caption' onClick={ event => {
+                        this.showMoreInformation(event, this.props.documentId);
+                        if ( typeof this.props.onClickDocument === 'function' ) {
+                            this.props.onClickDocument(event);
+                        }
+                    } }>
                         <i className='document__icon document__icon_arrow glyphicon glyphicon-menu-right'></i>
                         <i className='document__icon document__icon_list glyphicon glyphicon-list-alt'></i>
                         { this.props.caption }
                     </div>
                     <div className='document__action'>
-                        <Link to={ this.props.pathUpdate } ><i
-                            className='document__icon document__icon_pencil glyphicon glyphicon-pencil'
-                            data-document-id={ this.props.documentId }
-                            onClick={ this.props.onUpdateClick }
-                        ></i></Link>
+                        <Link to={ this.props.pathUpdate } >
+                            <i
+                                className='document__icon document__icon_pencil glyphicon glyphicon-pencil'
+                                data-document-id={ this.props.documentId }
+                                onClick={ this.props.onUpdateClick }
+                                title='Изменить'
+                            ></i>
+                        </Link>
                         <i
                             className='document__icon document__icon_garbage glyphicon glyphicon-trash'
                             data-document-id={ this.props.documentId }
                             onClick={ this.props.onDeleteClick }
+                            title='Удалить'
                         ></i>
+                        {
+                            this.props.isReplace ?
+                                <i
+                                    className='document__icon document__icon_replace glyphicon glyphicon-refresh'
+                                    data-document-id={ this.props.documentId }
+                                    onClick={ this.props.onReplace }
+                                    title='Заменить'
+                                ></i>
+                                :
+                                null
+                        }
                     </div>
                     <div className='document__more'>
                         { this.props.children }
@@ -70,12 +90,17 @@ class Document extends Component {
 }
 
 Document.propTypes = {
-    caption: PropTypes.string.isRequired,
-    documentId: PropTypes.string,
-    onUpdateClick: PropTypes.func,
-    onDeleteClick: PropTypes.func,
-    pathUpdate: PropTypes.string,
-    children: PropTypes.any
+    children:           PropTypes.any,
+    caption:            PropTypes.string.isRequired,
+    documentId:         PropTypes.string,
+    onClickDocument:    PropTypes.func,
+    onUpdateClick:      PropTypes.func,
+    onDeleteClick:      PropTypes.func,
+    onReplace:          PropTypes.func,
+    pathUpdate:         PropTypes.string,
+    pathReplace:        PropTypes.string,
+    isReplace:          PropTypes.bool,
+    oldDocsIsOpen:      PropTypes.bool
 };
 
 export default Document;

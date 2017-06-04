@@ -15,7 +15,12 @@ class SelectInput extends React.Component {
                 >
                     <option
                         selected={ 'selected' }
-                        disabled={ 'disabled' }
+                        disabled={
+                            this.props.isNotDisabled ?
+                                null
+                                :
+                                'disabled'
+                        }
                         value={ 0 }
                     >
                         { this.props.placeholder }
@@ -37,7 +42,8 @@ class SelectInput extends React.Component {
 SelectInput.propTypes = {
     selectId: React.PropTypes.string.isRequired,
     children: React.PropTypes.string.isRequired,
-    placeholder: React.PropTypes.string
+    placeholder: React.PropTypes.string,
+    isNotDisabled: React.PropTypes.bool
 };
 
 export default SelectInput;

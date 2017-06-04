@@ -28,6 +28,19 @@ a:hover {
       margin-bottom: 20px;
     }
   }
+}
 
+.document {
+  &-container {
 
+  }
+
+  &-old {
+    display: none;
+
+    .document__caption {
+      color: $borderColor;
+      text-decoration: line-through;
+    }
+  }
 }
