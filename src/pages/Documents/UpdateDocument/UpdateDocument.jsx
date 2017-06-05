@@ -74,64 +74,25 @@ class UpdateDocument extends AForm {
         }
     }
 
-    addDocument(event, user) {
+    addDocument(event, user, currenDocument) {
         event.preventDefault();
 
         const eventBlur             = new Event('blur'),
 
-            title                 = this.inputsData.documentTitle,
-            description           = this.inputsData.documentDescription,
-            file                  = this.inputsData.documentFile,
-            dateEnd               = this.inputsData.documentDateEnd,
-            dateSignature         = this.inputsData.documentDateSignature,
-            type                  = this.inputsData.documentType,
+              title                 = this.inputsData.documentTitle,
+              description           = this.inputsData.documentDescription,
+              dateEnd               = this.inputsData.documentDateEnd,
+              dateSignature         = this.inputsData.documentDateSignature,
+              type                  = this.inputsData.documentType,
 
-            // Inputs
-            inputTitle            = document.querySelector(`#${title.id}`),
-            inputDescription      = document.querySelector(`#${description.id}`),
-            inputType             = document.querySelector(`#${type.id}`),
-            inputDateEnd          = document.querySelector(`#${dateEnd.id}`),
-            inputDateSignature    = document.querySelector(`#${dateSignature.id}`);
+              // Inputs
+              inputTitle            = document.querySelector(`#${title.id}`),
+              inputDescription      = document.querySelector(`#${description.id}`),
+              inputType             = document.querySelector(`#${type.id}`),
+              inputDateEnd          = document.querySelector(`#${dateEnd.id}`),
+              inputDateSignature    = document.querySelector(`#${dateSignature.id}`);
 
-        let $input = $(`#${file.id}`);
         let fd = new FormData;
-        let fileData = $input.prop('files')[0];
-
-        let messageFromCheckFile = this.checkFile();
-
-        if ( messageFromCheckFile !== true ) {
-            let messageBox = $('.message-box');
-            let messageBoxText = $('.message-box__text span');
-
-            messageBox.css('display', 'inline-block');
-            messageBoxText.text(messageFromCheckFile);
-
-            setTimeout(() => {
-                let messageBox = $('.message-box');
-                messageBox.css('display', 'none');
-            }, 5000);
-
-            return false;
-        }
-
-        /*
-         let expansionFile = /\.[^\.]*$/.exec(fileData.name);
-
-         const expansions = [
-         '.jpg', '.docs', '.psd'
-         ];
-
-         let expansionExist = false;
-
-         for(let i = 0; i > expansions; i++) {
-         if ( expansions[i] === expansionFile ) {
-         expansionExist = true;
-         break;
-         }
-         }
-
-         if ( expansionExist === false ) return false;
-         */
 
         if (!title.patternOk.test(inputTitle.value))
             return inputTitle.dispatchEvent(eventBlur);
@@ -150,11 +111,11 @@ class UpdateDocument extends AForm {
 
         fd.append('user', user.id);
         fd.append('description', inputDescription.value);
-        fd.append('file', fileData);
         fd.append('title', inputTitle.value);
         fd.append('dateEnd', inputDateEnd.value);
         fd.append('dateSignature', inputDateSignature.value);
         fd.append('type', inputType.value);
+        fd.append('oldDocument', currenDocument.id);
 
         const dateEndDoc = inputDateEnd.value;
 
@@ -186,7 +147,12 @@ class UpdateDocument extends AForm {
             return false;
         }
 
-        axios.post('http://ais-archive/api/document/document-title-check.php', querystring.stringify({ title: inputTitle.value }))
+        axios.post('http://ais-archive/api/document/document-title-check-for-update.php', querystring.stringify(
+            {
+                title: inputTitle.value,
+                currentDocument: currenDocument.id,
+                userId: user.id
+            }))
             .then(response => response.data)
             .then(answer => {
                 if ( answer !== 'Ok' ) {
@@ -214,7 +180,7 @@ class UpdateDocument extends AForm {
                 }
 
                 $.ajax({
-                    url: 'http://ais-archive/api/document/document-add.php',
+                    url: 'http://ais-archive/api/document/document-update.php',
                     data: fd,
                     processData: false,
                     contentType: false,
@@ -235,7 +201,7 @@ class UpdateDocument extends AForm {
                         messageBox.css('display', 'inline-block');
 
                         if ( data === 'Ok' ) {
-                            messageBoxText.text('Документ успешно добавлен');
+                            messageBoxText.text('Документ успешно изменён');
                         } else {
                             messageBoxText.text(data);
                         }
@@ -261,104 +227,116 @@ class UpdateDocument extends AForm {
         const user = this.props.userData;
 
         const title         = this.inputsData.documentTitle,
-            description   = this.inputsData.documentDescription,
-            file          = this.inputsData.documentFile,
-            dateEnd       = this.inputsData.documentDateEnd,
-            dateSignature = this.inputsData.documentDateSignature,
-            type          = this.inputsData.documentType;
+              description   = this.inputsData.documentDescription,
+              dateEnd       = this.inputsData.documentDateEnd,
+              dateSignature = this.inputsData.documentDateSignature,
+              type          = this.inputsData.documentType;
 
-        let typeDocuments = ObjectHandler.getArrayFromObject(this.props.typeDocument);
+        const currentDocument = this.props.document.currentDocument;
+
+        let typeDocuments   = ObjectHandler.getArrayFromObject(this.props.typeDocument);
 
         return (
             <CenterScreenBlock>
-                <div className='form_container'>
-                    <Form header={ 'Добавление документа' }>
-                        <Input
-                            placeholder={ title.messageDefault }
-                            inputId={ title.id }
-                            icon={ title.icon }
-                            onBlur={ event => this.checkValidTextInput(event, title.patternOk, title.messageOk, title.messageError, title.messageDefault)}
-                            onFocus={ event => this.focusInput(event, title.messageDefault) }
-                        />
-                        <textarea
-                            name={ description.id }
-                            id={ description.id }
-                            className='document__description'
-                            placeholder={ description.placeholder }
-                        ></textarea>
-                        <Input
-                            placeholder={ file.messageDefault }
-                            inputId={ file.id }
-                            type={ file.type }
-                            icon={ file.icon }
-                            onBlur={ this.checkFile }
-                            onFocus={ event => this.focusInput(event, file.messageDefault) }
-                        />
-                        <p>Дата окончания срока годности</p>
-                        <Input
-                            placeholder={ dateEnd.messageDefault }
-                            inputId={ dateEnd.id }
-                            type={ dateEnd.type }
-                            icon={ dateEnd.icon }
-                            onBlur={ event => {
-                                if (event.target.value === '') {
-                                    // отображаем notification
-                                    let messageBox = $('.message-box');
-                                    let messageBoxText = $('.message-box__text span');
+                {
+                    typeof currentDocument === 'object' ?
+                        <div className='form_container'>
+                            <Form header={ 'Изменение документа' }>
+                                <Input
+                                    placeholder={ title.messageDefault }
+                                    inputId={ title.id }
+                                    icon={ title.icon }
+                                    value={ currentDocument.title }
+                                    onBlur={ event => this.checkValidTextInput(event, title.patternOk, title.messageOk, title.messageError, title.messageDefault)}
+                                    onFocus={ event => this.focusInput(event, title.messageDefault) }
+                                />
+                                <textarea
+                                    name={ description.id }
+                                    id={ description.id }
+                                    className='document__description'
+                                    placeholder={ description.placeholder }
+                                    value={ currentDocument.description }
+                                ></textarea>
+                                <p>Дата окончания срока годности</p>
+                                <Input
+                                    placeholder={ dateEnd.messageDefault }
+                                    inputId={ dateEnd.id }
+                                    type={ dateEnd.type }
+                                    icon={ dateEnd.icon }
+                                    value={ currentDocument.dateend }
+                                    onBlur={ event => {
+                                        if (event.target.value === '') {
+                                            // отображаем notification
+                                            let messageBox = $('.message-box');
+                                            let messageBoxText = $('.message-box__text span');
 
-                                    messageBox.css('display', 'inline-block');
+                                            messageBox.css('display', 'inline-block');
 
-                                    messageBoxText.text('Дата пересмотра не установлена');
+                                            messageBoxText.text('Дата пересмотра не установлена');
 
-                                    setTimeout(() => {
-                                        let messageBox = $('.message-box');
-                                        messageBox.css('display', 'none');
-                                    }, 5000);
-                                }
-                            } }
-                        />
-                        <p>Дата подписания документа</p>
-                        <Input
-                            placeholder={ dateSignature.messageDefault }
-                            inputId={ dateSignature.id }
-                            type={ dateSignature.type }
-                            icon={ dateSignature.icon }
-                            onBlur={ event => {
-                                if (event.target.value === '') {
-                                    // отображаем notification
-                                    let messageBox = $('.message-box');
-                                    let messageBoxText = $('.message-box__text span');
+                                            setTimeout(() => {
+                                                let messageBox = $('.message-box');
+                                                messageBox.css('display', 'none');
+                                            }, 5000);
+                                        }
+                                    } }
+                                />
+                                <p>Дата подписания документа</p>
+                                <Input
+                                    placeholder={ dateSignature.messageDefault }
+                                    inputId={ dateSignature.id }
+                                    type={ dateSignature.type }
+                                    icon={ dateSignature.icon }
+                                    value={ currentDocument.datesignature }
+                                    onBlur={ event => {
+                                        if (event.target.value === '') {
+                                            // отображаем notification
+                                            let messageBox = $('.message-box');
+                                            let messageBoxText = $('.message-box__text span');
 
-                                    messageBox.css('display', 'inline-block');
+                                            messageBox.css('display', 'inline-block');
 
-                                    messageBoxText.text('Дата подписания не установлена');
+                                            messageBoxText.text('Дата подписания не установлена');
 
-                                    setTimeout(() => {
-                                        let messageBox = $('.message-box');
-                                        messageBox.css('display', 'none');
-                                    }, 5000);
-                                }
-                            } }
-                        />
-                        <SelectInput
-                            selectId={ type.id }
-                            placeholder={ type.placeholder }
-                            isNotDisabled={ true }
-                        >
-                            { typeDocuments.map(typeDocument => {
-                                return <option key={ typeDocument.id } value={ typeDocument.id }>{ typeDocument.title }</option>
-                            }) }
-                        </SelectInput>
+                                            setTimeout(() => {
+                                                let messageBox = $('.message-box');
+                                                messageBox.css('display', 'none');
+                                            }, 5000);
+                                        }
+                                    } }
+                                />
+                                <SelectInput
+                                    selectId={ type.id }
+                                    placeholder={ type.placeholder }
+                                    isNotDisabled={ true }
+                                >
+                                    { typeDocuments.map(typeDocument => {
+                                        return <option
+                                            key={ typeDocument.id }
+                                            value={ typeDocument.id }
+                                            selected={ currentDocument.type_id === typeDocument.id ? 'selected' : null }
+                                        >{ typeDocument.title }</option>
+                                    }) }
+                                </SelectInput>
 
 
-                        <div className='registration__button_container'>
-                            <div className='registration__button_spinner'></div>
-                            <Button type='button' onClick={ event => this.addDocument(event, user) }>Добавть</Button>
+                                <div className='registration__button_container'>
+                                    <div className='registration__button_spinner'></div>
+                                    <Button type='button' onClick={ event => this.addDocument(event, user, currentDocument) }>Изменить</Button>
+                                </div>
+                                <Link to='/documents'>К списку документов</Link>
+                            </Form>
+                            <MessageBox></MessageBox>
                         </div>
-                        <Link to='/documents'>К списку документов</Link>
-                    </Form>
-                    <MessageBox></MessageBox>
-                </div>
+                        :
+                        <h2>
+                            Индификатор документа был утерян,<br/>
+                            возможно вы перезагрузили страницу, пожалуйста,<br/>
+                            вернитесь к списку документов и нажмите<br/>
+                            на изменение необходимого документа снова
+                        </h2>
+                }
+
             </CenterScreenBlock>
         );
     }
@@ -369,8 +347,6 @@ class UpdateDocument extends AForm {
      * @private
      */
     _renderNotification() {
-        const user = this.props.userData;
-
         return (
             <CenterScreenBlock>
                 <Notification
@@ -407,6 +383,7 @@ UpdateDocument.path = '/documents/UpdateDocument';
 
 export default connect(
     state => ({
+        document: state.document,
         userData: state.userData,
         typeDocument: state.typeDocument
     }),

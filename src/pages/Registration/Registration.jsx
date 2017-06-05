@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router';
 import { connect } from 'react-redux';
+import $ from 'jquery';
 
 // Import components
 import CenterScreenBlock from '../../components/CenterScreenBlock/CenterScreenBlock';
@@ -10,6 +11,8 @@ import SelectInput from '../../components/SelectInput/SelectInput';
 import Button from '../../components/Button/Button';
 import Notification from '../../components/Notification/Notification';
 import Spinner from '../../components/Spinner/Spinner'; // используются стили данного компонента
+import MessageBox from '../../components/MessageBox/MessageBox';
+
 import './Registration.scss';
 
 // Import data
@@ -33,6 +36,22 @@ class Registration extends AForm {
         this.inputsData = inputsData;
 
         this.registrationUser = this.registrationUser.bind(this);
+        this.showMessageBox = this.showMessageBox.bind(this);
+    }
+
+    showMessageBox(message) {
+        // отображаем notification
+        let messageBox = $('.message-box');
+        let messageBoxText = $('.message-box__text span');
+
+        messageBox.css('display', 'inline-block');
+
+        messageBoxText.text(message);
+
+        setTimeout(() => {
+            let messageBox = $('.message-box');
+            messageBox.css('display', 'none');
+        }, 3000);
     }
 
     /**
@@ -65,35 +84,45 @@ class Registration extends AForm {
               selectDepartment      = document.getElementById(department.id),
               selectPosition        = document.getElementById(position.id);
 
-        if (!lastName.patternOk.test(inputLastName.value))
+        if (!lastName.patternOk.test(inputLastName.value)) {
             return inputLastName.dispatchEvent(eventBlur);
+        }
 
-        if (!firstName.patternOk.test(inputFirstName.value))
+        if (!firstName.patternOk.test(inputFirstName.value)) {
             return inputFirstName.dispatchEvent(eventBlur);
+        }
 
-        if (!middleName.patternOk.test(inputMiddleName.value))
+        if (!middleName.patternOk.test(inputMiddleName.value)) {
             return inputMiddleName.dispatchEvent(eventBlur);
+        }
 
-        if (!email.patternOk.test(inputEmail.value))
+        if (!email.patternOk.test(inputEmail.value)) {
             return inputEmail.dispatchEvent(eventBlur);
+        }
 
-        console.log('email');
-        if (!password.patternWarn.test(inputPassword.value))
+        if (!password.patternWarn.test(inputPassword.value)) {
             return inputPassword.dispatchEvent(eventBlur);
+        }
 
-        if (inputPassword.value !== inputPasswordAgain.value)
+        if (inputPassword.value !== inputPasswordAgain.value) {
             return inputPasswordAgain.dispatchEvent(eventBlur);
+        }
 
-        if (selectDepartment.value === department.placeholder)
+        if (selectDepartment.value === 0) {
+            this.showMessageBox('Вы не выбрали отдел');
             return selectDepartment.dispatchEvent(eventFocus);
+        }
 
-        if (selectPosition.value === position.placeholder)
+        if (selectPosition.value === 0) {
+            this.showMessageBox('Вы не выбрали должность');
             return selectPosition.dispatchEvent(eventFocus);
+        }
 
-        console.log('Position');
         Promise.all([this.checkAJAXEmail(email.id, email.messageOk)])
             .then(checkerEmail => {
-                if(checkerEmail[0] === false) return;
+                if(checkerEmail[0] === false) {
+                    return false;
+                }
 
                 const newUser = {
                     userFirstName: inputFirstName.value,
@@ -137,74 +166,77 @@ class Registration extends AForm {
 
         return (
             <CenterScreenBlock>
-                <Form header={ 'Регистрация' }>
-                    <Input
-                        placeholder={ lastName.messageDefault }
-                        inputId={ lastName.id }
-                        icon={ lastName.icon }
-                        onBlur={ event => this.checkValidTextInput(event, lastName.patternOk, lastName.messageOk, lastName.messageError, lastName.messageDefault)}
-                        onFocus={ event => this.focusInput(event, lastName.messageDefault) }
-                    />
-                    <Input
-                        placeholder={ firstName.messageDefault }
-                        inputId={ firstName.id }
-                        onBlur={ event => this.checkValidTextInput(event, firstName.patternOk, firstName.messageOk, firstName.messageError, firstName.messageDefault) }
-                        onFocus={ event => this.focusInput(event, firstName.messageDefault) }
-                    />
-                    <Input
-                        placeholder={ middleName.messageDefault }
-                        inputId={ middleName.id }
-                        onBlur={ event => this.checkValidTextInput(event, middleName.patternOk, middleName.messageOk, middleName.messageError, middleName.messageDefault) }
-                        onFocus={ event =>this.focusInput(event, middleName.messageDefault) }
-                    />
-                    <Input
-                        type={ 'email' }
-                        placeholder={ email.messageDefault }
-                        inputId={ email.id }
-                        onBlur={ event => this.checkValidEmailInput(event, email.patternOk) }
-                        onFocus={ event => this.checkValidEmailInput(event, email.patternOk, email.messageOk, email.messageError, email.messageDefault) }
-                    />
-                    <Input
-                        type={ password.type }
-                        placeholder={ password.messageDefault }
-                        inputId={ password.id }
-                        icon={ password.icon }
-                        onBlur={ event => this.checkValidPasswordInput(event, password.patternOk, password.patternWarn) }
-                        onChange={ event => this.checkValidPasswordInput(event, password.patternOk, password.patternWarn) }
-                        onFocus={ event => this.focusInput(event, password.messageDefault) }
-                    />
-                    <Input
-                        type={ passwordAgain.type }
-                        placeholder={ passwordAgain.messageDefault }
-                        inputId={ passwordAgain.id }
-                        icon={ passwordAgain.icon }
-                        onBlur={ () => this.checkEqualsInputs(passwordAgain.id, password.id) }
-                        onChange={ () => this.checkEqualsInputs(passwordAgain.id, password.id) }
-                        onFocus={ event => this.focusInput(event, passwordAgain.messageDefault) }
-                    />
-                    <SelectInput
-                        selectId={ department.id }
-                        placeholder={ department.placeholder }
-                    >
-                        { departments.map(department => {
-                            return <option key={ department.id } value={ department.id }>{ department.title }</option>
-                        }) }
-                    </SelectInput>
-                    <SelectInput
-                        selectId={ position.id }
-                        placeholder={ position.placeholder }
-                    >
-                        { positions.map(position => {
-                            return <option key={ position.id } value={ position.id }>{ position.title }</option>
-                        }) }
-                    </SelectInput>
+                <div className='form_container'>
+                    <Form header={ 'Регистрация' }>
+                        <Input
+                            placeholder={ lastName.messageDefault }
+                            inputId={ lastName.id }
+                            icon={ lastName.icon }
+                            onBlur={ event => this.checkValidTextInput(event, lastName.patternOk, lastName.messageOk, lastName.messageError, lastName.messageDefault)}
+                            onFocus={ event => this.focusInput(event, lastName.messageDefault) }
+                        />
+                        <Input
+                            placeholder={ firstName.messageDefault }
+                            inputId={ firstName.id }
+                            onBlur={ event => this.checkValidTextInput(event, firstName.patternOk, firstName.messageOk, firstName.messageError, firstName.messageDefault) }
+                            onFocus={ event => this.focusInput(event, firstName.messageDefault) }
+                        />
+                        <Input
+                            placeholder={ middleName.messageDefault }
+                            inputId={ middleName.id }
+                            onBlur={ event => this.checkValidTextInput(event, middleName.patternOk, middleName.messageOk, middleName.messageError, middleName.messageDefault) }
+                            onFocus={ event =>this.focusInput(event, middleName.messageDefault) }
+                        />
+                        <Input
+                            type={ 'email' }
+                            placeholder={ email.messageDefault }
+                            inputId={ email.id }
+                            onBlur={ event => this.checkValidEmailInput(event, email.patternOk) }
+                            onFocus={ event => this.checkValidEmailInput(event, email.patternOk, email.messageOk, email.messageError, email.messageDefault) }
+                        />
+                        <Input
+                            type={ password.type }
+                            placeholder={ password.messageDefault }
+                            inputId={ password.id }
+                            icon={ password.icon }
+                            onBlur={ event => this.checkValidPasswordInput(event, password.patternOk, password.patternWarn) }
+                            onChange={ event => this.checkValidPasswordInput(event, password.patternOk, password.patternWarn) }
+                            onFocus={ event => this.focusInput(event, password.messageDefault) }
+                        />
+                        <Input
+                            type={ passwordAgain.type }
+                            placeholder={ passwordAgain.messageDefault }
+                            inputId={ passwordAgain.id }
+                            icon={ passwordAgain.icon }
+                            onBlur={ () => this.checkEqualsInputs(passwordAgain.id, password.id) }
+                            onChange={ () => this.checkEqualsInputs(passwordAgain.id, password.id) }
+                            onFocus={ event => this.focusInput(event, passwordAgain.messageDefault) }
+                        />
+                        <SelectInput
+                            selectId={ department.id }
+                            placeholder={ department.placeholder }
+                        >
+                            { departments.map(department => {
+                                return <option key={ department.id } value={ department.id }>{ department.title }</option>
+                            }) }
+                        </SelectInput>
+                        <SelectInput
+                            selectId={ position.id }
+                            placeholder={ position.placeholder }
+                        >
+                            { positions.map(position => {
+                                return <option key={ position.id } value={ position.id }>{ position.title }</option>
+                            }) }
+                        </SelectInput>
 
-                    <div className='registration__button_container'>
-                        <div className='registration__button_spinner'></div>
-                        <Button type='button' onClick={ this.registrationUser }>Зарегистрироваться</Button>
-                    </div>
-                    <Link to='/authorization'>Уже есть аккаунт? Войти</Link>
-                </Form>
+                        <div className='registration__button_container'>
+                            <div className='registration__button_spinner'></div>
+                            <Button type='button' onClick={ this.registrationUser }>Зарегистрироваться</Button>
+                        </div>
+                        <Link to='/authorization'>Уже есть аккаунт? Войти</Link>
+                    </Form>
+                    <MessageBox></MessageBox>
+                </div>
             </CenterScreenBlock>
         );
     }

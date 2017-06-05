@@ -112,25 +112,6 @@ class ReplaceDocument extends AForm {
             return false;
         }
 
-        /*
-         let expansionFile = /\.[^\.]*$/.exec(fileData.name);
-
-         const expansions = [
-         '.jpg', '.docs', '.psd'
-         ];
-
-         let expansionExist = false;
-
-         for(let i = 0; i > expansions; i++) {
-         if ( expansions[i] === expansionFile ) {
-         expansionExist = true;
-         break;
-         }
-         }
-
-         if ( expansionExist === false ) return false;
-         */
-
         if (inputDateEnd.value === '')
             return inputDateEnd.dispatchEvent(eventBlur);
 
@@ -203,7 +184,7 @@ class ReplaceDocument extends AForm {
                 messageBox.css('display', 'inline-block');
 
                 if ( data === 'Ok' ) {
-                    messageBoxText.text('Документ успешно добавлен');
+                    messageBoxText.text('Документ успешно заменен');
                 } else {
                     messageBoxText.text(data);
                 }
@@ -241,7 +222,7 @@ class ReplaceDocument extends AForm {
                 {
                     typeof currentDocument === 'object' ?
                         <div className='form_container'>
-                            <Form header={ 'Добавление документа' }>
+                            <Form header={ 'Замена документа' }>
                                 <textarea
                                     name={ description.id }
                                     id={ description.id }
@@ -322,7 +303,7 @@ class ReplaceDocument extends AForm {
 
                                 <div className='registration__button_container'>
                                     <div className='registration__button_spinner'></div>
-                                    <Button type='button' onClick={ event => this.addDocument(event, user, currentDocument) }>Добавть</Button>
+                                    <Button type='button' onClick={ event => this.addDocument(event, user, currentDocument) }>Заменить</Button>
                                 </div>
                                 <Link to='/documents'>К списку документов</Link>
                             </Form>

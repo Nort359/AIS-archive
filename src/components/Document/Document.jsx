@@ -53,14 +53,31 @@ class Document extends Component {
                         { this.props.caption }
                     </div>
                     <div className='document__action'>
-                        <Link to={ this.props.pathUpdate } >
-                            <i
-                                className='document__icon document__icon_pencil glyphicon glyphicon-pencil'
-                                data-document-id={ this.props.documentId }
-                                onClick={ this.props.onUpdateClick }
-                                title='Изменить'
-                            ></i>
-                        </Link>
+                        {
+                            this.props.isUpdate ?
+                                null
+                                :
+                                <span>
+                                    {
+                                        !this.props.linkForUpdate ?
+                                            <Link to={ this.props.pathUpdate } >
+                                                <i
+                                                    className='document__icon document__icon_pencil glyphicon glyphicon-pencil'
+                                                    data-document-id={ this.props.documentId }
+                                                    onClick={ this.props.onUpdateClick }
+                                                    title='Изменить'
+                                                ></i>
+                                            </Link>
+                                            :
+                                            <i
+                                                className='document__icon document__icon_pencil glyphicon glyphicon-pencil'
+                                                data-document-id={ this.props.documentId }
+                                                onClick={ this.props.onUpdateClick }
+                                                title='Изменить'
+                                            ></i>
+                                    }
+                                </span>
+                        }
                         <i
                             className='document__icon document__icon_garbage glyphicon glyphicon-trash'
                             data-document-id={ this.props.documentId }
@@ -74,6 +91,17 @@ class Document extends Component {
                                     data-document-id={ this.props.documentId }
                                     onClick={ this.props.onReplace }
                                     title='Заменить'
+                                ></i>
+                                :
+                                null
+                        }
+                        {
+                            this.props.isAddUser ?
+                                <i
+                                    className='document__icon document__icon_add-user glyphicon glyphicon-plus'
+                                    data-document-id={ this.props.documentId }
+                                    onClick={ this.props.onAddUser }
+                                    title='Добавить пользователя к документу'
                                 ></i>
                                 :
                                 null
@@ -97,10 +125,14 @@ Document.propTypes = {
     onUpdateClick:      PropTypes.func,
     onDeleteClick:      PropTypes.func,
     onReplace:          PropTypes.func,
+    onAddUser:          PropTypes.func,
     pathUpdate:         PropTypes.string,
     pathReplace:        PropTypes.string,
     isReplace:          PropTypes.bool,
-    oldDocsIsOpen:      PropTypes.bool
+    oldDocsIsOpen:      PropTypes.bool,
+    linkForUpdate:      PropTypes.bool,
+    isUpdate:           PropTypes.bool,
+    isAddUser:          PropTypes.bool
 };
 
 export default Document;

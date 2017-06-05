@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router';
 import { connect } from 'react-redux';
 import $ from 'jquery';
+import moment from 'moment';
 
 import SideBar from '../../components/SideBar/SideBar';
 import Input from '../../components/Input/Input';
@@ -42,16 +43,12 @@ class Documents extends React.Component {
 
     showOldDocuments(event, id) {
         const document = $(`#document-${id}`);
-        console.log('document', document);
 
-        const oldDocs = document.parents('.document-active');
-        console.log('oldDocs', oldDocs);
+        const oldDocs = document.parents('.document-container');
 
-        const siblings = oldDocs.prevAll('.document-old');
-        console.log('siblings', siblings);
+        const siblings = oldDocs.find('.document-old');
 
         let isShow = document.attr( 'data-old-docs-open' );
-        console.log('isShow', isShow);
 
         if ( isShow === 'true' ){
             siblings.hide();
@@ -132,6 +129,8 @@ class Documents extends React.Component {
 
         let oldDocs = [];
 
+        moment.locale('ru');
+
         return (
             <div>
                 <h2 className='documents__header'>Мои документы</h2>
@@ -168,13 +167,14 @@ class Documents extends React.Component {
                                                 key={ document.id }
                                                 caption={ document.title + ` (${expansionFile})` }
                                                 isReplace={ true }
+                                                isAddUser={ true }
                                                 onReplace={ event => this.replaceDocument(event, this.props.document, this.props.getCurrentDocumentDB, '/public/#/documents/ReplaceDocument') }
                                             >
                                                 <p><span>Полное название документа:</span> { document.path }</p>
                                                 <p><span>Краткое описание документа:</span> { document.description !== '' ? document.description : '[Описание отсутствует]'  }</p>
-                                                <p><span>Дата добавления документа:</span> { document.datebegin }</p>
-                                                <p><span>Дата подписания документа:</span> { document.datesignature }</p>
-                                                <p><span>Дата пересмотра документа:</span> { document.dateend }</p>
+                                                <p><span>Дата добавления документа:</span> { moment( document.datebegin ).format('LL') }</p>
+                                                <p><span>Дата подписания документа:</span> { moment( document.datesignature ).format('LL') }</p>
+                                                <p><span>Дата пересмотра документа:</span> { moment( document.dateend ).format('LL') }</p>
                                             </Document>
                                         </div>
                                     </div>
@@ -190,7 +190,7 @@ class Documents extends React.Component {
                                     <div className='document-container'>
                                         {
                                             Array.isArray( oldDocs[document.id] ) ?
-                                                <div>
+                                                <div className='document-container-for-old-doc'>
                                                     { oldDocs[document.id].map( (d, i, arr) => {
                                                         let expansionFile = /\.[^\.]*$/.exec(d.path); // расширение
                                                         if ( i !== arr.length - 1 ) {
@@ -200,12 +200,13 @@ class Documents extends React.Component {
                                                                         documentId={ d.id }
                                                                         key={ d.id }
                                                                         caption={ d.title + ` (${expansionFile})` + ' (не актуален)' }
+                                                                        isUpdate={ true }
                                                                     >
                                                                         <p><span>Полное название документа:</span> { d.path }</p>
                                                                         <p><span>Краткое описание документа:</span> { d.description !== '' ? d.description : '[Описание отсутствует]'  }</p>
-                                                                        <p><span>Дата добавления документа:</span> { d.datebegin }</p>
-                                                                        <p><span>Дата подписания документа:</span> { d.datesignature }</p>
-                                                                        <p><span>Дата пересмотра документа:</span> { d.dateend }</p>
+                                                                        <p><span>Дата добавления документа:</span> { moment( d.datebegin ).format('LL') }</p>
+                                                                        <p><span>Дата подписания документа:</span> { moment( d.datesignature ).format('LL') }</p>
+                                                                        <p><span>Дата пересмотра документа:</span> { moment( d.dateend ).format('LL') }</p>
                                                                     </Document>
                                                                 </div>
                                                             );
@@ -217,12 +218,13 @@ class Documents extends React.Component {
                                                                             documentId={ d.id }
                                                                             key={ d.id }
                                                                             caption={ d.title + ` (${expansionFile})` + ' (не актуален)' }
+                                                                            isUpdate={ true }
                                                                         >
                                                                             <p><span>Полное название документа:</span> { d.path }</p>
                                                                             <p><span>Краткое описание документа:</span> { d.description !== '' ? d.description : '[Описание отсутствует]'  }</p>
-                                                                            <p><span>Дата добавления документа:</span> { d.datebegin }</p>
-                                                                            <p><span>Дата подписания документа:</span> { d.datesignature }</p>
-                                                                            <p><span>Дата пересмотра документа:</span> { d.dateend }</p>
+                                                                            <p><span>Дата добавления документа:</span> { moment( d.datebegin ).format('LL') }</p>
+                                                                            <p><span>Дата подписания документа:</span> { moment( d.datesignature ).format('LL') }</p>
+                                                                            <p><span>Дата пересмотра документа:</span> { moment( d.dateend ).format('LL') }</p>
                                                                         </Document>
                                                                     </div>
                                                                     <div className='document-active'>
@@ -231,15 +233,18 @@ class Documents extends React.Component {
                                                                             key={ document.id }
                                                                             caption={ document.title + ` (${expansionFile = /\.[^\.]*$/.exec(document.path)})` }
                                                                             isReplace={ true }
+                                                                            linkForUpdate={ false }
                                                                             onReplace={ event => this.replaceDocument(event, this.props.document, this.props.getCurrentDocumentDB, '/public/#/documents/ReplaceDocument') }
+                                                                            onUpdateClick={ event => this.replaceDocument(event, this.props.document, this.props.getCurrentDocumentDB, '/public/#/documents/UpdateDocument') }
                                                                             onClickDocument={ event => this.showOldDocuments(event, document.id) }
                                                                             oldDocsIsOpen={ false }
+                                                                            isAddUser={ true }
                                                                         >
                                                                             <p><span>Полное название документа:</span> { document.path }</p>
                                                                             <p><span>Краткое описание документа:</span> { document.description !== '' ? document.description : '[Описание отсутствует]'  }</p>
-                                                                            <p><span>Дата добавления документа:</span> { document.datebegin }</p>
-                                                                            <p><span>Дата подписания документа:</span> { document.datesignature }</p>
-                                                                            <p><span>Дата пересмотра документа:</span> { document.dateend }</p>
+                                                                            <p><span>Дата добавления документа:</span> { moment( document.datebegin ).format('LL') }</p>
+                                                                            <p><span>Дата подписания документа:</span> { moment( document.datesignature ).format('LL') }</p>
+                                                                            <p><span>Дата пересмотра документа:</span> { moment( document.dateend ).format('LL') }</p>
                                                                         </Document>
                                                                     </div>
                                                                 </div>
@@ -258,53 +263,116 @@ class Documents extends React.Component {
                 } ) }
 
                 { documents.map(document => {
-                    if ( document.type_id === '0') {
-                        let expansionFile = /\.[^\.]*$/.exec(document.path); // расширение
-                        return (
-                            <Document
-                                documentId={ document.id }
-                                key={ document.id }
-                                caption={ document.title + ` (${expansionFile})` }
-                            >
-                                <p><span>Полное название документа:</span> { document.path }</p>
-                                <p><span>Краткое описание документа:</span> { document.description !== '' ? document.description : '[Описание отсутствует]'  }</p>
-                                <p><span>Дата добавления документа:</span> { document.datebegin }</p>
-                                <p><span>Дата подписания документа:</span> { document.datesignature }</p>
-                                <p><span>Дата пересмотра документа:</span> { document.dateend }</p>
-                            </Document>
-                        )
+                    if ( document.type_id === '0' ) {
+                        oldDocs[document.id] = [];
                     }
                 } ) }
 
-                <div className='document-container'>
-                    <div className='document-old'>
-                        <Document
-                            documentId={ 'test1' }
-                            key={ '21' }
-                            caption={ 'test2' }
-                        >
-                            <p><span>Полное название документа:</span> { '20' }</p>
-                            <p><span>Краткое описание документа:</span> { document.description !== '' ? document.description : '[Описание отсутствует]'  }</p>
-                            <p><span>Дата добавления документа:</span> { '20' }</p>
-                            <p><span>Дата подписания документа:</span> { '20' }</p>
-                            <p><span>Дата пересмотра документа:</span> { '20' }</p>
-                        </Document>
-                    </div>
-                    <div className='document-active'>
-                        <Document
-                            documentId={ 'test' }
-                            key={ '20' }
-                            caption={ 'test' }
-                            isReplace={ true }
-                        >
-                            <p><span>Полное название документа:</span> { '20' }</p>
-                            <p><span>Краткое описание документа:</span> { document.description !== '' ? document.description : '[Описание отсутствует]'  }</p>
-                            <p><span>Дата добавления документа:</span> { '20' }</p>
-                            <p><span>Дата подписания документа:</span> { '20' }</p>
-                            <p><span>Дата пересмотра документа:</span> { '20' }</p>
-                        </Document>
-                    </div>
-                </div>
+                { documents.map(document => {
+                    if ( document.type_id === '0' ) {
+                        if ( document.document_old === '1' ) {
+                            oldDocs[ document.old_id ][ document.id ] = document;
+                        } else if ( document.document_old === '0' && document.old_id === '0' ) {
+                            let expansionFile = /\.[^\.]*$/.exec(document.path); // расширение
+                            return (
+                                <div className='document-container'>
+                                    <div className='document-active'>
+                                        <Document
+                                            documentId={ document.id }
+                                            key={ document.id }
+                                            caption={ document.title + ` (${expansionFile})` }
+                                            isReplace={ true }
+                                            isAddUser={ true }
+                                            onReplace={ event => this.replaceDocument(event, this.props.document, this.props.getCurrentDocumentDB, '/public/#/documents/ReplaceDocument') }
+                                        >
+                                            <p><span>Полное название документа:</span> { document.path }</p>
+                                            <p><span>Краткое описание документа:</span> { document.description !== '' ? document.description : '[Описание отсутствует]'  }</p>
+                                            <p><span>Дата добавления документа:</span> { moment( document.datebegin ).format('LL') }</p>
+                                            <p><span>Дата подписания документа:</span> { moment( document.datesignature ).format('LL') }</p>
+                                            <p><span>Дата пересмотра документа:</span> { moment( document.dateend ).format('LL') }</p>
+                                        </Document>
+                                    </div>
+                                </div>
+                            )
+                        }
+                    }
+                } ) }
+
+                { documents.map(document => {
+                    if ( document.type_id === '0' ) {
+                        return (
+                            <div className='document-container'>
+                                {
+                                    Array.isArray( oldDocs[document.id] ) ?
+                                        <div className='document-container-for-old-doc'>
+                                            { oldDocs[document.id].map( (d, i, arr) => {
+                                                let expansionFile = /\.[^\.]*$/.exec(d.path); // расширение
+                                                if ( i !== arr.length - 1 ) {
+                                                    return (
+                                                        <div className='document-old'>
+                                                            <Document
+                                                                documentId={ d.id }
+                                                                key={ d.id }
+                                                                caption={ d.title + ` (${expansionFile})` + ' (не актуален)' }
+                                                                isUpdate={ true }
+                                                            >
+                                                                <p><span>Полное название документа:</span> { d.path }</p>
+                                                                <p><span>Краткое описание документа:</span> { d.description !== '' ? d.description : '[Описание отсутствует]'  }</p>
+                                                                <p><span>Дата добавления документа:</span> { moment( d.datebegin ).format('LL') }</p>
+                                                                <p><span>Дата подписания документа:</span> { moment( d.datesignature ).format('LL') }</p>
+                                                                <p><span>Дата пересмотра документа:</span> { moment( d.dateend ).format('LL') }</p>
+                                                            </Document>
+                                                        </div>
+                                                    );
+                                                } else {
+                                                    return (
+                                                        <div>
+                                                            <div className='document-old'>
+                                                                <Document
+                                                                    documentId={ d.id }
+                                                                    key={ d.id }
+                                                                    caption={ d.title + ` (${expansionFile})` + ' (не актуален)' }
+                                                                    isUpdate={ true }
+                                                                >
+                                                                    <p><span>Полное название документа:</span> { d.path }</p>
+                                                                    <p><span>Краткое описание документа:</span> { d.description !== '' ? d.description : '[Описание отсутствует]'  }</p>
+                                                                    <p><span>Дата добавления документа:</span> { moment( d.datebegin ).format('LL') }</p>
+                                                                    <p><span>Дата подписания документа:</span> { moment( d.datesignature ).format('LL') }</p>
+                                                                    <p><span>Дата пересмотра документа:</span> { moment( d.dateend ).format('LL') }</p>
+                                                                </Document>
+                                                            </div>
+                                                            <div className='document-active'>
+                                                                <Document
+                                                                    documentId={ document.id }
+                                                                    key={ document.id }
+                                                                    caption={ document.title + ` (${expansionFile = /\.[^\.]*$/.exec(document.path)})` }
+                                                                    isReplace={ true }
+                                                                    linkForUpdate={ false }
+                                                                    onReplace={ event => this.replaceDocument(event, this.props.document, this.props.getCurrentDocumentDB, '/public/#/documents/ReplaceDocument') }
+                                                                    onUpdateClick={ event => this.replaceDocument(event, this.props.document, this.props.getCurrentDocumentDB, '/public/#/documents/UpdateDocument') }
+                                                                    onClickDocument={ event => this.showOldDocuments(event, document.id) }
+                                                                    oldDocsIsOpen={ false }
+                                                                    isAddUser={ true }
+                                                                >
+                                                                    <p><span>Полное название документа:</span> { document.path }</p>
+                                                                    <p><span>Краткое описание документа:</span> { document.description !== '' ? document.description : '[Описание отсутствует]'  }</p>
+                                                                    <p><span>Дата добавления документа:</span> { moment( document.datebegin ).format('LL') }</p>
+                                                                    <p><span>Дата подписания документа:</span> { moment( document.datesignature ).format('LL') }</p>
+                                                                    <p><span>Дата пересмотра документа:</span> { moment( document.dateend ).format('LL') }</p>
+                                                                </Document>
+                                                            </div>
+                                                        </div>
+                                                    );
+                                                }
+                                            } ) }
+                                        </div>
+                                        :
+                                        null
+                                }
+                            </div>
+                        );
+                    }
+                } ) }
 
                 <SideBar>
                     <h3 className='sidebar__caption'>Действия над документами</h3>

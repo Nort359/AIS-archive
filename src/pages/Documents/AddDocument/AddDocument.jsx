@@ -114,25 +114,6 @@ class AddDocument extends AForm {
             return false;
         }
 
-        /*
-        let expansionFile = /\.[^\.]*$/.exec(fileData.name);
-
-        const expansions = [
-            '.jpg', '.docs', '.psd'
-        ];
-
-        let expansionExist = false;
-
-        for(let i = 0; i > expansions; i++) {
-            if ( expansions[i] === expansionFile ) {
-                expansionExist = true;
-                break;
-            }
-        }
-
-        if ( expansionExist === false ) return false;
-        */
-
         if (!title.patternOk.test(inputTitle.value))
             return inputTitle.dispatchEvent(eventBlur);
 
@@ -186,7 +167,11 @@ class AddDocument extends AForm {
             return false;
         }
 
-        axios.post('http://ais-archive/api/document/document-title-check.php', querystring.stringify({ title: inputTitle.value }))
+        axios.post('http://ais-archive/api/document/document-title-check.php', querystring.stringify(
+            {
+                title: inputTitle.value,
+                userId: user.id
+            }))
             .then(response => response.data)
             .then(answer => {
                 if ( answer !== 'Ok' ) {

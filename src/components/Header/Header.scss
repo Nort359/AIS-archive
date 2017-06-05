@@ -42,6 +42,7 @@ header {
       font-size: $fontSize;
       padding: ($headerHeight / 2 - ($fontSize / 1.70)) 20px;
       position: relative;
+      z-index: 10;
 
       @include put_transition();
 

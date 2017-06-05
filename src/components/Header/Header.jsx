@@ -23,13 +23,13 @@ class Header extends React.Component {
             <header>
                 <nav className='main-menu'>
                     <ul className='main-menu__left'>
-                        <Link to={ '/documents' }><li>Документы</li></Link>
+                        <Link to={ '/documents' } activeStyle={{ color: '#00b5ff' }}><li>Документы</li></Link>
                         <li>Помощь</li>
                     </ul>
                     <ul className='main-menu__right'>
                         {
                             user.admin === '1' ?
-                                <Link to={ '/AdminPanel' }><li>Панель администратора</li></Link>
+                                <Link to={ '/AdminPanel' } activeStyle={{ color: '#00b5ff' }}><li>Панель администратора</li></Link>
                                 :
                                 null
                         }
