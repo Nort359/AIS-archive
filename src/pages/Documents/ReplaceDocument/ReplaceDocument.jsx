@@ -163,7 +163,7 @@ class ReplaceDocument extends AForm {
         }
 
         $.ajax({
-            url: 'http://ais-archive/api/document/document-replace.php',
+            url: '/api/document/document-replace.php',
             data: fd,
             processData: false,
             contentType: false,

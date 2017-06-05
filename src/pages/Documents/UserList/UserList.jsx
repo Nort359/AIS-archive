@@ -9,12 +9,13 @@ import Input from '../../../components/Input/Input';
 import Button from '../../../components/Button/Button';
 import Folder from '../../../components/Folder/Folder';
 import Document from '../../../components/Document/Document';
+import CenterScreenBlock from '../../../components/CenterScreenBlock/CenterScreenBlock';
 
 import ObjectHandler from '../../../classes/ObjectHandler';
 
 import './UserList.scss';
 
-import {  } from './actions';
+import { getAllUsers } from './actions';
 
 class UserList extends React.Component {
 
@@ -33,8 +34,7 @@ class UserList extends React.Component {
         if (this.props.document.hasOwnProperty('currentDocument'))
             delete this.props.document.currentDepartment;
 
-        const user = this.props.userData;
-        this.props.getUserListDB({ userId: user.id });
+        this.props.getAllUsersDB();
 
         this.showOldUserList = this.showOldUserList.bind(this);
         this.searchDocument = this.searchDocument.bind(this);
@@ -104,25 +104,23 @@ class UserList extends React.Component {
     }
 
     render() {
-        if (this.props.document.length === 0 ) {
-            const user = this.props.userData;
-            this.props.getUserListDB({ userId: user.id });
-        }
-
-
         let documents = ObjectHandler.getArrayFromObject(this.props.document),
-            typeUserList = ObjectHandler.getArrayFromObject(this.props.typeDocument);
+            typeDocuments = ObjectHandler.getArrayFromObject(this.props.typeDocument),
+            users = ObjectHandler.getArrayFromObject(this.props.userList),
+            departments = ObjectHandler.getArrayFromObject(this.props.department);
 
-        let documentCountInFolder = {};
+        let usersInDepartment = {};
 
-        typeUserList.map( typeDocument => {
-            documentCountInFolder[typeDocument.id] = 0;
+        const currentDocument = this.props.document.currentDocument;
+
+        departments.map( department => {
+            usersInDepartment[department.id] = 0;
         } );
 
-        typeUserList.map( typeDocument => {
-            documents.map( document => {
-                if ( document.type_id === typeDocument.id && document.document_old === '0' ) {
-                    documentCountInFolder[typeDocument.id]++;
+        departments.map( department => {
+            users.map( user => {
+                if ( user.department_id === department.id ) {
+                    usersInDepartment[department.id]++;
                 }
             } )
         } );
@@ -131,104 +129,154 @@ class UserList extends React.Component {
 
         return (
             <div>
+                {
+                    typeof currentDocument === 'object' ?
+                        <div>
 
-                <SideBar>
-                    <h3 className='sidebar__caption'>Действия над документами</h3>
+                            { departments.map( department => {
+                                return <Folder
+                                    caption={ department.title + ` (${usersInDepartment[department.id]})` }
+                                    key={ department.id }
+                                    folderId={ 'folder-' + department.id }>
 
-                    <h3 className='sidebar__caption sidebar__search'>Поиск</h3>
-                    <div className='sidebar__search_container'>
-                        <Input
-                            placeholder={ 'Название документа' }
-                            inputId={ 'sidebar__search_document' }
-                            onChange={ event => this.searchDocument(event) }
-                        />
-                        <i className='sidebar__search_icon glyphicon glyphicon-search'></i>
-                    </div>
+                                    { users.map(user => {
+                                        return (
+                                            <div className='user-list'>
+                                                <div className='user-list__card'>
+                                                    <Document
+                                                        documentId={ user.id }
+                                                        key={ user.id }
+                                                        caption={ `${user.surname} ${user.name} ${user.middlename}` }
+                                                        isUpdate={ true }
+                                                        isNotDelete={ true }
+                                                        isUserIcon={ true }
+                                                        isAddUser={ true }
+                                                        userIcon={ <img src={ user.photo }
+                                                                        alt='Фото пользователя'
+                                                                        className='user-list__card_photo'
+                                                        /> }
+                                                    >
+                                                        <p><span>Отдел пользователя:</span> { user.department }</p>
+                                                        <p><span>Должность пользователя:</span> { user.position }</p>
+                                                    </Document>
+                                                </div>
+                                            </div>
+                                        );
+                                    }) }
+                                    
+                                </Folder>
+                            } ) }
 
-                    <div className='sidebar__filter_container'>
-                        <h3 className='sidebar__caption sidebar__filter'>Фильтрация</h3>
-                        <i className='sidebar__filter_icon glyphicon glyphicon-filter'></i>
-                    </div>
-                    <div className='sidebar__filter_item-container'>
-                        <div className='sidebar__filter-date'>
-                            <div className='sidebar__filter-date_container'>
-                                <h4 className='sidebar__caption'>По дате добавления</h4>
-                                <p>Начиная с даты:</p>
-                                <Input
-                                    inputId={ 'dateBeginFrom' }
-                                    type='date'
-                                    onChange={ event => this.searchDocument(event) }
-                                />
-                                <p>Заканчивая датой:</p>
-                                <Input
-                                    inputId={ 'dateBeginTo' }
-                                    type='date'
-                                    onChange={ event => this.searchDocument(event) }
-                                />
-                            </div>
-                            <div className='sidebar__filter-date_container'>
-                                <h4 className='sidebar__caption'>По дате подписания</h4>
-                                <p>Начиная с даты:</p>
-                                <Input
-                                    inputId={ 'dateSignatureFrom' }
-                                    type='date'
-                                    onChange={ event => this.searchDocument(event) }
-                                />
-                                <p>Заканчивая датой:</p>
-                                <Input
-                                    inputId={ 'dateSignatureTo' }
-                                    type='date'
-                                    onChange={ event => this.searchDocument(event) }
-                                />
-                            </div>
-                            <div className='sidebar__filter-date_container'>
-                                <h4 className='sidebar__caption'>По дате окончания срока годности</h4>
-                                <p>Начиная с даты:</p>
-                                <Input
-                                    inputId={ 'dateEndFrom' }
-                                    type='date'
-                                    onChange={ event => this.searchDocument(event) }
-                                />
-                                <p>Заканчивая датой:</p>
-                                <Input
-                                    inputId={ 'dateEndTo' }
-                                    type='date'
-                                    onChange={ event => this.searchDocument(event) }
-                                />
-                            </div>
+                            <SideBar>
+                                <h3 className='sidebar__caption'>Действия над документами</h3>
+
+                                <h3 className='sidebar__caption sidebar__search'>Поиск</h3>
+                                <div className='sidebar__search_container'>
+                                    <Input
+                                        placeholder={ 'Название документа' }
+                                        inputId={ 'sidebar__search_document' }
+                                        onChange={ event => this.searchDocument(event) }
+                                    />
+                                    <i className='sidebar__search_icon glyphicon glyphicon-search'></i>
+                                </div>
+
+                                <div className='sidebar__filter_container'>
+                                    <h3 className='sidebar__caption sidebar__filter'>Фильтрация</h3>
+                                    <i className='sidebar__filter_icon glyphicon glyphicon-filter'></i>
+                                </div>
+                                <div className='sidebar__filter_item-container'>
+                                    <div className='sidebar__filter-date'>
+                                        <div className='sidebar__filter-date_container'>
+                                            <h4 className='sidebar__caption'>По дате добавления</h4>
+                                            <p>Начиная с даты:</p>
+                                            <Input
+                                                inputId={ 'dateBeginFrom' }
+                                                type='date'
+                                                onChange={ event => this.searchDocument(event) }
+                                            />
+                                            <p>Заканчивая датой:</p>
+                                            <Input
+                                                inputId={ 'dateBeginTo' }
+                                                type='date'
+                                                onChange={ event => this.searchDocument(event) }
+                                            />
+                                        </div>
+                                        <div className='sidebar__filter-date_container'>
+                                            <h4 className='sidebar__caption'>По дате подписания</h4>
+                                            <p>Начиная с даты:</p>
+                                            <Input
+                                                inputId={ 'dateSignatureFrom' }
+                                                type='date'
+                                                onChange={ event => this.searchDocument(event) }
+                                            />
+                                            <p>Заканчивая датой:</p>
+                                            <Input
+                                                inputId={ 'dateSignatureTo' }
+                                                type='date'
+                                                onChange={ event => this.searchDocument(event) }
+                                            />
+                                        </div>
+                                        <div className='sidebar__filter-date_container'>
+                                            <h4 className='sidebar__caption'>По дате окончания срока годности</h4>
+                                            <p>Начиная с даты:</p>
+                                            <Input
+                                                inputId={ 'dateEndFrom' }
+                                                type='date'
+                                                onChange={ event => this.searchDocument(event) }
+                                            />
+                                            <p>Заканчивая датой:</p>
+                                            <Input
+                                                inputId={ 'dateEndTo' }
+                                                type='date'
+                                                onChange={ event => this.searchDocument(event) }
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className='sidebar__filter-alphabet'>
+                                        <h4 className='sidebar__caption'>Сортировка</h4>
+                                        <p
+                                            id={ 'oderAlphabet' }
+                                            onClick={ event => {
+                                                this.setState({ oderAlphabet: !this.state.oderAlphabet });
+                                                this.searchDocument(event);
+                                            } }
+                                        >
+                                            По алфавиту От А до Я
+                                            <span className='glyphicon glyphicon-sort-by-alphabet'></span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </SideBar>
                         </div>
-                        <div className='sidebar__filter-alphabet'>
-                            <h4 className='sidebar__caption'>Сортировка</h4>
-                            <p
-                                id={ 'oderAlphabet' }
-                                onClick={ event => {
-                                    this.setState({ oderAlphabet: !this.state.oderAlphabet });
-                                    this.searchDocument(event);
-                                } }
-                            >
-                                По алфавиту От А до Я
-                                <span className='glyphicon glyphicon-sort-by-alphabet'></span>
-                            </p>
-                        </div>
-                    </div>
-                </SideBar>
+                        :
+                        <CenterScreenBlock>
+                            <h2>
+                                Индификатор документа был утерян,<br/>
+                                возможно вы перезагрузили страницу, пожалуйста,<br/>
+                                вернитесь к списку документов и нажмите<br/>
+                                на добавление пользователя к необходимому документу снова
+                            </h2>
+                        </CenterScreenBlock>
+                }
             </div>
         );
     }
 
 }
 
-UserList.path = '/documents';
+UserList.path = '/documents/UserList';
 
 export default connect(
     state => ({
+        userList: state.userList,
         document: state.document,
         userData: state.userData,
-        typeDocument: state.typeDocument
+        typeDocument: state.typeDocument,
+        department: state.department
     }),
     dispatch => ({
-        getUserListDB: user => {
-            dispatch(getUserList(user));
+        getAllUsersDB: () => {
+            dispatch(getAllUsers());
         },
         getCurrentDocumentDB: (document, path) => {
             dispatch(getCurrentDocument(document, path));

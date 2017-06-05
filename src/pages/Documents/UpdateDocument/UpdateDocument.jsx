@@ -147,7 +147,7 @@ class UpdateDocument extends AForm {
             return false;
         }
 
-        axios.post('http://ais-archive/api/document/document-title-check-for-update.php', querystring.stringify(
+        axios.post('/api/document/document-title-check-for-update.php', querystring.stringify(
             {
                 title: inputTitle.value,
                 currentDocument: currenDocument.id,
@@ -180,7 +180,7 @@ class UpdateDocument extends AForm {
                 }
 
                 $.ajax({
-                    url: 'http://ais-archive/api/document/document-update.php',
+                    url: '/api/document/document-update.php',
                     data: fd,
                     processData: false,
                     contentType: false,

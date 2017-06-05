@@ -7,6 +7,7 @@ import CenterScreenBlock from '../../components/CenterScreenBlock/CenterScreenBl
 import Form from '../../components/Form/Form';
 import Input from '../../components/Input/Input';
 import Button from '../../components/Button/Button';
+import MessageBox from '../../components/MessageBox/MessageBox';
 
 import Notification from '../../components/Notification/Notification';
 
@@ -50,6 +51,12 @@ class Authorization extends AForm {
             userPassword: inputPassword.value
         };
 
+        const buttonSpinner  = document.getElementsByClassName('registration__button_spinner')[0];
+        buttonSpinner.classList.add('mk-spinner-ring');
+
+        const buttonSpinnerStyle = buttonSpinner.style;
+        buttonSpinnerStyle.display = 'block';
+
         this.props.getUserDataBase(user); // Получение пользователя
     }
 
@@ -64,29 +71,35 @@ class Authorization extends AForm {
 
         return (
             <CenterScreenBlock>
-                <Form header={ 'Авторизация' }>
-                    <Input
-                        type={ email.type }
-                        placeholder={ email.messageDefault }
-                        icon={ email.icon }
-                        inputId={ email.id }
-                        onBlur={ event => this.checkValidTextInput(event, email.patternOk, email.messageOk, email.messageError, email.messageDefault) }
-                        onFocus={ event => this.focusInput(event, email.messageDefault) }
-                    />
-                    <Input
-                        type={ password.type }
-                        placeholder={ password.messageDefault }
-                        icon={ password.icon }
-                        inputId={ password.id }
-                        onChange={ event => this.checkValidPasswordInput(event, password.patternOk) }
-                    />
+                <div className='form_container'>
+                    <Form header={ 'Авторизация' }>
+                        <Input
+                            type={ email.type }
+                            placeholder={ email.messageDefault }
+                            icon={ email.icon }
+                            inputId={ email.id }
+                            onBlur={ event => this.checkValidTextInput(event, email.patternOk, email.messageOk, email.messageError, email.messageDefault) }
+                            onFocus={ event => this.focusInput(event, email.messageDefault) }
+                        />
+                        <Input
+                            type={ password.type }
+                            placeholder={ password.messageDefault }
+                            icon={ password.icon }
+                            inputId={ password.id }
+                            onChange={ event => this.checkValidPasswordInput(event, password.patternOk) }
+                        />
 
-                    <Button type="button" onClick={ this.authorizationUser }>Войти</Button>
+                        <div className='registration__button_container'>
+                            <div className='registration__button_spinner'></div>
+                            <Button type="button" onClick={ this.authorizationUser }>Войти</Button>
+                        </div>
 
-                    <Link to='/registration'>Ещё нет аккаунта? Создать<i className="glyphicon glyphicon-pencil"></i></Link>
-                    <Link to='/' className={ 'forgot-password' }>Забыли пароль?</Link>
+                        <Link to='/registration'>Ещё нет аккаунта? Создать<i className="glyphicon glyphicon-pencil"></i></Link>
+                        <Link to='/' className={ 'forgot-password' }>Забыли пароль?</Link>
 
-                </Form>
+                    </Form>
+                    <MessageBox></MessageBox>
+                </div>
             </CenterScreenBlock>
         );
     }

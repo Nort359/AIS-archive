@@ -45,30 +45,36 @@ class AdminPanel extends React.Component {
     }
 
     deleteDepartment(event) {
-        const departmentId = event.currentTarget.getAttribute('data-document-id'),
-              department = {
-                  departmentId
-              };
+        if ( window.confirm('Вы действительно желаете удалить эту запись?') ) {
+            const departmentId = event.currentTarget.getAttribute('data-document-id'),
+                department = {
+                    departmentId
+                };
 
-        this.props.deleteDepartmentDB(department);
+            this.props.deleteDepartmentDB(department);
+        }
     }
 
     deletePosition(event) {
-        const positionId = event.currentTarget.getAttribute('data-document-id'),
-            position = {
-                positionId
-            };
+        if ( window.confirm('Вы действительно желаете удалить эту запись?') ) {
+            const positionId = event.currentTarget.getAttribute('data-document-id'),
+                position = {
+                    positionId
+                };
 
-        this.props.deletePositionDB(position);
+            this.props.deletePositionDB(position);
+        }
     }
 
     deleteTypeDocument(event) {
-        const typeDocumentId = event.currentTarget.getAttribute('data-document-id'),
-            typeDocument = {
-                typeDocumentId
-            };
+        if ( window.confirm('Вы действительно желаете удалить эту запись?') ) {
+            const typeDocumentId = event.currentTarget.getAttribute('data-document-id'),
+                typeDocument = {
+                    typeDocumentId
+                };
 
-        this.props.deleteTypeDocumentDB(typeDocument);
+            this.props.deleteTypeDocumentDB(typeDocument);
+        }
     }
 
     render() {

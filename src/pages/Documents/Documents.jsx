@@ -169,6 +169,8 @@ class Documents extends React.Component {
                                                 isReplace={ true }
                                                 isAddUser={ true }
                                                 onReplace={ event => this.replaceDocument(event, this.props.document, this.props.getCurrentDocumentDB, '/public/#/documents/ReplaceDocument') }
+                                                onUpdateClick={ event => this.replaceDocument(event, this.props.document, this.props.getCurrentDocumentDB, '/public/#/documents/UpdateDocument') }
+                                                onAddUser={ event => this.replaceDocument(event, this.props.document, this.props.getCurrentDocumentDB, '/public/#/documents/UserList') }
                                             >
                                                 <p><span>Полное название документа:</span> { document.path }</p>
                                                 <p><span>Краткое описание документа:</span> { document.description !== '' ? document.description : '[Описание отсутствует]'  }</p>
@@ -236,6 +238,7 @@ class Documents extends React.Component {
                                                                             linkForUpdate={ false }
                                                                             onReplace={ event => this.replaceDocument(event, this.props.document, this.props.getCurrentDocumentDB, '/public/#/documents/ReplaceDocument') }
                                                                             onUpdateClick={ event => this.replaceDocument(event, this.props.document, this.props.getCurrentDocumentDB, '/public/#/documents/UpdateDocument') }
+                                                                            onAddUser={ event => this.replaceDocument(event, this.props.document, this.props.getCurrentDocumentDB, '/public/#/documents/UserList') }
                                                                             onClickDocument={ event => this.showOldDocuments(event, document.id) }
                                                                             oldDocsIsOpen={ false }
                                                                             isAddUser={ true }
@@ -284,6 +287,8 @@ class Documents extends React.Component {
                                             isReplace={ true }
                                             isAddUser={ true }
                                             onReplace={ event => this.replaceDocument(event, this.props.document, this.props.getCurrentDocumentDB, '/public/#/documents/ReplaceDocument') }
+                                            onUpdateClick={ event => this.replaceDocument(event, this.props.document, this.props.getCurrentDocumentDB, '/public/#/documents/UpdateDocument') }
+                                            onAddUser={ event => this.replaceDocument(event, this.props.document, this.props.getCurrentDocumentDB, '/public/#/documents/UserList') }
                                         >
                                             <p><span>Полное название документа:</span> { document.path }</p>
                                             <p><span>Краткое описание документа:</span> { document.description !== '' ? document.description : '[Описание отсутствует]'  }</p>
@@ -350,6 +355,7 @@ class Documents extends React.Component {
                                                                     linkForUpdate={ false }
                                                                     onReplace={ event => this.replaceDocument(event, this.props.document, this.props.getCurrentDocumentDB, '/public/#/documents/ReplaceDocument') }
                                                                     onUpdateClick={ event => this.replaceDocument(event, this.props.document, this.props.getCurrentDocumentDB, '/public/#/documents/UpdateDocument') }
+                                                                    onAddUser={ event => this.replaceDocument(event, this.props.document, this.props.getCurrentDocumentDB, '/public/#/documents/UserList') }
                                                                     onClickDocument={ event => this.showOldDocuments(event, document.id) }
                                                                     oldDocsIsOpen={ false }
                                                                     isAddUser={ true }

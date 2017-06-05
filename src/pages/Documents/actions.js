@@ -9,7 +9,7 @@ export const GET_CURRENT_DOCUMENT = 'GET_CURRENT_DOCUMENT';
 export const GET_DOCUMENTS_BY_SEARCH = 'GET_DOCUMENTS_BY_SEARCH';
 
 export const getDocuments = user => dispatch => {
-    axios.post('http://ais-archive/api/document/document-get.php', querystring.stringify(user))
+    axios.post('/api/document/document-get.php', querystring.stringify(user))
         .then(response => response.data)
         .then(documents => {
             if (typeof documents === 'object') {
@@ -23,7 +23,7 @@ export const getDocuments = user => dispatch => {
 };
 
 export const getDocumentsBySearch = search => dispatch => {
-    axios.post('http://ais-archive/api/document/document-search.php', querystring.stringify(search))
+    axios.post('/api/document/document-search.php', querystring.stringify(search))
         .then(response => response.data)
         .then(documents => {
             dispatch({
@@ -35,7 +35,7 @@ export const getDocumentsBySearch = search => dispatch => {
 };
 
 export const getCurrentDocument = (document, path) => dispatch => {
-    axios.post('http://ais-archive/api/document/document-get-current.php', querystring.stringify(document))
+    axios.post('/api/document/document-get-current.php', querystring.stringify(document))
         .then(response => response.data)
         .then(currentDocument => {
             dispatch({

@@ -8,7 +8,7 @@ export const REGISTRATION_USER = 'REGISTRATION_USER';
 export const AUTHORIZATION_USER = 'AUTHORIZATION_USER';
 
 export const updateUserData = newUserData => dispatch => {
-    axios.post('http://ais-archive/api/user/user-data-update.php', querystring.stringify(newUserData))
+    axios.post('/api/user/user-data-update.php', querystring.stringify(newUserData))
         .then(response => response.data)
         .then(userData => {
             dispatch({

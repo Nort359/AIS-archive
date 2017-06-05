@@ -9,7 +9,7 @@ export const GET_CURRENT_POSITION = 'GET_CURRENT_POSITION';
 export const DELETE_POSITION = 'DELETE_POSITION';
 
 export const getPosition = () => dispatch => {
-    axios.get('http://ais-archive/api/admin/position/position-get.php')
+    axios.get('/api/admin/position/position-get.php')
         .then(response => response.data)
         .then(position => {
             dispatch({
@@ -21,7 +21,7 @@ export const getPosition = () => dispatch => {
 };
 
 export const getCurrentPosition = position => dispatch => {
-    axios.post('http://ais-archive/api/admin/position/position-get-current.php', querystring.stringify(position))
+    axios.post('/api/admin/position/position-get-current.php', querystring.stringify(position))
         .then(response => response.data)
         .then(currentPosition => {
             dispatch({
@@ -33,7 +33,7 @@ export const getCurrentPosition = position => dispatch => {
 };
 
 export const deletePosition = position => dispatch => {
-    axios.post('http://ais-archive/api/admin/position/position-delete.php', querystring.stringify(position))
+    axios.post('/api/admin/position/position-delete.php', querystring.stringify(position))
         .then(response => response.data)
         .then(answer => {
             if (answer === 'Ok') {
@@ -41,6 +41,8 @@ export const deletePosition = position => dispatch => {
                     type: DELETE_POSITION,
                     positionId : position.positionId
                 });
+            } else if (answer === 'К этой должности привязаны пользователи') {
+                alert(answer);
             }
         })
         .catch(error => console.error(error));

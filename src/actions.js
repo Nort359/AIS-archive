@@ -8,7 +8,7 @@ import { AUTHORIZATION_USER } from './pages/Registration/actions';
 export const EXISTS_USER = 'EXISTS_USER';
 
 export const getUserFromSession = () => dispatch => {
-    axios.get('http://ais-archive/api/get-user-from-session.php')
+    axios.get('/api/get-user-from-session.php')
         .then(response => response.data)
         .then(userData => {
             if (typeof userData === 'object') {

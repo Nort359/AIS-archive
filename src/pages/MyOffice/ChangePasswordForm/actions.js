@@ -6,7 +6,7 @@ import querystring from 'querystring';
 
 export const updatePassword = newPassword => dispatch => {
     console.log('pass', newPassword);
-    axios.post('http://ais-archive/api/user/user-password-update.php', querystring.stringify(newPassword))
+    axios.post('/api/user/user-password-update.php', querystring.stringify(newPassword))
         .then(response => response.data)
         .then(answer => {
             console.log('Server', answer);

@@ -1,5 +1,7 @@
 <?php
 
+    error_reporting(0);
+
     function rus2translit( $string ) {
 
         $converter = array(

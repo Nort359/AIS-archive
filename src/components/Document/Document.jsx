@@ -49,7 +49,12 @@ class Document extends Component {
                         }
                     } }>
                         <i className='document__icon document__icon_arrow glyphicon glyphicon-menu-right'></i>
-                        <i className='document__icon document__icon_list glyphicon glyphicon-list-alt'></i>
+                        {
+                            this.props.isUserIcon ?
+                                this.props.userIcon
+                                :
+                                <i className='document__icon document__icon_list glyphicon glyphicon-list-alt'></i>
+                        }
                         { this.props.caption }
                     </div>
                     <div className='document__action'>
@@ -78,12 +83,17 @@ class Document extends Component {
                                     }
                                 </span>
                         }
-                        <i
-                            className='document__icon document__icon_garbage glyphicon glyphicon-trash'
-                            data-document-id={ this.props.documentId }
-                            onClick={ this.props.onDeleteClick }
-                            title='Удалить'
-                        ></i>
+                        {
+                            this.props.isNotDelete ?
+                                null
+                                :
+                                <i
+                                    className='document__icon document__icon_garbage glyphicon glyphicon-trash'
+                                    data-document-id={ this.props.documentId }
+                                    onClick={ this.props.onDeleteClick }
+                                    title='Удалить'
+                                ></i>
+                        }
                         {
                             this.props.isReplace ?
                                 <i
@@ -132,7 +142,10 @@ Document.propTypes = {
     oldDocsIsOpen:      PropTypes.bool,
     linkForUpdate:      PropTypes.bool,
     isUpdate:           PropTypes.bool,
-    isAddUser:          PropTypes.bool
+    isAddUser:          PropTypes.bool,
+    isUserIcon:         PropTypes.bool,
+    isNotDelete:        PropTypes.bool,
+    userIcon:           PropTypes.any
 };
 
 export default Document;

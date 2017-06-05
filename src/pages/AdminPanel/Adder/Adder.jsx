@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { Link } from 'react-router';
+import $ from 'jquery';
 // Import components
 import CenterScreenBlock from '../../../components/CenterScreenBlock/CenterScreenBlock';
 import Form from '../../../components/Form/Form';
@@ -40,6 +41,21 @@ class Adder extends AForm {
             .catch(error => console.error(error));
     }
 
+    showMessageBox(message) {
+        // отображаем notification
+        let messageBox = $('.message-box');
+        let messageBoxText = $('.message-box__text span');
+
+        messageBox.css('display', 'inline-block');
+
+        messageBoxText.text(message);
+
+        setTimeout(() => {
+            let messageBox = $('.message-box');
+            messageBox.css('display', 'none');
+        }, 3000);
+    }
+
     addDepartment(event, adder, pathCheck, pathAdd) {
         event.preventDefault();
         // TODO не работают стили для спинера ( должна появляться галочка после успешнйо проверки )
@@ -55,28 +71,38 @@ class Adder extends AForm {
         ])
             .then(answer => {
                 if (answer[0] !== 'Ok') {
+                    this.showMessageBox('Такой отдел существует');
                     this._rejectInput(adder.id, 'Такой отдел существует');
                     return false;
                 }
-                const spinner = document.getElementsByClassName('add-button__spinner')[0];
-                const spinnerStyle = spinner.style;
 
-                this.setState({ isAdding: false });
+                const buttonSpinner  = document.getElementsByClassName('registration__button_spinner')[0];
+                buttonSpinner.classList.add('mk-spinner-ring');
 
-                spinnerStyle.display = 'block';
+                const buttonSpinnerStyle = buttonSpinner.style;
+                buttonSpinnerStyle.display = 'block';
 
                 Promise.all([ Async.addInputValueDB(adder.id, pathAdd) ])
                     .then(answer => {
-                        if (answer[0] !== 'Ok') return false;
+                        if (answer[0] !== 'Ok') {
+                            const buttonSpinner  = document.getElementsByClassName('registration__button_spinner')[0];
+                            buttonSpinner.classList.add('mk-spinner-ring');
+
+                            const buttonSpinnerStyle = buttonSpinner.style;
+                            buttonSpinnerStyle.display = 'none';
+                            this.showMessageBox(answer[0]);
+                            return false;
+                        }
 
                         this.setState({ isAdding: true });
 
                         setTimeout(() => {
-                            const spinner = document.getElementsByClassName('add-button__spinner')[0];
-                            const spinnerStyle = spinner.style;
+                            const buttonSpinner  = document.getElementsByClassName('registration__button_spinner')[0];
+                            buttonSpinner.classList.add('mk-spinner-ring');
 
-                            spinnerStyle.display = 'none';
-                        }, 2000);
+                            const buttonSpinnerStyle = buttonSpinner.style;
+                            buttonSpinnerStyle.display = 'none';
+                        }, 1000);
 
                         const inputDepartment = document.getElementById(adder.id);
 
@@ -105,13 +131,10 @@ class Adder extends AForm {
                         onFocus={ event => this.focusInput(event, adderData.messageDefault) }
                     />
                     <div className='add-button__container'>
-                        {
-                            this.state.isAdding ?
-                                <div className='add-button__spinner glyphicon glyphicon-ok'></div>
-                                :
-                                <Spinner className='add-button__spinner'></Spinner>
-                        }
-                        <Button type={ 'button' } onClick={ event => this.addDepartment(event, adderData, this.props.pathCheck, this.props.pathAdd) }>Создать</Button>
+                        <div className='registration__button_container'>
+                            <div className='registration__button_spinner'></div>
+                            <Button type={ 'button' } onClick={ event => this.addDepartment(event, adderData, this.props.pathCheck, this.props.pathAdd) }>Создать</Button>
+                        </div>
                         <Link to='/AdminPanel'>К списку справочников</Link>
                     </div>
                 </Form>

@@ -6,7 +6,7 @@ import axios from 'axios';
 export const EXIT_USER = 'EXIT_USER';
 
 export const exitUser = () => dispatch => {
-    axios.get('http://ais-archive/api/user-delete.php')
+    axios.get('/api/user-delete.php')
         .then(response => response.data)
         .then(() => {
             dispatch({

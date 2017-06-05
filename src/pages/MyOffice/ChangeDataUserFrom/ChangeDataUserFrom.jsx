@@ -99,24 +99,14 @@ class ChangeDataUserFrom extends AForm {
         fd.append('userPosition', selectPosition.value);
 
         $.ajax({
-            url: 'http://ais-archive/api/user/user-data-update.php',
+            url: '/api/user/user-data-update.php',
             data: fd,
             processData: false,
             contentType: false,
             type: 'POST'
+        }).done(data => {
+            this.setState({ userChangeDataUserFrom: true });
         });
-
-        this.setState({ userChangeDataUserFrom: true });
-
-        // Все поля заполнены: регистрируем нового пользователя
-        // this.props.updateUserDataDB(newUserData);
-        /*
-        axios.post('http://ais-archive/api/user/user-data-update.php', querystring.stringify(data))
-            .then(response => response.data)
-            .then(answer => console.log(answer) )
-            .then(answer => this.setState({ userChangeDataUserFrom: true }) )
-            .catch(error => console.error(error));
-        */
     }
 
     /**

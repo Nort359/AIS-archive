@@ -167,7 +167,7 @@ class AddDocument extends AForm {
             return false;
         }
 
-        axios.post('http://ais-archive/api/document/document-title-check.php', querystring.stringify(
+        axios.post('/api/document/document-title-check.php', querystring.stringify(
             {
                 title: inputTitle.value,
                 userId: user.id
@@ -199,7 +199,7 @@ class AddDocument extends AForm {
                 }
 
                 $.ajax({
-                    url: 'http://ais-archive/api/document/document-add.php',
+                    url: '/api/document/document-add.php',
                     data: fd,
                     processData: false,
                     contentType: false,

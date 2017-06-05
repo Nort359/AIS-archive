@@ -9,7 +9,7 @@ export const GET_CURRENT_TYPE_DOCUMENT = 'GET_CURRENT_TYPE_DOCUMENT';
 export const DELETE_TYPE_DOCUMENT = 'DELETE_TYPE_DOCUMENT';
 
 export const getTypeDocument = () => dispatch => {
-    axios.get('http://ais-archive/api/admin/document-type/document-type-get.php')
+    axios.get('/api/admin/document-type/document-type-get.php')
         .then(response => response.data)
         .then(typeDocument => {
             dispatch({
@@ -21,7 +21,7 @@ export const getTypeDocument = () => dispatch => {
 };
 
 export const getCurrentTypeDocument = typeDocument => dispatch => {
-    axios.post('http://ais-archive/api/admin/document-type/document-type-get-current.php', querystring.stringify(typeDocument))
+    axios.post('/api/admin/document-type/document-type-get-current.php', querystring.stringify(typeDocument))
         .then(response => response.data)
         .then(currentTypeDocument => {
             dispatch({
@@ -33,7 +33,7 @@ export const getCurrentTypeDocument = typeDocument => dispatch => {
 };
 
 export const deleteTypeDocument = typeDocument => dispatch => {
-    axios.post('http://ais-archive/api/admin/document-type/document-type-delete.php', querystring.stringify(typeDocument))
+    axios.post('/api/admin/document-type/document-type-delete.php', querystring.stringify(typeDocument))
         .then(response => response.data)
         .then(answer => {
             if (answer === 'Ok') {

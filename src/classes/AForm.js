@@ -229,7 +229,7 @@ export default class AForm extends React.Component {
 
         this._getIconSpinner(idPasswordInput, 'mk-spinner-ring', true);
 
-        return axios.post('http://ais-archive/api/user/user-password-check.php', querystring.stringify({
+        return axios.post('/api/user/user-password-check.php', querystring.stringify({
             checkPassword: emailInput.value,
             password
         }))
@@ -267,7 +267,7 @@ export default class AForm extends React.Component {
 
         this._getIconSpinner(idEmailInput, 'mk-spinner-ring', true);
 
-        return axios.post('http://ais-archive/api/check-email.php', querystring.stringify({
+        return axios.post('/api/check-email.php', querystring.stringify({
             checkEmail: emailInput.value
         }))
             .then(answer => {
