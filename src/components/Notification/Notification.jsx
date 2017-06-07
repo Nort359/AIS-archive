@@ -32,10 +32,15 @@ class Notification extends React.Component {
             <div className='notification'>
                 <h4 className='notification__caption'>{ this.props.header }</h4>
                 { this.props.children }
-                <Button onClick={ event => {
-                    this.closeNotification(event);
-                    { this.props.btnEvent() }
-                } }>{ this.props.btnText }</Button>
+                {
+                    this.props.isNotButton ?
+                        null
+                        :
+                        <Button onClick={ event => {
+                            this.closeNotification(event);
+                            { this.props.btnEvent() }
+                        } }>{ this.props.btnText }</Button>
+                }
             </div>
         );
     }
@@ -46,6 +51,7 @@ Notification.propTypes = {
     btnText: React.PropTypes.string.isRequired,
     btnEvent: React.PropTypes.func,
     children: React.PropTypes.any.isRequired,
+    isNotButton: React.PropTypes.bool
 };
 
 export default Notification;

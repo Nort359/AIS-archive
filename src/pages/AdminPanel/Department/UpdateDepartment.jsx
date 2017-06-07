@@ -22,6 +22,7 @@ class UpdateDepartment extends React.Component {
                         adderData={ department.inputValid }
                         inputValue={ currentDepartment.title }
                         oldData={ currentDepartment }
+                        user={ this.props.userData }
                     />
                 </div>
             )
@@ -36,7 +37,8 @@ UpdateDepartment.path = '/AdminPanel/UpdateDepartment';
 
 export default connect(
     state => ({
-        department: state.department
+        department: state.department,
+        userData: state.userData
     }),
     dispatch => ({})
 )(UpdateDepartment);

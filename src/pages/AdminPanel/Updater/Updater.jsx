@@ -41,7 +41,7 @@ class Updater extends AForm {
             .catch(error => console.error(error));
     }
 
-    updateRecord(event, adder, oldObject, pathCheck, pathUpdate) {
+    updateRecord(event, adder, oldObject, pathCheck, pathUpdate, user) {
         event.preventDefault();
         const eventBlur = new Event('blur');
         const inputDepartment = document.getElementById(adder.id);
@@ -65,7 +65,7 @@ class Updater extends AForm {
 
                 spinnerStyle.display = 'block';
 
-                Promise.all([ Async.updateInputValueDB(adder.id, oldObject, pathUpdate) ])
+                Promise.all([ Async.updateInputValueDB(adder.id, oldObject, pathUpdate, user) ])
                     .then(answer => {
                         if (answer[0] !== 'Ok') {
                             console.log('answer[0]', answer[0]);
@@ -103,7 +103,7 @@ class Updater extends AForm {
                                 :
                                 <Spinner className='add-button__spinner'></Spinner>
                         }
-                        <Button type={ 'button' } onClick={ event => this.updateRecord(event, adderData, this.props.oldData, this.props.pathCheck, this.props.pathUpdate) }>Создать</Button>
+                        <Button type={ 'button' } onClick={ event => this.updateRecord(event, adderData, this.props.oldData, this.props.pathCheck, this.props.pathUpdate, this.props.user) }>Изменить</Button>
                         <Link to='/AdminPanel'>К списку справочников</Link>
                     </div>
                 </Form>
@@ -119,7 +119,8 @@ Updater.propTypes = {
     adderData: PropTypes.object.isRequired,
     oldData: PropTypes.object.isRequired,
     headerForm: PropTypes.string.isRequired,
-    inputValue: PropTypes.string
+    inputValue: PropTypes.string,
+    user: PropTypes.object.isRequired
 };
 
 export default Updater;

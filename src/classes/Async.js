@@ -43,14 +43,16 @@ export default class Async {
      * @param idElement — ID input, значение которого нужно обновить
      * @param oldObject — Объект со старыми данными
      * @param pathAPI — Путь к документу, который будет обновлять
+     * @param user — Пользователь, который обновляет запись
      * @returns {Promise.<T>} — Возвращает обещание с ответом от сервера
      */
-    static updateInputValueDB(idElement, oldObject, pathAPI) {
+    static updateInputValueDB(idElement, oldObject, pathAPI, user) {
         const inputDepartment = document.querySelector(`#${idElement}`);
 
         const departmentData = {
             id: oldObject.id,
-            data: inputDepartment.value
+            data: inputDepartment.value,
+            userId: user.id
         };
 
         return axios.post(pathAPI, querystring.stringify(departmentData))

@@ -20,6 +20,7 @@ class UpdatePosition extends React.Component {
                         adderData={ position.inputValid }
                         inputValue={ currentPosition.title }
                         oldData={ currentPosition }
+                        user={ this.props.userData }
                     />
                 </div>
             )
@@ -34,7 +35,8 @@ UpdatePosition.path = '/AdminPanel/UpdatePosition';
 
 export default connect(
     state => ({
-        position: state.position
+        position: state.position,
+        userData: state.userData
     }),
     dispatch => ({})
 )(UpdatePosition);

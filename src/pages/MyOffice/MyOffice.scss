@@ -1,17 +1,21 @@
 @import '../../scss_partian/config';
+@import './keyframes';
 
 body {
   line-height: normal;
 }
 
 .center-screen-block__cell {
-  vertical-align: top;
   padding-top: 100px;
+  padding-bottom: 100px;
 }
 
 .my-office {
-  width: $containerWidth;
+  width: 850px;
   margin: 0 auto;
+  position: relative;
+  top: 100px;
+
 
   &__container {
     width: 100%;
@@ -27,8 +31,8 @@ body {
     border-radius: 5px;
 
     &_container {
-      width: 250px;
-      height: 250px;
+      width: 300px;
+      height: 300px;
 
       padding: 15px;
       display: inline-block;
@@ -44,8 +48,8 @@ body {
   }
 
   &__data {
-    width: 400px;
-    height: 250px;
+    width: 500px;
+    height: 300px;
 
     margin-left: 15px;
     padding: 15px;
@@ -71,12 +75,46 @@ body {
       display: block;
       float: left;
     }
+
+    &_notification {
+      padding: 15px;
+      cursor: pointer;
+
+      &_icon {
+        font-size: 36px;
+        color: $headerColor;
+        display: inline-block;
+
+        @include put_transition();
+
+        animation: shakeBell 3s linear infinite;
+
+        :hover {
+          color: $mainColor;
+        }
+
+      }
+
+      &_count {
+        color: $mainColor;
+        display: inline-block;
+        margin: 0 0 0 15px;
+
+        position: relative;
+        bottom: 5px;
+      }
+
+      &_container {
+        margin-top: 15px;
+        width: 100%;
+      }
+    }
   }
 
   &__btn-update {
 
     &_container {
-      width: 665px;
+      width: 815px;
 
       margin-top: 15px;
       padding: 5px 15px 15px;
@@ -87,6 +125,7 @@ body {
       background-color: $formColor;
 
       font-size: $fontSize;
+      text-align: center;
 
       @include put_border(rgba(0, 0, 0, .2));
     }

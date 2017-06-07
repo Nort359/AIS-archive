@@ -23,6 +23,7 @@ class Header extends React.Component {
             <header>
                 <nav className='main-menu'>
                     <ul className='main-menu__left'>
+                        <Link to={ '/' } activeStyle={{ color: '#00b5ff' }}><li>Главная</li></Link>
                         <Link to={ '/documents' } activeStyle={{ color: '#00b5ff' }}><li>Документы</li></Link>
                         <li>Помощь</li>
                     </ul>

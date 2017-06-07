@@ -1,11 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router';
 import { connect } from 'react-redux';
+import axios from 'axios';
 
 import SideBar from '../../components/SideBar/SideBar';
 import List from '../../components/List/List';
 import Folder from '../../components/Folder/Folder';
 import Document from '../../components/Document/Document';
+import Button from '../../components/Button/Button';
 
 import './AdminPanel.scss';
 
@@ -26,9 +28,21 @@ class AdminPanel extends React.Component {
 
         this.updateRecord = this.updateRecord.bind(this);
 
+        this.putDumpDataBase    = this.putDumpDataBase.bind(this);
         this.deleteDepartment   = this.deleteDepartment.bind(this);
         this.deletePosition     = this.deletePosition.bind(this);
         this.deleteTypeDocument = this.deleteTypeDocument.bind(this);
+    }
+
+    putDumpDataBase() {
+        axios.get('/api/backup/db-get-dump.php')
+            .then(response => response.data)
+            .then(answer => {
+                if ( answer === 'Ok' ) {
+                    alert( 'Резервная копия базы данных успешно создана' );
+                }
+            })
+            .catch(error => console.error(error));
     }
 
     updateRecord(event, deleteObject, callback) {
@@ -45,7 +59,7 @@ class AdminPanel extends React.Component {
     }
 
     deleteDepartment(event) {
-        if ( window.confirm('Вы действительно желаете удалить эту запись?') ) {
+        if ( window.confirm('Вы действительно желаете удалить этот отдел?') ) {
             const departmentId = event.currentTarget.getAttribute('data-document-id'),
                 department = {
                     departmentId
@@ -56,7 +70,7 @@ class AdminPanel extends React.Component {
     }
 
     deletePosition(event) {
-        if ( window.confirm('Вы действительно желаете удалить эту запись?') ) {
+        if ( window.confirm('Вы действительно желаете удалить эту должность?') ) {
             const positionId = event.currentTarget.getAttribute('data-document-id'),
                 position = {
                     positionId
@@ -67,7 +81,7 @@ class AdminPanel extends React.Component {
     }
 
     deleteTypeDocument(event) {
-        if ( window.confirm('Вы действительно желаете удалить эту запись?') ) {
+        if ( window.confirm('Вы действительно желаете удалить этот тип документа?') ) {
             const typeDocumentId = event.currentTarget.getAttribute('data-document-id'),
                 typeDocument = {
                     typeDocumentId
@@ -82,6 +96,8 @@ class AdminPanel extends React.Component {
             positions       = ObjectHandler.getArrayFromObject(this.props.position),
             typeDocuments   = ObjectHandler.getArrayFromObject(this.props.typeDocument);
 
+        const user = this.props.userData;
+
         return (
             <div>
                 <SideBar>
@@ -92,6 +108,10 @@ class AdminPanel extends React.Component {
                         <Link to='/AdminPanel/TypeDocument'><li className='sidebar__caption sidebar__list_element'>Типы документов</li></Link>
                     </List>
                 </SideBar>
+
+                <div className="admin-buttons__container">
+                    <Button onClick={ this.putDumpDataBase }>Создать резервную копию базы даненых</Button>
+                </div>
 
                 <Folder caption={ 'Отделы' } folderId={ 'departmentsList' }>
                     { departments.map(department => {
@@ -143,7 +163,8 @@ export default connect(
     state => ({
         department: state.department,
         position: state.position,
-        typeDocument: state.typeDocument
+        typeDocument: state.typeDocument,
+        userData: state.userData
     }),
     dispatch => ({
         getDepartmentDB: () => {

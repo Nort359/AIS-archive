@@ -22,6 +22,7 @@ class UpdateTypeDocument extends React.Component {
                         adderData={ typeDocument.inputValid }
                         inputValue={ currentTypeDocument.title }
                         oldData={ currentTypeDocument }
+                        user={ this.props.userData }
                     />
                 </div>
             )
@@ -36,7 +37,8 @@ UpdateTypeDocument.path = '/AdminPanel/UpdateTypeDocument';
 
 export default connect(
     state => ({
-        typeDocument: state.typeDocument
+        typeDocument: state.typeDocument,
+        userData: state.userData
     }),
     dispatch => ({})
 )(UpdateTypeDocument);

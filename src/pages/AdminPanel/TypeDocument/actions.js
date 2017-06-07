@@ -41,6 +41,10 @@ export const deleteTypeDocument = typeDocument => dispatch => {
                     type: DELETE_TYPE_DOCUMENT,
                     typeDocumentId : typeDocument.typeDocumentId
                 });
+            } else if ( answer === 'Вы не можете удалить этот тип документа, так как к нему пользователи уже добавили свои документы' ) {
+                alert(answer);
+            } else {
+                console.log(answer);
             }
         })
         .catch(error => console.error(error));
