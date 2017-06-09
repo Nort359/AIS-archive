@@ -7,7 +7,6 @@ import { typeDocument } from '../adminPanelData';
 class AddType extends React.Component {
 
     render() {
-        // TODO: Проблема с добавлением типа документа
         return (
             <div>
                 <Adder
@@ -15,6 +14,7 @@ class AddType extends React.Component {
                     pathCheck={ typeDocument.pathServerCheckExist }
                     pathAdd={ typeDocument.pathServerAdd }
                     adderData={ typeDocument.inputValid }
+                    messageByAdd={ 'Новый тип документа успешно добавлен' }
                 />
             </div>
         );

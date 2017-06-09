@@ -14,6 +14,7 @@ class AddDepartment extends Component {
                     pathCheck={ department.pathServerCheckExist }
                     pathAdd={ department.pathServerAdd }
                     adderData={ department.inputValid }
+                    messageByAdd={ 'Новый отдел успешно добавлен' }
                 />
             </div>
         );

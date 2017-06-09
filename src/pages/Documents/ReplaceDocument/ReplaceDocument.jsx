@@ -238,7 +238,7 @@ class ReplaceDocument extends AForm {
                                     onBlur={ this.checkFile }
                                     onFocus={ event => this.focusInput(event, file.messageDefault) }
                                 />
-                                <p>Дата окончания срока годности</p>
+                                <p className="form-after-input-text">Введите дату пересмотра:</p>
                                 <Input
                                     placeholder={ dateEnd.messageDefault }
                                     inputId={ dateEnd.id }
@@ -262,7 +262,7 @@ class ReplaceDocument extends AForm {
                                         }
                                     } }
                                 />
-                                <p>Дата подписания документа</p>
+                                <p className="form-after-input-text">Введите дату подписания:</p>
                                 <Input
                                     placeholder={ dateSignature.messageDefault }
                                     inputId={ dateSignature.id }
@@ -310,12 +310,18 @@ class ReplaceDocument extends AForm {
                             <MessageBox></MessageBox>
                         </div>
                         :
-                        <h2>
-                            Индификатор документа был утерян,<br/>
-                            возможно вы перезагрузили страницу, пожалуйста,<br/>
-                            вернитесь к списку документов и нажмите<br/>
-                            на замену необходимого документа снова
-                        </h2>
+                        <div>
+                            <h2>
+                                Индификатор документа был утерян,<br/>
+                                возможно вы перезагрузили страницу, пожалуйста,<br/>
+                                вернитесь к списку документов и нажмите<br/>
+                                на замену необходимого документа снова
+                            </h2>
+                            <Button onClick={ event => window.history.back() } className={ 'button-back' } >
+                                <i className="glyphicon glyphicon-hand-left"></i>
+                                Назад
+                            </Button>
+                        </div>
                 }
 
             </CenterScreenBlock>

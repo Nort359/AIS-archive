@@ -42,10 +42,6 @@
 			$errors_sing_up[] = 'Вы не ввели своё имя';
 		}
 
-		if ( trim( $_POST[ 'userMiddleName' ] ) === '' ) {
-			$errors_sing_up[] = 'Вы не ввели своё отчество';
-		}
-
 		if ( trim( $_POST[ 'userEmail' ] ) === '' ) {
 			$errors_sing_up[] = 'Вы не ввели свой Email';
 		}
@@ -55,7 +51,7 @@
 		}
 
 		if( mb_strlen( $_POST[ 'userPassword' ], 'utf-8' ) < 6 ) {
-			$errors_sing_up[] = 'Введённый вами пароль слишком мал, он должен содержать хотя бы 6 символов';
+			$errors_sing_up[] = 'Введённый вами пароль слишком мал';
 		}
 
 		// Если такой Email уже существует

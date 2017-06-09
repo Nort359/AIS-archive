@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router';
 import { connect } from 'react-redux';
+import $ from 'jquery';
 
 // Import components
 import CenterScreenBlock from '../../components/CenterScreenBlock/CenterScreenBlock';
@@ -11,7 +12,10 @@ import MessageBox from '../../components/MessageBox/MessageBox';
 
 import Notification from '../../components/Notification/Notification';
 
+import './Authorization.scss';
+
 import AForm from '../../classes/AForm';
+import Animation from '../../classes/Animation';
 
 import { authorizationUser } from './actions';
 
@@ -30,6 +34,13 @@ class Authorization extends AForm {
         this.inputsData = inputsData;
 
         this.authorizationUser = this.authorizationUser.bind(this);
+        this.onKeyPressEnter = this.onKeyPressEnter.bind(this);
+    }
+
+    onKeyPressEnter(event) {
+        if (event.which === 13 || event.keyCode === 13) {
+            this.authorizationUser();
+        }
     }
 
     authorizationUser() {
@@ -41,10 +52,14 @@ class Authorization extends AForm {
         const inputEmail = document.querySelector(`#${email.id}`),
               inputPassword = document.querySelector(`#${password.id}`);
 
-        if (!email.patternOk.test(inputEmail.value))
+        if (!email.patternOk.test(inputEmail.value)) {
+            Animation.showMessageBox('Введите email');
             return inputEmail.dispatchEvent(eventBlur);
-        if (!password.patternOk.test(inputPassword.value))
+        }
+        if (!password.patternOk.test(inputPassword.value)) {
+            Animation.showMessageBox('Введите пароль');
             return inputPassword.dispatchEvent(eventBlur);
+        }
 
         const user = {
             userEmail: inputEmail.value,
@@ -80,13 +95,15 @@ class Authorization extends AForm {
                             inputId={ email.id }
                             onBlur={ event => this.checkValidTextInput(event, email.patternOk, email.messageOk, email.messageError, email.messageDefault) }
                             onFocus={ event => this.focusInput(event, email.messageDefault) }
+                            onKeyPress={ this.onKeyPressEnter }
                         />
                         <Input
                             type={ password.type }
                             placeholder={ password.messageDefault }
                             icon={ password.icon }
                             inputId={ password.id }
-                            onChange={ event => this.checkValidPasswordInput(event, password.patternOk) }
+                            onChange={ event => this.checkValidTextInput( event, password.patternOk, password.messageOk ) }
+                            onKeyPress={ this.onKeyPressEnter }
                         />
 
                         <div className='registration__button_container'>

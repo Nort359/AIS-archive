@@ -12,11 +12,6 @@
     @include put_transition();
 
     margin-left: 120px;
-    background-color: lighten($borderColor, 80%);
-
-    &:hover {
-      background-color: lighten($borderColor, 50%);
-    }
   }
 
   &__icon {

@@ -2,13 +2,16 @@ import React from 'react';
 import { Link } from 'react-router';
 import { connect } from 'react-redux';
 import $ from 'jquery';
+import { Popover } from 'react-bootstrap';
 import moment from 'moment';
-
+import axios from 'axios';
+import querystring from 'querystring';
 import SideBar from '../../components/SideBar/SideBar';
 import Input from '../../components/Input/Input';
 import Button from '../../components/Button/Button';
 import Folder from '../../components/Folder/Folder';
 import Document from '../../components/Document/Document';
+import CenterScreenBlock from '../../components/CenterScreenBlock/CenterScreenBlock';
 
 import ObjectHandler from '../../classes/ObjectHandler';
 
@@ -39,6 +42,18 @@ class Documents extends React.Component {
         this.showOldDocuments = this.showOldDocuments.bind(this);
         this.searchDocument = this.searchDocument.bind(this);
         this.replaceDocument = this.replaceDocument.bind(this);
+        this.downloadDocument = this.downloadDocument.bind(this);
+    }
+
+    downloadDocument() {
+        const id = event.currentTarget.getAttribute('data-document-id'),
+              record = {
+                  id
+              };
+
+        axios.post( '/api/document/document-download.php' )
+            .then(response => response.data)
+            .catch( error => console.log( error ) );
     }
 
     showOldDocuments(event, id) {
@@ -108,7 +123,7 @@ class Documents extends React.Component {
             const user = this.props.userData;
             this.props.getDocumentsDB({ userId: user.id });
         }
-
+        const user = this.props.userData;
 
         let documents = ObjectHandler.getArrayFromObject(this.props.document),
             typeDocuments = ObjectHandler.getArrayFromObject(this.props.typeDocument);
@@ -131,96 +146,290 @@ class Documents extends React.Component {
 
         moment.locale('ru');
 
+        const popoverChange = (
+            <Popover
+                id="popover-trigger-hover-focus"
+                title="Подсказка"
+            >
+                Кликнув по этой иконке Вы <strong>перейдёте на форму изменения документа</strong>
+            </Popover>
+        );
+
+        const popoverDelete = (
+            <Popover
+                id="popover-trigger-hover-focus"
+                title="Подсказка"
+            >
+                Кликнув по этой иконке Вы <strong>удалите документ</strong>
+            </Popover>
+        );
+
+        const popoverReplace = (
+            <Popover
+                id="popover-trigger-hover-focus"
+                title="Подсказка"
+            >
+                Кликнув по этой иконке Вы <strong>перейдёте на форму замены документа на новую версию</strong>
+            </Popover>
+        );
+
+        const popoverAdd = (
+            <Popover
+                id="popover-trigger-hover-focus"
+                title="Подсказка"
+            >
+                Кликнув по этой иконке Вы <strong>перейдёте на страницу добавления ответственного лица (пользователя) к данному документу</strong>
+            </Popover>
+        );
+
+        const popoverDownLoad = (
+            <Popover
+                id="popover-trigger-hover-focus"
+                title="Подсказка"
+            >
+                Кликнув по этой иконке Вы <strong>скачаете документ на свой компьютер</strong>
+            </Popover>
+        );
+
         return (
             <div>
-                <h2 className='documents__header'>Мои документы</h2>
+                {
+                    parseInt(user.id) > 0 ?
+                        <div>
+                            <h2 className='documents__header'>Мои документы</h2>
 
-                <div className='documents__add-doc-btn_container'>
-                    <Link to={ '/documents/AddDocument' }>
-                        <Button className={ 'documents__add-doc-btn' } >Добавить документ</Button>
-                    </Link>
-                </div>
+                            <div className='documents__add-doc-btn_container'>
+                                <Link to={ '/documents/AddDocument' } className={ 'documents__add-doc-btn_link' }>
+                                    <Button className={ 'documents__add-doc-btn' } >Добавить документ</Button>
+                                </Link>
+                            </div>
 
-                { typeDocuments.map( typeDocument => {
-                    return <Folder
-                        caption={ typeDocument.title + ` (${documentCountInFolder[typeDocument.id]})` }
-                        key={ typeDocument.id }
-                        folderId={ 'folder-' + typeDocument.id }>
+                            <div className='search_container'>
+                                <h3 className='search'>Поиск</h3>
+                                <Input
+                                    placeholder={ 'Название документа' }
+                                    inputId={ 'sidebar__search_document' }
+                                    onChange={ event => this.searchDocument(event) }
+                                    inputClassName={ 'search_input' }
+                                />
+                            </div>
 
-                        { documents.map(document => {
-                            if ( document.type_id === typeDocument.id ) {
-                                oldDocs[document.id] = [];
-                            }
-                        } ) }
+                            { typeDocuments.map( typeDocument => {
+                                return <Folder
+                                    caption={ typeDocument.title + ` (${documentCountInFolder[typeDocument.id]})` }
+                                    key={ typeDocument.id }
+                                    folderId={ 'folder-' + typeDocument.id }>
 
-                    { documents.map(document => {
-                        if ( document.type_id === typeDocument.id ) {
-                            if ( document.document_old === '1' ) {
-                                oldDocs[ document.old_id ][ document.id ] = document;
-                            } else if ( document.document_old === '0' && document.old_id === '0' ) {
-                                let expansionFile = /\.[^\.]*$/.exec(document.path); // расширение
-                                return (
-                                    <div className='document-container'>
-                                        <div className='document-active'>
-                                            <Document
-                                                documentId={ document.id }
-                                                key={ document.id }
-                                                caption={ document.title + ` (${expansionFile})` }
-                                                isReplace={ true }
-                                                isAddUser={ true }
-                                                onReplace={ event => this.replaceDocument(event, this.props.document, this.props.getCurrentDocumentDB, '/public/#/documents/ReplaceDocument') }
-                                                onUpdateClick={ event => this.replaceDocument(event, this.props.document, this.props.getCurrentDocumentDB, '/public/#/documents/UpdateDocument') }
-                                                onAddUser={ event => this.replaceDocument(event, this.props.document, this.props.getCurrentDocumentDB, '/public/#/documents/UserList') }
-                                            >
-                                                <p><span>Полное название документа:</span> { document.path }</p>
-                                                <p><span>Краткое описание документа:</span> { document.description !== '' ? document.description : '[Описание отсутствует]'  }</p>
-                                                <p><span>Дата добавления документа:</span> { moment( document.datebegin ).format('LL') }</p>
-                                                <p><span>Дата подписания документа:</span> { moment( document.datesignature ).format('LL') }</p>
-                                                <p><span>Дата пересмотра документа:</span> { moment( document.dateend ).format('LL') }</p>
-                                            </Document>
-                                        </div>
-                                    </div>
-                                )
-                            }
-                        }
+                                    { documents.map(document => {
+                                        if ( document.type_id === typeDocument.id ) {
+                                            oldDocs[document.id] = [];
+                                        }
+                                    } ) }
 
-                    } ) }
+                                    { documents.map(document => {
+                                        if ( document.type_id === typeDocument.id ) {
+                                            if ( document.document_old === '1' ) {
+                                                oldDocs[ document.old_id ][ document.id ] = document;
+                                            } else if ( document.document_old === '0' ) {
+                                                let expansionFile = /\.[^\.]*$/.exec(document.path); // расширение
+                                                return (
+                                                    <div className='document-container'>
+                                                        <div className='document-active'>
+                                                            <Document
+                                                                documentId={ document.id }
+                                                                key={ document.id }
+                                                                caption={ document.title + ` (${expansionFile})` }
+                                                                isReplace={ true }
+                                                                isAddUser={ true }
+                                                                isDownload={ true }
+                                                                onReplace={ event => this.replaceDocument(event, this.props.document, this.props.getCurrentDocumentDB, '/public/#/documents/ReplaceDocument') }
+                                                                onUpdateClick={ event => this.replaceDocument(event, this.props.document, this.props.getCurrentDocumentDB, '/public/#/documents/UpdateDocument') }
+                                                                onAddUser={ event => this.replaceDocument(event, this.props.document, this.props.getCurrentDocumentDB, '/public/#/documents/UserList') }
+                                                                onDownload={ event => this.downloadDocument(event) }
+                                                                popoverChange={ popoverChange }
+                                                                popoverDelete={ popoverDelete }
+                                                                popoverReplace={ popoverReplace }
+                                                                popoverAdd={ popoverAdd }
+                                                                popoverDownload={ popoverDownLoad }
+                                                            >
+                                                                <p><span>Полное название документа:</span> { document.path }</p>
+                                                                <p><span>Краткое описание документа:</span> { document.description !== '' ? document.description : '[Описание отсутствует]'  }</p>
+                                                                <p><span>Дата добавления документа:</span> { moment( document.datebegin ).format('LL') }</p>
+                                                                <p><span>Дата подписания документа:</span> { moment( document.datesignature ).format('LL') }</p>
+                                                                <p><span>Дата пересмотра документа:</span> { moment( document.dateend ).format('LL') }</p>
+                                                            </Document>
+                                                        </div>
+                                                    </div>
+                                                )
+                                            }
+                                        }
 
-                        { documents.map(document => {
-                            if ( document.type_id === typeDocument.id ) {
-                                return (
-                                    <div className='document-container'>
-                                        {
-                                            Array.isArray( oldDocs[document.id] ) ?
-                                                <div className='document-container-for-old-doc'>
-                                                    { oldDocs[document.id].map( (d, i, arr) => {
-                                                        let expansionFile = /\.[^\.]*$/.exec(d.path); // расширение
-                                                        if ( i !== arr.length - 1 ) {
-                                                            return (
-                                                                <div className='document-old'>
-                                                                    <Document
-                                                                        documentId={ d.id }
-                                                                        key={ d.id }
-                                                                        caption={ d.title + ` (${expansionFile})` + ' (не актуален)' }
-                                                                        isUpdate={ true }
-                                                                    >
-                                                                        <p><span>Полное название документа:</span> { d.path }</p>
-                                                                        <p><span>Краткое описание документа:</span> { d.description !== '' ? d.description : '[Описание отсутствует]'  }</p>
-                                                                        <p><span>Дата добавления документа:</span> { moment( d.datebegin ).format('LL') }</p>
-                                                                        <p><span>Дата подписания документа:</span> { moment( d.datesignature ).format('LL') }</p>
-                                                                        <p><span>Дата пересмотра документа:</span> { moment( d.dateend ).format('LL') }</p>
-                                                                    </Document>
-                                                                </div>
-                                                            );
-                                                        } else {
-                                                            return (
-                                                                <div>
+                                    } ) }
+
+                                    { documents.map(document => {
+                                        if ( document.type_id === typeDocument.id ) {
+                                            return (
+                                                <div className='document-container'>
+                                                    {
+                                                        Array.isArray( oldDocs[document.id] ) ?
+                                                            <div className='document-container-for-old-doc'>
+                                                                { oldDocs[document.id].map( (d, i, arr) => {
+                                                                    let expansionFile = /\.[^\.]*$/.exec(d.path); // расширение
+                                                                    if ( i !== arr.length - 1 ) {
+                                                                        return (
+                                                                            <div className='document-old'>
+                                                                                <Document
+                                                                                    documentId={ d.id }
+                                                                                    key={ d.id }
+                                                                                    caption={ d.title + ` (${expansionFile})` + ' (не актуален)' }
+                                                                                    isUpdate={ true }
+                                                                                    isDownload={ true }
+                                                                                    popoverChange={ popoverChange }
+                                                                                    popoverDelete={ popoverDelete }
+                                                                                    popoverReplace={ popoverReplace }
+                                                                                    popoverAdd={ popoverAdd }
+                                                                                    popoverDownload={ popoverDownLoad }
+                                                                                >
+                                                                                    <p><span>Полное название документа:</span> { d.path }</p>
+                                                                                    <p><span>Краткое описание документа:</span> { d.description !== '' ? d.description : '[Описание отсутствует]'  }</p>
+                                                                                    <p><span>Дата добавления документа:</span> { moment( d.datebegin ).format('LL') }</p>
+                                                                                    <p><span>Дата подписания документа:</span> { moment( d.datesignature ).format('LL') }</p>
+                                                                                    <p><span>Дата пересмотра документа:</span> { moment( d.dateend ).format('LL') }</p>
+                                                                                </Document>
+                                                                            </div>
+                                                                        );
+                                                                    } else {
+                                                                        return (
+                                                                            <div>
+                                                                                <div className='document-old'>
+                                                                                    <Document
+                                                                                        documentId={ d.id }
+                                                                                        key={ d.id }
+                                                                                        caption={ d.title + ` (${expansionFile})` + ' (не актуален)' }
+                                                                                        isUpdate={ true }
+                                                                                        isDownload={ true }
+                                                                                        popoverChange={ popoverChange }
+                                                                                        popoverDelete={ popoverDelete }
+                                                                                        popoverReplace={ popoverReplace }
+                                                                                        popoverAdd={ popoverAdd }
+                                                                                        popoverDownload={ popoverDownLoad }
+                                                                                    >
+                                                                                        <p><span>Полное название документа:</span> { d.path }</p>
+                                                                                        <p><span>Краткое описание документа:</span> { d.description !== '' ? d.description : '[Описание отсутствует]'  }</p>
+                                                                                        <p><span>Дата добавления документа:</span> { moment( d.datebegin ).format('LL') }</p>
+                                                                                        <p><span>Дата подписания документа:</span> { moment( d.datesignature ).format('LL') }</p>
+                                                                                        <p><span>Дата пересмотра документа:</span> { moment( d.dateend ).format('LL') }</p>
+                                                                                    </Document>
+                                                                                </div>
+                                                                                <div className='document-active'>
+                                                                                    <Document
+                                                                                        documentId={ document.id }
+                                                                                        key={ document.id }
+                                                                                        caption={ document.title + ` (${expansionFile = /\.[^\.]*$/.exec(document.path)})` }
+                                                                                        isReplace={ true }
+                                                                                        linkForUpdate={ false }
+                                                                                        onReplace={ event => this.replaceDocument(event, this.props.document, this.props.getCurrentDocumentDB, '/public/#/documents/ReplaceDocument') }
+                                                                                        onUpdateClick={ event => this.replaceDocument(event, this.props.document, this.props.getCurrentDocumentDB, '/public/#/documents/UpdateDocument') }
+                                                                                        onAddUser={ event => this.replaceDocument(event, this.props.document, this.props.getCurrentDocumentDB, '/public/#/documents/UserList') }
+                                                                                        onClickDocument={ event => this.showOldDocuments(event, document.id) }
+                                                                                        oldDocsIsOpen={ false }
+                                                                                        isAddUser={ true }
+                                                                                        isDownload={ true }
+                                                                                        popoverChange={ popoverChange }
+                                                                                        popoverDelete={ popoverDelete }
+                                                                                        popoverReplace={ popoverReplace }
+                                                                                        popoverAdd={ popoverAdd }
+                                                                                        popoverDownload={ popoverDownLoad }
+                                                                                    >
+                                                                                        <p><span>Полное название документа:</span> { document.path }</p>
+                                                                                        <p><span>Краткое описание документа:</span> { document.description !== '' ? document.description : '[Описание отсутствует]'  }</p>
+                                                                                        <p><span>Дата добавления документа:</span> { moment( document.datebegin ).format('LL') }</p>
+                                                                                        <p><span>Дата подписания документа:</span> { moment( document.datesignature ).format('LL') }</p>
+                                                                                        <p><span>Дата пересмотра документа:</span> { moment( document.dateend ).format('LL') }</p>
+                                                                                    </Document>
+                                                                                </div>
+                                                                            </div>
+                                                                        );
+                                                                    }
+                                                                } ) }
+                                                            </div>
+                                                            :
+                                                            null
+                                                    }
+                                                </div>
+                                            );
+                                        }
+                                    } ) }
+                                </Folder>
+                            } ) }
+
+                            { documents.map(document => {
+                                if ( document.type_id === '0' ) {
+                                    oldDocs[document.id] = [];
+                                }
+                            } ) }
+
+                            { documents.map(document => {
+                                if ( document.type_id === '0' ) {
+                                    if ( document.document_old === '1' ) {
+                                        oldDocs[ document.old_id ][ document.id ] = document;
+                                    } else if ( document.document_old === '0' && document.old_id === '0' ) {
+                                        let expansionFile = /\.[^\.]*$/.exec(document.path); // расширение
+                                        return (
+                                            <div className='document-container'>
+                                                <div className='document-active'>
+                                                    <Document
+                                                        documentId={ document.id }
+                                                        key={ document.id }
+                                                        caption={ document.title + ` (${expansionFile})` }
+                                                        isReplace={ true }
+                                                        isAddUser={ true }
+                                                        isDownload={ true }
+                                                        onReplace={ event => this.replaceDocument(event, this.props.document, this.props.getCurrentDocumentDB, '/public/#/documents/ReplaceDocument') }
+                                                        onUpdateClick={ event => this.replaceDocument(event, this.props.document, this.props.getCurrentDocumentDB, '/public/#/documents/UpdateDocument') }
+                                                        onAddUser={ event => this.replaceDocument(event, this.props.document, this.props.getCurrentDocumentDB, '/public/#/documents/UserList') }
+                                                        popoverChange={ popoverChange }
+                                                        popoverDelete={ popoverDelete }
+                                                        popoverReplace={ popoverReplace }
+                                                        popoverAdd={ popoverAdd }
+                                                        popoverDownload={ popoverDownLoad }
+                                                    >
+                                                        <p><span>Полное название документа:</span> { document.path }</p>
+                                                        <p><span>Краткое описание документа:</span> { document.description !== '' ? document.description : '[Описание отсутствует]'  }</p>
+                                                        <p><span>Дата добавления документа:</span> { moment( document.datebegin ).format('LL') }</p>
+                                                        <p><span>Дата подписания документа:</span> { moment( document.datesignature ).format('LL') }</p>
+                                                        <p><span>Дата пересмотра документа:</span> { moment( document.dateend ).format('LL') }</p>
+                                                    </Document>
+                                                </div>
+                                            </div>
+                                        )
+                                    }
+                                }
+                            } ) }
+
+                            { documents.map(document => {
+                                if ( document.type_id === '0' ) {
+                                    return (
+                                        <div className='document-container'>
+                                            {
+                                                Array.isArray( oldDocs[document.id] ) ?
+                                                    <div className='document-container-for-old-doc'>
+                                                        { oldDocs[document.id].map( (d, i, arr) => {
+                                                            let expansionFile = /\.[^\.]*$/.exec(d.path); // расширение
+                                                            if ( i !== arr.length - 1 ) {
+                                                                return (
                                                                     <div className='document-old'>
                                                                         <Document
                                                                             documentId={ d.id }
                                                                             key={ d.id }
                                                                             caption={ d.title + ` (${expansionFile})` + ' (не актуален)' }
                                                                             isUpdate={ true }
+                                                                            isDownload={ true }
+                                                                            popoverChange={ popoverChange }
+                                                                            popoverDelete={ popoverDelete }
+                                                                            popoverReplace={ popoverReplace }
+                                                                            popoverAdd={ popoverAdd }
+                                                                            popoverDownload={ popoverDownLoad }
                                                                         >
                                                                             <p><span>Полное название документа:</span> { d.path }</p>
                                                                             <p><span>Краткое описание документа:</span> { d.description !== '' ? d.description : '[Описание отсутствует]'  }</p>
@@ -229,237 +438,143 @@ class Documents extends React.Component {
                                                                             <p><span>Дата пересмотра документа:</span> { moment( d.dateend ).format('LL') }</p>
                                                                         </Document>
                                                                     </div>
-                                                                    <div className='document-active'>
-                                                                        <Document
-                                                                            documentId={ document.id }
-                                                                            key={ document.id }
-                                                                            caption={ document.title + ` (${expansionFile = /\.[^\.]*$/.exec(document.path)})` }
-                                                                            isReplace={ true }
-                                                                            linkForUpdate={ false }
-                                                                            onReplace={ event => this.replaceDocument(event, this.props.document, this.props.getCurrentDocumentDB, '/public/#/documents/ReplaceDocument') }
-                                                                            onUpdateClick={ event => this.replaceDocument(event, this.props.document, this.props.getCurrentDocumentDB, '/public/#/documents/UpdateDocument') }
-                                                                            onAddUser={ event => this.replaceDocument(event, this.props.document, this.props.getCurrentDocumentDB, '/public/#/documents/UserList') }
-                                                                            onClickDocument={ event => this.showOldDocuments(event, document.id) }
-                                                                            oldDocsIsOpen={ false }
-                                                                            isAddUser={ true }
-                                                                        >
-                                                                            <p><span>Полное название документа:</span> { document.path }</p>
-                                                                            <p><span>Краткое описание документа:</span> { document.description !== '' ? document.description : '[Описание отсутствует]'  }</p>
-                                                                            <p><span>Дата добавления документа:</span> { moment( document.datebegin ).format('LL') }</p>
-                                                                            <p><span>Дата подписания документа:</span> { moment( document.datesignature ).format('LL') }</p>
-                                                                            <p><span>Дата пересмотра документа:</span> { moment( document.dateend ).format('LL') }</p>
-                                                                        </Document>
+                                                                );
+                                                            } else {
+                                                                return (
+                                                                    <div>
+                                                                        <div className='document-old'>
+                                                                            <Document
+                                                                                documentId={ d.id }
+                                                                                key={ d.id }
+                                                                                caption={ d.title + ` (${expansionFile})` + ' (не актуален)' }
+                                                                                isUpdate={ true }
+                                                                                isDownload={ true }
+                                                                                popoverChange={ popoverChange }
+                                                                                popoverDelete={ popoverDelete }
+                                                                                popoverReplace={ popoverReplace }
+                                                                                popoverAdd={ popoverAdd }
+                                                                                popoverDownload={ popoverDownLoad }
+                                                                            >
+                                                                                <p><span>Полное название документа:</span> { d.path }</p>
+                                                                                <p><span>Краткое описание документа:</span> { d.description !== '' ? d.description : '[Описание отсутствует]'  }</p>
+                                                                                <p><span>Дата добавления документа:</span> { moment( d.datebegin ).format('LL') }</p>
+                                                                                <p><span>Дата подписания документа:</span> { moment( d.datesignature ).format('LL') }</p>
+                                                                                <p><span>Дата пересмотра документа:</span> { moment( d.dateend ).format('LL') }</p>
+                                                                            </Document>
+                                                                        </div>
+                                                                        <div className='document-active'>
+                                                                            <Document
+                                                                                documentId={ document.id }
+                                                                                key={ document.id }
+                                                                                caption={ document.title + ` (${expansionFile = /\.[^\.]*$/.exec(document.path)})` }
+                                                                                isReplace={ true }
+                                                                                linkForUpdate={ false }
+                                                                                onReplace={ event => this.replaceDocument(event, this.props.document, this.props.getCurrentDocumentDB, '/public/#/documents/ReplaceDocument') }
+                                                                                onUpdateClick={ event => this.replaceDocument(event, this.props.document, this.props.getCurrentDocumentDB, '/public/#/documents/UpdateDocument') }
+                                                                                onAddUser={ event => this.replaceDocument(event, this.props.document, this.props.getCurrentDocumentDB, '/public/#/documents/UserList') }
+                                                                                onClickDocument={ event => this.showOldDocuments(event, document.id) }
+                                                                                oldDocsIsOpen={ false }
+                                                                                isAddUser={ true }
+                                                                                isDownload={ true }
+                                                                                popoverChange={ popoverChange }
+                                                                                popoverDelete={ popoverDelete }
+                                                                                popoverReplace={ popoverReplace }
+                                                                                popoverAdd={ popoverAdd }
+                                                                                popoverDownload={ popoverDownLoad }
+                                                                            >
+                                                                                <p><span>Полное название документа:</span> { document.path }</p>
+                                                                                <p><span>Краткое описание документа:</span> { document.description !== '' ? document.description : '[Описание отсутствует]'  }</p>
+                                                                                <p><span>Дата добавления документа:</span> { moment( document.datebegin ).format('LL') }</p>
+                                                                                <p><span>Дата подписания документа:</span> { moment( document.datesignature ).format('LL') }</p>
+                                                                                <p><span>Дата пересмотра документа:</span> { moment( document.dateend ).format('LL') }</p>
+                                                                            </Document>
+                                                                        </div>
                                                                     </div>
-                                                                </div>
-                                                            );
-                                                        }
-                                                    } ) }
-                                                </div>
-                                                :
-                                                null
-                                        }
-                                    </div>
-                                );
-                            }
-                        } ) }
-                    </Folder>
-                } ) }
+                                                                );
+                                                            }
+                                                        } ) }
+                                                    </div>
+                                                    :
+                                                    null
+                                            }
+                                        </div>
+                                    );
+                                }
+                            } ) }
 
-                { documents.map(document => {
-                    if ( document.type_id === '0' ) {
-                        oldDocs[document.id] = [];
-                    }
-                } ) }
+                            <SideBar>
+                                <h3 className='sidebar__caption'>Действия над документами</h3>
 
-                { documents.map(document => {
-                    if ( document.type_id === '0' ) {
-                        if ( document.document_old === '1' ) {
-                            oldDocs[ document.old_id ][ document.id ] = document;
-                        } else if ( document.document_old === '0' && document.old_id === '0' ) {
-                            let expansionFile = /\.[^\.]*$/.exec(document.path); // расширение
-                            return (
-                                <div className='document-container'>
-                                    <div className='document-active'>
-                                        <Document
-                                            documentId={ document.id }
-                                            key={ document.id }
-                                            caption={ document.title + ` (${expansionFile})` }
-                                            isReplace={ true }
-                                            isAddUser={ true }
-                                            onReplace={ event => this.replaceDocument(event, this.props.document, this.props.getCurrentDocumentDB, '/public/#/documents/ReplaceDocument') }
-                                            onUpdateClick={ event => this.replaceDocument(event, this.props.document, this.props.getCurrentDocumentDB, '/public/#/documents/UpdateDocument') }
-                                            onAddUser={ event => this.replaceDocument(event, this.props.document, this.props.getCurrentDocumentDB, '/public/#/documents/UserList') }
-                                        >
-                                            <p><span>Полное название документа:</span> { document.path }</p>
-                                            <p><span>Краткое описание документа:</span> { document.description !== '' ? document.description : '[Описание отсутствует]'  }</p>
-                                            <p><span>Дата добавления документа:</span> { moment( document.datebegin ).format('LL') }</p>
-                                            <p><span>Дата подписания документа:</span> { moment( document.datesignature ).format('LL') }</p>
-                                            <p><span>Дата пересмотра документа:</span> { moment( document.dateend ).format('LL') }</p>
-                                        </Document>
+                                <div className='sidebar__filter_container'>
+                                    <h3 className='sidebar__caption sidebar__filter'>Фильтрация</h3>
+                                    <i className='sidebar__filter_icon glyphicon glyphicon-filter'></i>
+                                </div>
+                                <div className='sidebar__filter_item-container'>
+                                    <div className='sidebar__filter-date'>
+                                        <div className='sidebar__filter-date_container'>
+                                            <h4 className='sidebar__caption'>По дате добавления</h4>
+                                            <p>Начиная с даты:</p>
+                                            <Input
+                                                inputId={ 'dateBeginFrom' }
+                                                type='date'
+                                                onChange={ event => this.searchDocument(event) }
+                                            />
+                                            <p>Заканчивая датой:</p>
+                                            <Input
+                                                inputId={ 'dateBeginTo' }
+                                                type='date'
+                                                onChange={ event => this.searchDocument(event) }
+                                            />
+                                        </div>
+                                        <div className='sidebar__filter-date_container'>
+                                            <h4 className='sidebar__caption'>По дате подписания</h4>
+                                            <p>Начиная с даты:</p>
+                                            <Input
+                                                inputId={ 'dateSignatureFrom' }
+                                                type='date'
+                                                onChange={ event => this.searchDocument(event) }
+                                            />
+                                            <p>Заканчивая датой:</p>
+                                            <Input
+                                                inputId={ 'dateSignatureTo' }
+                                                type='date'
+                                                onChange={ event => this.searchDocument(event) }
+                                            />
+                                        </div>
+                                        <div className='sidebar__filter-date_container'>
+                                            <h4 className='sidebar__caption'>По дате окончания срока годности</h4>
+                                            <p>Начиная с даты:</p>
+                                            <Input
+                                                inputId={ 'dateEndFrom' }
+                                                type='date'
+                                                onChange={ event => this.searchDocument(event) }
+                                            />
+                                            <p>Заканчивая датой:</p>
+                                            <Input
+                                                inputId={ 'dateEndTo' }
+                                                type='date'
+                                                onChange={ event => this.searchDocument(event) }
+                                            />
+                                        </div>
                                     </div>
                                 </div>
-                            )
-                        }
-                    }
-                } ) }
-
-                { documents.map(document => {
-                    if ( document.type_id === '0' ) {
-                        return (
-                            <div className='document-container'>
-                                {
-                                    Array.isArray( oldDocs[document.id] ) ?
-                                        <div className='document-container-for-old-doc'>
-                                            { oldDocs[document.id].map( (d, i, arr) => {
-                                                let expansionFile = /\.[^\.]*$/.exec(d.path); // расширение
-                                                if ( i !== arr.length - 1 ) {
-                                                    return (
-                                                        <div className='document-old'>
-                                                            <Document
-                                                                documentId={ d.id }
-                                                                key={ d.id }
-                                                                caption={ d.title + ` (${expansionFile})` + ' (не актуален)' }
-                                                                isUpdate={ true }
-                                                            >
-                                                                <p><span>Полное название документа:</span> { d.path }</p>
-                                                                <p><span>Краткое описание документа:</span> { d.description !== '' ? d.description : '[Описание отсутствует]'  }</p>
-                                                                <p><span>Дата добавления документа:</span> { moment( d.datebegin ).format('LL') }</p>
-                                                                <p><span>Дата подписания документа:</span> { moment( d.datesignature ).format('LL') }</p>
-                                                                <p><span>Дата пересмотра документа:</span> { moment( d.dateend ).format('LL') }</p>
-                                                            </Document>
-                                                        </div>
-                                                    );
-                                                } else {
-                                                    return (
-                                                        <div>
-                                                            <div className='document-old'>
-                                                                <Document
-                                                                    documentId={ d.id }
-                                                                    key={ d.id }
-                                                                    caption={ d.title + ` (${expansionFile})` + ' (не актуален)' }
-                                                                    isUpdate={ true }
-                                                                >
-                                                                    <p><span>Полное название документа:</span> { d.path }</p>
-                                                                    <p><span>Краткое описание документа:</span> { d.description !== '' ? d.description : '[Описание отсутствует]'  }</p>
-                                                                    <p><span>Дата добавления документа:</span> { moment( d.datebegin ).format('LL') }</p>
-                                                                    <p><span>Дата подписания документа:</span> { moment( d.datesignature ).format('LL') }</p>
-                                                                    <p><span>Дата пересмотра документа:</span> { moment( d.dateend ).format('LL') }</p>
-                                                                </Document>
-                                                            </div>
-                                                            <div className='document-active'>
-                                                                <Document
-                                                                    documentId={ document.id }
-                                                                    key={ document.id }
-                                                                    caption={ document.title + ` (${expansionFile = /\.[^\.]*$/.exec(document.path)})` }
-                                                                    isReplace={ true }
-                                                                    linkForUpdate={ false }
-                                                                    onReplace={ event => this.replaceDocument(event, this.props.document, this.props.getCurrentDocumentDB, '/public/#/documents/ReplaceDocument') }
-                                                                    onUpdateClick={ event => this.replaceDocument(event, this.props.document, this.props.getCurrentDocumentDB, '/public/#/documents/UpdateDocument') }
-                                                                    onAddUser={ event => this.replaceDocument(event, this.props.document, this.props.getCurrentDocumentDB, '/public/#/documents/UserList') }
-                                                                    onClickDocument={ event => this.showOldDocuments(event, document.id) }
-                                                                    oldDocsIsOpen={ false }
-                                                                    isAddUser={ true }
-                                                                >
-                                                                    <p><span>Полное название документа:</span> { document.path }</p>
-                                                                    <p><span>Краткое описание документа:</span> { document.description !== '' ? document.description : '[Описание отсутствует]'  }</p>
-                                                                    <p><span>Дата добавления документа:</span> { moment( document.datebegin ).format('LL') }</p>
-                                                                    <p><span>Дата подписания документа:</span> { moment( document.datesignature ).format('LL') }</p>
-                                                                    <p><span>Дата пересмотра документа:</span> { moment( document.dateend ).format('LL') }</p>
-                                                                </Document>
-                                                            </div>
-                                                        </div>
-                                                    );
-                                                }
-                                            } ) }
-                                        </div>
-                                        :
-                                        null
-                                }
-                            </div>
-                        );
-                    }
-                } ) }
-
-                <SideBar>
-                    <h3 className='sidebar__caption'>Действия над документами</h3>
-
-                    <h3 className='sidebar__caption sidebar__search'>Поиск</h3>
-                    <div className='sidebar__search_container'>
-                        <Input
-                            placeholder={ 'Название документа' }
-                            inputId={ 'sidebar__search_document' }
-                            onChange={ event => this.searchDocument(event) }
-                        />
-                        <i className='sidebar__search_icon glyphicon glyphicon-search'></i>
-                    </div>
-
-                    <div className='sidebar__filter_container'>
-                        <h3 className='sidebar__caption sidebar__filter'>Фильтрация</h3>
-                        <i className='sidebar__filter_icon glyphicon glyphicon-filter'></i>
-                    </div>
-                    <div className='sidebar__filter_item-container'>
-                        <div className='sidebar__filter-date'>
-                            <div className='sidebar__filter-date_container'>
-                                <h4 className='sidebar__caption'>По дате добавления</h4>
-                                <p>Начиная с даты:</p>
-                                <Input
-                                    inputId={ 'dateBeginFrom' }
-                                    type='date'
-                                    onChange={ event => this.searchDocument(event) }
-                                />
-                                <p>Заканчивая датой:</p>
-                                <Input
-                                    inputId={ 'dateBeginTo' }
-                                    type='date'
-                                    onChange={ event => this.searchDocument(event) }
-                                />
-                            </div>
-                            <div className='sidebar__filter-date_container'>
-                                <h4 className='sidebar__caption'>По дате подписания</h4>
-                                <p>Начиная с даты:</p>
-                                <Input
-                                    inputId={ 'dateSignatureFrom' }
-                                    type='date'
-                                    onChange={ event => this.searchDocument(event) }
-                                />
-                                <p>Заканчивая датой:</p>
-                                <Input
-                                    inputId={ 'dateSignatureTo' }
-                                    type='date'
-                                    onChange={ event => this.searchDocument(event) }
-                                />
-                            </div>
-                            <div className='sidebar__filter-date_container'>
-                                <h4 className='sidebar__caption'>По дате окончания срока годности</h4>
-                                <p>Начиная с даты:</p>
-                                <Input
-                                    inputId={ 'dateEndFrom' }
-                                    type='date'
-                                    onChange={ event => this.searchDocument(event) }
-                                />
-                                <p>Заканчивая датой:</p>
-                                <Input
-                                    inputId={ 'dateEndTo' }
-                                    type='date'
-                                    onChange={ event => this.searchDocument(event) }
-                                />
-                            </div>
+                            </SideBar>
                         </div>
-                        <div className='sidebar__filter-alphabet'>
-                            <h4 className='sidebar__caption'>Сортировка</h4>
-                            <p
-                                id={ 'oderAlphabet' }
-                                onClick={ event => {
-                                    this.setState({ oderAlphabet: !this.state.oderAlphabet });
-                                    this.searchDocument(event);
-                                } }
-                            >
-                                По алфавиту От А до Я
-                                <span className='glyphicon glyphicon-sort-by-alphabet'></span>
-                            </p>
-                        </div>
-                    </div>
-                </SideBar>
+                        :
+                        <CenterScreenBlock>
+                            <h2>
+                                Вы ещё не были авторизированы в приложении.<br/>
+                                Если у Вас действительно имеется аккаунт,<br/>
+                                пожалуйста, авторизируйтесь.<br/>
+                            </h2>
+                            <Link to={ '/authorization' }>
+                                <Button className={ 'button-back' } >
+                                    <i className="glyphicon glyphicon-hand-left"></i>
+                                    Авторизоваться
+                                </Button>
+                            </Link>
+                        </CenterScreenBlock>
+                }
             </div>
         );
     }

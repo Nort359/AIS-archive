@@ -5,6 +5,8 @@ import Animation from '../../classes/Animation';
 
 import './Document.scss';
 
+import { OverlayTrigger, Popover } from 'react-bootstrap';
+
 class Document extends Component {
 
     constructor(props) {
@@ -43,12 +45,22 @@ class Document extends Component {
             <div className='document__container'>
                 <div className='document' data-old-docs-open={ this.props.oldDocsIsOpen } id={ `document-${this.props.documentId}` }>
                     <div className='document__caption' onClick={ event => {
-                        this.showMoreInformation(event, this.props.documentId);
+                        if ( !this.props.isNotOpen ) {
+                            this.showMoreInformation(event, this.props.documentId);
+                        }
+
                         if ( typeof this.props.onClickDocument === 'function' ) {
                             this.props.onClickDocument(event);
                         }
                     } }>
-                        <i className='document__icon document__icon_arrow glyphicon glyphicon-menu-right'></i>
+                        {
+                            this.props.isNotArraw ?
+                                null
+                                :
+                                <OverlayTrigger trigger={['hover', 'focus']} placement="top" overlay={ this.props.popoverArrow }>
+                                    <i className='document__icon document__icon_arrow glyphicon glyphicon-menu-right'></i>
+                                </OverlayTrigger>
+                        }
                         {
                             this.props.isUserIcon ?
                                 this.props.userIcon
@@ -66,19 +78,21 @@ class Document extends Component {
                                     {
                                         !this.props.linkForUpdate ?
                                             <Link to={ this.props.pathUpdate } >
+                                                <OverlayTrigger trigger={['hover', 'focus']} placement="top" overlay={ this.props.popoverChange }>
                                                 <i
                                                     className='document__icon document__icon_pencil glyphicon glyphicon-pencil'
+                                                    data-toggle="tooltip"
+                                                    data-placement="top"
                                                     data-document-id={ this.props.documentId }
                                                     onClick={ this.props.onUpdateClick }
-                                                    title='Изменить'
                                                 ></i>
+                                                </OverlayTrigger>
                                             </Link>
                                             :
                                             <i
                                                 className='document__icon document__icon_pencil glyphicon glyphicon-pencil'
                                                 data-document-id={ this.props.documentId }
                                                 onClick={ this.props.onUpdateClick }
-                                                title='Изменить'
                                             ></i>
                                     }
                                 </span>
@@ -87,32 +101,47 @@ class Document extends Component {
                             this.props.isNotDelete ?
                                 null
                                 :
-                                <i
-                                    className='document__icon document__icon_garbage glyphicon glyphicon-trash'
-                                    data-document-id={ this.props.documentId }
-                                    onClick={ this.props.onDeleteClick }
-                                    title='Удалить'
-                                ></i>
+                                <OverlayTrigger trigger={['hover', 'focus']} placement="top" overlay={ this.props.popoverDelete }>
+                                    <i
+                                        className='document__icon document__icon_garbage glyphicon glyphicon-trash'
+                                        data-document-id={ this.props.documentId }
+                                        onClick={ this.props.onDeleteClick }
+                                    ></i>
+                                </OverlayTrigger>
                         }
                         {
                             this.props.isReplace ?
-                                <i
-                                    className='document__icon document__icon_replace glyphicon glyphicon-refresh'
-                                    data-document-id={ this.props.documentId }
-                                    onClick={ this.props.onReplace }
-                                    title='Заменить'
-                                ></i>
+                                <OverlayTrigger trigger={['hover', 'focus']} placement="top" overlay={ this.props.popoverReplace }>
+                                    <i
+                                        className='document__icon document__icon_replace glyphicon glyphicon-refresh'
+                                        data-document-id={ this.props.documentId }
+                                        onClick={ this.props.onReplace }
+                                    ></i>
+                                </OverlayTrigger>
                                 :
                                 null
                         }
                         {
                             this.props.isAddUser ?
-                                <i
-                                    className='document__icon document__icon_add-user glyphicon glyphicon-plus'
-                                    data-document-id={ this.props.documentId }
-                                    onClick={ this.props.onAddUser }
-                                    title='Добавить пользователя к документу'
-                                ></i>
+                                <OverlayTrigger trigger={['hover', 'focus']} placement="top" overlay={ this.props.popoverAdd }>
+                                    <i
+                                        className='document__icon document__icon_add-user glyphicon glyphicon-plus'
+                                        data-document-id={ this.props.documentId }
+                                        onClick={ this.props.onAddUser }
+                                    ></i>
+                                </OverlayTrigger>
+                                :
+                                null
+                        }
+                        {
+                            this.props.isDownload ?
+                                <OverlayTrigger trigger={['hover', 'focus']} placement="top" overlay={ this.props.popoverDownload }>
+                                    <i
+                                        className='document__icon document__icon_download glyphicon glyphicon-download-alt'
+                                        data-document-id={ this.props.documentId }
+                                        onClick={ this.props.onDownload }
+                                    ></i>
+                                </OverlayTrigger>
                                 :
                                 null
                         }
@@ -136,8 +165,11 @@ Document.propTypes = {
     onDeleteClick:      PropTypes.func,
     onReplace:          PropTypes.func,
     onAddUser:          PropTypes.func,
+    onDownload:         PropTypes.func,
     pathUpdate:         PropTypes.string,
     pathReplace:        PropTypes.string,
+    isNotOpen:          PropTypes.bool,
+    isNotArraw:         PropTypes.bool,
     isReplace:          PropTypes.bool,
     oldDocsIsOpen:      PropTypes.bool,
     linkForUpdate:      PropTypes.bool,
@@ -145,7 +177,14 @@ Document.propTypes = {
     isAddUser:          PropTypes.bool,
     isUserIcon:         PropTypes.bool,
     isNotDelete:        PropTypes.bool,
-    userIcon:           PropTypes.any
+    isDownload:         PropTypes.bool,
+    userIcon:           PropTypes.any,
+    popoverArrow:       PropTypes.any,
+    popoverChange:      PropTypes.any,
+    popoverDelete:      PropTypes.any,
+    popoverReplace:     PropTypes.any,
+    popoverAdd:         PropTypes.any,
+    popoverDownload:    PropTypes.any
 };
 
 export default Document;

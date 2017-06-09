@@ -4,8 +4,6 @@
 import { GET_ALL_USERS } from './actions';
 
 function userListReducer(state = [], action) {
-    let currentDocument = {};
-
     switch (action.type) {
         case GET_ALL_USERS:
             return Object.assign({}, action.users);

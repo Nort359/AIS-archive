@@ -25,12 +25,10 @@ export const inputsData = {
     documentDateEnd: {
         id: 'documentDateEnd',
         type: 'date',
-        icon: 'glyphicon-calendar',
     },
     documentDateSignature: {
         id: 'documentDateSignature',
         type: 'date',
-        icon: 'glyphicon-calendar'
     },
     documentType: {
         id: 'documentType',

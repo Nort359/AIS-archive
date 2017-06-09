@@ -3,26 +3,12 @@
  */
 import axios from 'axios';
 import querystring from 'querystring';
-import $ from 'jquery';
+
+import Animation from '../../classes/Animation';
 
 import { AUTHORIZATION_USER } from '../Registration/actions';
 
 export const GET_USER = 'GET_USER';
-
-function showMessageBox(message) {
-    // отображаем notification
-    let messageBox = $('.message-box');
-    let messageBoxText = $('.message-box__text span');
-
-    messageBox.css('display', 'inline-block');
-
-    messageBoxText.text(message);
-
-    setTimeout(() => {
-        let messageBox = $('.message-box');
-        messageBox.css('display', 'none');
-    }, 3000);
-}
 
 export const authorizationUser = user => dispatch => {
     axios.post('/api/get-user.php', querystring.stringify(user))
@@ -34,8 +20,12 @@ export const authorizationUser = user => dispatch => {
                     userData
                 });
             } else {
-                showMessageBox(userData);
-                console.log(userData);
+                Animation.showMessageBox(userData);
+                const buttonSpinner  = document.getElementsByClassName('registration__button_spinner')[0];
+                buttonSpinner.classList.add('mk-spinner-ring');
+
+                const buttonSpinnerStyle = buttonSpinner.style;
+                buttonSpinnerStyle.display = 'none';
             }
             return userData;
         })

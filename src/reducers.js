@@ -7,12 +7,14 @@ import { position } from './pages/AdminPanel/Position/reducers';
 import { typeDocument } from './pages/AdminPanel/TypeDocument/reducers';
 import { document } from './pages/Documents/reducers';
 import { userList } from './pages/Documents/UserList/reducers';
+import { notification } from './pages/MyOffice/reducers';
 
 
 export default combineReducers({
     routing: routerReducer,
     userData,
     department, position, typeDocument,
-    document, userList
+    document, userList,
+    notification
 });
 

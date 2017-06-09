@@ -1,7 +1,24 @@
 /**
  * Created by Nort3 on 14.05.2017.
  */
+import $ from 'jquery';
+
 export default class Animation {
+    static showMessageBox(message) {
+        // отображаем notification
+        let messageBox = $('.message-box');
+        let messageBoxText = $('.message-box__text span');
+
+        messageBox.css('display', 'inline-block');
+
+        messageBoxText.text(message);
+
+        setTimeout(() => {
+            let messageBox = $('.message-box');
+            messageBox.css('display', 'none');
+        }, 3000);
+    }
+
     /**
      * Вспомогательный метод, добавляющий анимацию переданному элементу
      * @param elementStyle — Стиль элемента в DOM дереве

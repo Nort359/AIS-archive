@@ -16,9 +16,13 @@
     	if ( R::findOne( 'document', 'type_id = ? AND user_id = ?', [ $documenttype_id, $item->id ] ) > 0 ) {
     		$notification = R::dispense( 'notification' );
 
+    		$notification->title 		= "Тип документа переименован";
+			$notification->text 		= "Тип документа \"" . $type_docs->title . "\", в котором вы храните свои документы был переименован в " . $documenttype_title;
+			$notification->date_sended  = date( 'Y-m-d' );
+			$notification->readed 		= false;
+			$notification->document_id  = 0;
 			$notification->user_from_id = $admin_id;
 			$notification->user_to_id 	= $item->id;
-			$notification->text 		= "Тип документа \"" . $type_docs->title . "\", в котором вы храните свои документы был переименован в " . $documenttype_title;
 
 			R::store( $notification );
     	}

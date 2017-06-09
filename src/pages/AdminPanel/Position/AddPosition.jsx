@@ -14,6 +14,7 @@ class AddPosition extends React.Component {
                     pathCheck={ position.pathServerCheckExist }
                     pathAdd={ position.pathServerAdd }
                     adderData={ position.inputValid }
+                    messageByAdd={ 'Новая должность успешно добавлена' }
                 />
             </div>
         );

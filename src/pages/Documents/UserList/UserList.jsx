@@ -3,8 +3,10 @@ import { Link } from 'react-router';
 import { connect } from 'react-redux';
 import $ from 'jquery';
 import moment from 'moment';
+import { Popover } from 'react-bootstrap';
+import axios from 'axios';
+import querystring from 'querystring';
 
-import SideBar from '../../../components/SideBar/SideBar';
 import Input from '../../../components/Input/Input';
 import Button from '../../../components/Button/Button';
 import Folder from '../../../components/Folder/Folder';
@@ -16,6 +18,7 @@ import ObjectHandler from '../../../classes/ObjectHandler';
 import './UserList.scss';
 
 import { getAllUsers } from './actions';
+import { getNotificationForDocument } from '../../MyOffice/actions';
 
 class UserList extends React.Component {
 
@@ -23,12 +26,8 @@ class UserList extends React.Component {
         super(props);
 
         this.state = {
-            oderAlphabet:       false,
-            oderDateBegin:      false,
-            oderDateSignature:  false,
-            oderDateEnd:        false,
-
-            isShowContent:      false
+            isShowContent: false,
+            isGetNotification: false
         };
 
         if (this.props.document.hasOwnProperty('currentDocument'))
@@ -36,40 +35,27 @@ class UserList extends React.Component {
 
         this.props.getAllUsersDB();
 
-        this.showOldUserList = this.showOldUserList.bind(this);
         this.searchDocument = this.searchDocument.bind(this);
-        this.replaceDocument = this.replaceDocument.bind(this);
+        this.addUserToDocument = this.addUserToDocument.bind(this);
     }
 
-    showOldUserList(event, id) {
-        const document = $(`#document-${id}`);
+    addUserToDocument(event, currentDocument, user) {
+        const idChosenUser = event.currentTarget.getAttribute('data-document-id');
 
-        const oldDocs = document.parents('.document-container');
+        const data = {
+            documentId: currentDocument,
+            userFromId: user.id,
+            userToId: idChosenUser
+        };
 
-        const siblings = oldDocs.find('.document-old');
+        event.target.classList.remove('glyphicon-plus');
+        event.target.classList.add('glyphicon-ok');
+        event.target.style.color = '#53B73F';
 
-        let isShow = document.attr( 'data-old-docs-open' );
-
-        if ( isShow === 'true' ){
-            siblings.hide();
-            document.attr( 'data-old-docs-open', 'false' );
-        } else {
-            siblings.fadeIn(500);
-            document.attr( 'data-old-docs-open', 'true' );
-        }
-
-        //Animation.toggleAnimateElement(this.state.isShowContent, document, 'hideMoreInformation', 'showMoreInformation', '500ms');
-    }
-
-    replaceDocument(event, deleteObject, callback, path) {
-        if (deleteObject.hasOwnProperty('currentDocument')) delete deleteObject.currentDepartment;
-
-        const id = event.currentTarget.getAttribute('data-document-id'),
-            record = {
-                id
-            };
-
-        callback(record, path);
+        axios.post( '/api/document/document-add-user.php', querystring.stringify( data ) )
+            .then(response => response.data)
+            .then(answer => console.log('answer', answer) )
+            .catch(error => console.error(error));
     }
 
     searchDocument(event) {
@@ -104,14 +90,27 @@ class UserList extends React.Component {
     }
 
     render() {
-        let documents = ObjectHandler.getArrayFromObject(this.props.document),
-            typeDocuments = ObjectHandler.getArrayFromObject(this.props.typeDocument),
-            users = ObjectHandler.getArrayFromObject(this.props.userList),
-            departments = ObjectHandler.getArrayFromObject(this.props.department);
+        let users = ObjectHandler.getArrayFromObject(this.props.userList),
+            departments = ObjectHandler.getArrayFromObject(this.props.department),
+            notifications = ObjectHandler.getArrayFromObject(this.props.notifications);
+
+        const currentUser = this.props.userData;
 
         let usersInDepartment = {};
 
         const currentDocument = this.props.document.currentDocument;
+
+        if ( typeof currentDocument === 'object' ) {
+            if ( this.state.isGetNotification === false ) {
+
+                const data = {
+                    documentId: currentDocument.id
+                };
+
+                this.props.getNotificationForDocumentDB(data);
+                this.setState({ isGetNotification: true });
+            }
+        }
 
         departments.map( department => {
             usersInDepartment[department.id] = 0;
@@ -119,13 +118,24 @@ class UserList extends React.Component {
 
         departments.map( department => {
             users.map( user => {
-                if ( user.department_id === department.id ) {
+                if ( user.department_id === department.id && user.id !== currentUser.id ) {
                     usersInDepartment[department.id]++;
                 }
             } )
         } );
 
         moment.locale('ru');
+
+        const popoverAdd = (
+            <Popover
+                id="popover-trigger-hover-focus"
+                title="Подсказка"
+            >
+                Кликнув по этой иконке, Вы отправите данному пользователю
+                <strong> запрос о разделении ответсвенности на данный документ</strong>
+                <i> (пользователь сможет принять или отклонить Ваш запрос)</i>
+            </Popover>
+        );
 
         return (
             <div>
@@ -140,113 +150,74 @@ class UserList extends React.Component {
                                     folderId={ 'folder-' + department.id }>
 
                                     { users.map(user => {
-                                        return (
-                                            <div className='user-list'>
-                                                <div className='user-list__card'>
-                                                    <Document
-                                                        documentId={ user.id }
-                                                        key={ user.id }
-                                                        caption={ `${user.surname} ${user.name} ${user.middlename}` }
-                                                        isUpdate={ true }
-                                                        isNotDelete={ true }
-                                                        isUserIcon={ true }
-                                                        isAddUser={ true }
-                                                        userIcon={ <img src={ user.photo }
-                                                                        alt='Фото пользователя'
-                                                                        className='user-list__card_photo'
-                                                        /> }
-                                                    >
-                                                        <p><span>Отдел пользователя:</span> { user.department }</p>
-                                                        <p><span>Должность пользователя:</span> { user.position }</p>
-                                                    </Document>
-                                                </div>
-                                            </div>
-                                        );
+                                        if ( user.department_id === department.id && user.id !== currentUser.id ) {
+                                            let isAdded = false;
+
+                                            for ( let i = 0; i < notifications.length; i++ ) {
+                                                if (notifications[i].id === user.id) {
+                                                    isAdded = true;
+                                                }
+                                            }
+
+                                            if ( isAdded === true ) {
+                                                // TODO: нужно вернуть пользователя с галочкой переделав компонент документа на галочку
+                                                return (
+                                                    <div className='user-list'>
+                                                        <div className='user-list__card'>
+                                                            <Document
+                                                                documentId={ user.id }
+                                                                key={ user.id }
+                                                                caption={ `${user.surname} ${user.name} ${user.middlename}` }
+                                                                isUpdate={ true }
+                                                                isNotDelete={ true }
+                                                                isUserIcon={ true }
+                                                                isAddUser={ true }
+                                                                userIcon={ <img src={ user.photo }
+                                                                                alt='Фото пользователя'
+                                                                                className='user-list__card_photo'
+                                                                /> }
+                                                                popoverAdd={ popoverAdd }
+                                                                onAddUser={ event => this.addUserToDocument(event, currentDocument.id, currentUser) }
+                                                            >
+                                                                <p><span>Email пользователя:</span> { user.email }</p>
+                                                                <p><span>Отдел пользователя:</span> { user.department }</p>
+                                                                <p><span>Должность пользователя:</span> { user.position }</p>
+                                                            </Document>
+                                                        </div>
+                                                    </div>
+                                                );
+                                            } else {
+                                                return (
+                                                    <div className='user-list'>
+                                                        <div className='user-list__card'>
+                                                            <Document
+                                                                documentId={ user.id }
+                                                                key={ user.id }
+                                                                caption={ `${user.surname} ${user.name} ${user.middlename}` }
+                                                                isUpdate={ true }
+                                                                isNotDelete={ true }
+                                                                isUserIcon={ true }
+                                                                isAddUser={ true }
+                                                                userIcon={ <img src={ user.photo }
+                                                                                alt='Фото пользователя'
+                                                                                className='user-list__card_photo'
+                                                                /> }
+                                                                popoverAdd={ popoverAdd }
+                                                                onAddUser={ event => this.addUserToDocument(event, currentDocument.id, currentUser) }
+                                                            >
+                                                                <p><span>Email пользователя:</span> { user.email }</p>
+                                                                <p><span>Отдел пользователя:</span> { user.department }</p>
+                                                                <p><span>Должность пользователя:</span> { user.position }</p>
+                                                            </Document>
+                                                        </div>
+                                                    </div>
+                                                );
+                                            }
+                                        }
                                     }) }
                                     
                                 </Folder>
                             } ) }
-
-                            <SideBar>
-                                <h3 className='sidebar__caption'>Действия над документами</h3>
-
-                                <h3 className='sidebar__caption sidebar__search'>Поиск</h3>
-                                <div className='sidebar__search_container'>
-                                    <Input
-                                        placeholder={ 'Название документа' }
-                                        inputId={ 'sidebar__search_document' }
-                                        onChange={ event => this.searchDocument(event) }
-                                    />
-                                    <i className='sidebar__search_icon glyphicon glyphicon-search'></i>
-                                </div>
-
-                                <div className='sidebar__filter_container'>
-                                    <h3 className='sidebar__caption sidebar__filter'>Фильтрация</h3>
-                                    <i className='sidebar__filter_icon glyphicon glyphicon-filter'></i>
-                                </div>
-                                <div className='sidebar__filter_item-container'>
-                                    <div className='sidebar__filter-date'>
-                                        <div className='sidebar__filter-date_container'>
-                                            <h4 className='sidebar__caption'>По дате добавления</h4>
-                                            <p>Начиная с даты:</p>
-                                            <Input
-                                                inputId={ 'dateBeginFrom' }
-                                                type='date'
-                                                onChange={ event => this.searchDocument(event) }
-                                            />
-                                            <p>Заканчивая датой:</p>
-                                            <Input
-                                                inputId={ 'dateBeginTo' }
-                                                type='date'
-                                                onChange={ event => this.searchDocument(event) }
-                                            />
-                                        </div>
-                                        <div className='sidebar__filter-date_container'>
-                                            <h4 className='sidebar__caption'>По дате подписания</h4>
-                                            <p>Начиная с даты:</p>
-                                            <Input
-                                                inputId={ 'dateSignatureFrom' }
-                                                type='date'
-                                                onChange={ event => this.searchDocument(event) }
-                                            />
-                                            <p>Заканчивая датой:</p>
-                                            <Input
-                                                inputId={ 'dateSignatureTo' }
-                                                type='date'
-                                                onChange={ event => this.searchDocument(event) }
-                                            />
-                                        </div>
-                                        <div className='sidebar__filter-date_container'>
-                                            <h4 className='sidebar__caption'>По дате окончания срока годности</h4>
-                                            <p>Начиная с даты:</p>
-                                            <Input
-                                                inputId={ 'dateEndFrom' }
-                                                type='date'
-                                                onChange={ event => this.searchDocument(event) }
-                                            />
-                                            <p>Заканчивая датой:</p>
-                                            <Input
-                                                inputId={ 'dateEndTo' }
-                                                type='date'
-                                                onChange={ event => this.searchDocument(event) }
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className='sidebar__filter-alphabet'>
-                                        <h4 className='sidebar__caption'>Сортировка</h4>
-                                        <p
-                                            id={ 'oderAlphabet' }
-                                            onClick={ event => {
-                                                this.setState({ oderAlphabet: !this.state.oderAlphabet });
-                                                this.searchDocument(event);
-                                            } }
-                                        >
-                                            По алфавиту От А до Я
-                                            <span className='glyphicon glyphicon-sort-by-alphabet'></span>
-                                        </p>
-                                    </div>
-                                </div>
-                            </SideBar>
                         </div>
                         :
                         <CenterScreenBlock>
@@ -256,6 +227,10 @@ class UserList extends React.Component {
                                 вернитесь к списку документов и нажмите<br/>
                                 на добавление пользователя к необходимому документу снова
                             </h2>
+                            <Button onClick={ event => window.history.back() } className={ 'button-back' } >
+                                <i className="glyphicon glyphicon-hand-left"></i>
+                                Назад
+                            </Button>
                         </CenterScreenBlock>
                 }
             </div>
@@ -269,20 +244,17 @@ UserList.path = '/documents/UserList';
 export default connect(
     state => ({
         userList: state.userList,
-        document: state.document,
         userData: state.userData,
-        typeDocument: state.typeDocument,
-        department: state.department
+        department: state.department,
+        document: state.document,
+        notification: state.notification
     }),
     dispatch => ({
         getAllUsersDB: () => {
             dispatch(getAllUsers());
         },
-        getCurrentDocumentDB: (document, path) => {
-            dispatch(getCurrentDocument(document, path));
-        },
-        getUserListDBBySearch: search => {
-            dispatch(getUserListBySearch(search));
+        getNotificationForDocumentDB: data => {
+            dispatch(getNotificationForDocument(data));
         }
     })
 )(UserList);

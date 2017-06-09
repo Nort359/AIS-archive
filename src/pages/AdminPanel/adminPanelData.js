@@ -9,7 +9,7 @@ export const department = {
     inputValid: {
         id: 'department-title',
         icon: 'glyphicon-asterisk',
-        patternOk: /^[a-zA-Zа-яА-Я \-ёЁйЙ]{3,}$/i,
+        patternOk: /^[a-zA-Zа-яА-Я \-ёЁйЙ]{3,40}$/i,
         messageDefault: 'Название отдела',
         messageExist: 'Такой отдел существует',
         messageOk: 'Корректно',
@@ -24,7 +24,7 @@ export const position = {
     inputValid: {
         id: 'position-title',
         icon: 'glyphicon-asterisk',
-        patternOk: /^[a-zA-Zа-яА-Я \-ёЁйЙ]{3,}$/i,
+        patternOk: /^[a-zA-Zа-яА-Я \-ёЁйЙ]{3,40}$/i,
         messageDefault: 'Название должности',
         messageExist: 'Такая должность существует',
         messageOk: 'Корректно',
@@ -39,7 +39,7 @@ export const typeDocument = {
     inputValid: {
         id: 'typeDocument-title',
         icon: 'glyphicon-asterisk',
-        patternOk: /^[a-zA-Zа-яА-Я \-ёЁйЙ]{3,}$/i,
+        patternOk: /^[a-zA-Zа-яА-Я \-ёЁйЙ]{3,40}$/i,
         messageDefault: 'Название типа документа',
         messageExist: 'Такой тип документа существует',
         messageOk: 'Корректно',

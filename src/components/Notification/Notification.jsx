@@ -11,6 +11,15 @@ class Notification extends React.Component {
     constructor(props) {
         super(props);
         this.closeNotification = this.closeNotification.bind(this);
+        this.onKeyPressEnter = this.onKeyPressEnter.bind(this);
+    }
+
+    onKeyPressEnter(event) {
+        console.log('event.which', event.which);
+        console.log('event.keyCode', event.keyCode);
+        if (event.which === 13 || event.keyCode === 13) {
+            this.closeNotification();
+        }
     }
 
     /**
@@ -28,6 +37,7 @@ class Notification extends React.Component {
     }
 
     render() {
+
         return (
             <div className='notification'>
                 <h4 className='notification__caption'>{ this.props.header }</h4>

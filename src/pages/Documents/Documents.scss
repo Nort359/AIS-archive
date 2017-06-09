@@ -23,6 +23,12 @@ a:hover {
     margin: 0 auto;
     display: block;
 
+    &_link {
+      width: 300px;
+      margin: 0 auto;
+      display: block;
+    }
+
     &_container {
       width: 100%;
       margin-bottom: 20px;
@@ -42,5 +48,12 @@ a:hover {
       color: $borderColor;
       text-decoration: line-through;
     }
+  }
+}
+
+.search {
+  &_container {
+    margin-left: 140px;
+    width: 600px;
   }
 }

@@ -12,6 +12,7 @@ class SelectInput extends React.Component {
                     id={ this.props.selectId }
                     className='input-animated'
                     placeholder={ this.props.placeholder }
+                    onKeyPress={ this.props.onKeyPress }
                 >
                     <option
                         selected={ 'selected' }
@@ -43,7 +44,8 @@ SelectInput.propTypes = {
     selectId: React.PropTypes.string.isRequired,
     children: React.PropTypes.string.isRequired,
     placeholder: React.PropTypes.string,
-    isNotDisabled: React.PropTypes.bool
+    isNotDisabled: React.PropTypes.bool,
+    onKeyPress: React.PropTypes.func
 };
 
 export default SelectInput;

@@ -83,6 +83,8 @@ class Updater extends AForm {
     render() {
         const adderData = this.props.adderData;
 
+        console.log('adderData', adderData);
+
         return (
             <CenterScreenBlock>
                 <Form header={ this.props.headerForm }>

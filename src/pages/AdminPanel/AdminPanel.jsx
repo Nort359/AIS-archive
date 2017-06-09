@@ -2,12 +2,14 @@ import React from 'react';
 import { Link } from 'react-router';
 import { connect } from 'react-redux';
 import axios from 'axios';
+import { Popover } from 'react-bootstrap';
 
 import SideBar from '../../components/SideBar/SideBar';
 import List from '../../components/List/List';
 import Folder from '../../components/Folder/Folder';
 import Document from '../../components/Document/Document';
 import Button from '../../components/Button/Button';
+import CenterScreenBlock from '../../components/CenterScreenBlock/CenterScreenBlock';
 
 import './AdminPanel.scss';
 
@@ -32,6 +34,10 @@ class AdminPanel extends React.Component {
         this.deleteDepartment   = this.deleteDepartment.bind(this);
         this.deletePosition     = this.deletePosition.bind(this);
         this.deleteTypeDocument = this.deleteTypeDocument.bind(this);
+
+        if (this.props.department.hasOwnProperty('currentDepartment')) delete this.props.department.currentDepartment;
+        else if (this.props.position.hasOwnProperty('currentPosition')) delete this.props.position.currentPosition;
+        else if (this.props.typeDocument.hasOwnProperty('currentTypeDocument')) delete this.props.typeDocument.currentTypeDocument;
     }
 
     putDumpDataBase() {
@@ -98,59 +104,144 @@ class AdminPanel extends React.Component {
 
         const user = this.props.userData;
 
+        const popoverChangeDepartment = (
+            <Popover
+                id="popover-trigger-hover-focus"
+                title="Подсказка"
+            >
+                Кликнув по этой иконке Вы <strong>перейдёте на форму изменение этого отдела</strong>
+            </Popover>
+        );
+
+        const popoverDeleteDepartment = (
+            <Popover
+                id="popover-trigger-hover-focus"
+                title="Подсказка"
+            >
+                Кликнув по этой иконке Вы <strong>удалите этот отдел <i>(если за ним ещё не были закреплены пользователи)</i></strong>
+            </Popover>
+        );
+
+        const popoverChangePosition = (
+            <Popover
+                id="popover-trigger-hover-focus"
+                title="Подсказка"
+            >
+                Кликнув по этой иконке Вы <strong>перейдёте на форму изменение этой должности</strong>
+            </Popover>
+        );
+
+        const popoverDeletePosition = (
+            <Popover
+                id="popover-trigger-hover-focus"
+                title="Подсказка"
+            >
+                Кликнув по этой иконке Вы <strong>удалите эту должность <i>(если за ней ещё не были закреплены пользователи)</i></strong>
+            </Popover>
+        );
+
+        const popoverChangeTypeDocument = (
+            <Popover
+                id="popover-trigger-hover-focus"
+                title="Подсказка"
+            >
+                Кликнув по этой иконке Вы <strong>перейдёте на форму изменение этого типа документа</strong>
+            </Popover>
+        );
+
+        const popoverDeleteTypeDocument = (
+            <Popover
+                id="popover-trigger-hover-focus"
+                title="Подсказка"
+            >
+                Кликнув по этой иконке Вы <strong>удалите этот тип документа <i>(если ни один пользователь ещё не закрепил за ним свои документы)</i></strong>
+            </Popover>
+        );
+
         return (
             <div>
-                <SideBar>
-                    <h3 className='sidebar__caption'>Добавить данные</h3>
-                    <List className={ 'sidebar__add_data' }>
-                        <Link to='/AdminPanel/AddDepartment'><li className='sidebar__caption sidebar__list_element'>Отделы</li></Link>
-                        <Link to='/AdminPanel/AddPosition'><li className='sidebar__caption sidebar__list_element'>Доожности</li></Link>
-                        <Link to='/AdminPanel/TypeDocument'><li className='sidebar__caption sidebar__list_element'>Типы документов</li></Link>
-                    </List>
-                </SideBar>
+                {
+                    user.admin === '1' ?
+                        <div>
+                            <SideBar>
+                                <h3 className='sidebar__caption'>Добавить данные</h3>
+                                <List className={ 'sidebar__add_data' }>
+                                    <Link to='/AdminPanel/AddDepartment'><li className='sidebar__caption sidebar__list_element'>Отделы</li></Link>
+                                    <Link to='/AdminPanel/AddPosition'><li className='sidebar__caption sidebar__list_element'>Должности</li></Link>
+                                    <Link to='/AdminPanel/TypeDocument'><li className='sidebar__caption sidebar__list_element'>Типы документов</li></Link>
+                                </List>
+                            </SideBar>
 
-                <div className="admin-buttons__container">
-                    <Button onClick={ this.putDumpDataBase }>Создать резервную копию базы даненых</Button>
-                </div>
+                            <div className="admin-buttons__container">
+                                <Button onClick={ this.putDumpDataBase }>Создать резервную копию базы даненых</Button>
+                            </div>
 
-                <Folder caption={ 'Отделы' } folderId={ 'departmentsList' }>
-                    { departments.map(department => {
-                        return <Document
-                            documentId={ department.id }
-                            key={ department.id }
-                            caption={ department.title }
-                            pathUpdate={ '/AdminPanel/UpdateDepartment' }
-                            onUpdateClick={ event => this.updateRecord(event, this.props.department, this.props.getCurrentDepartmentDB) }
-                            onDeleteClick={ this.deleteDepartment }
-                        />
-                    }) }
-                </Folder>
+                            <Folder caption={ `Отделы (${departments.length})` } folderId={ 'departmentsList' }>
+                                { departments.map(department => {
+                                    return <Document
+                                        documentId={ department.id }
+                                        key={ department.id }
+                                        caption={ department.title }
+                                        pathUpdate={ '/AdminPanel/UpdateDepartment' }
+                                        onUpdateClick={ event => this.updateRecord(event, this.props.department, this.props.getCurrentDepartmentDB) }
+                                        onDeleteClick={ this.deleteDepartment }
+                                        isNotOpen={ true }
+                                        isNotArraw={ true }
+                                        popoverChange={ popoverChangeDepartment }
+                                        popoverDelete={ popoverDeleteDepartment }
+                                    />
+                                }) }
+                            </Folder>
 
-                <Folder caption={ 'Должности' } folderId={ 'positionsList' }>
-                    { positions.map(position => {
-                        return <Document
-                            documentId={ position.id }
-                            key={ position.id }
-                            caption={ position.title }
-                            pathUpdate={ '/AdminPanel/UpdatePosition' }
-                            onUpdateClick={ event => this.updateRecord(event, this.props.position, this.props.getCurrentPositionDB) }
-                            onDeleteClick={ this.deletePosition }
-                        />
-                    }) }
-                </Folder>
+                            <Folder caption={ `Должности (${positions.length})` } folderId={ 'positionsList' }>
+                                { positions.map(position => {
+                                    return <Document
+                                        documentId={ position.id }
+                                        key={ position.id }
+                                        caption={ position.title }
+                                        pathUpdate={ '/AdminPanel/UpdatePosition' }
+                                        onUpdateClick={ event => this.updateRecord(event, this.props.position, this.props.getCurrentPositionDB) }
+                                        onDeleteClick={ this.deletePosition }
+                                        isNotOpen={ true }
+                                        isNotArraw={ true }
+                                        popoverChange={ popoverChangePosition }
+                                        popoverDelete={ popoverDeletePosition }
+                                    />
+                                }) }
+                            </Folder>
 
-                <Folder caption={ 'Типы документов' } folderId={ 'typeDocumentsList' }>
-                    { typeDocuments.map(typeDocument => {
-                        return <Document
-                            documentId={ typeDocument.id }
-                            key={ typeDocument.id }
-                            caption={ typeDocument.title }
-                            pathUpdate={ '/AdminPanel/UpdateTypeDocument' }
-                            onUpdateClick={ event => this.updateRecord(event, this.props.typeDocument, this.props.getCurrentTypeDocumentDB) }
-                            onDeleteClick={ this.deleteTypeDocument }
-                        />
-                    }) }
-                </Folder>
+                            <Folder caption={ `Типы документов (${typeDocuments.length})` } folderId={ 'typeDocumentsList' }>
+                                { typeDocuments.map(typeDocument => {
+                                    return <Document
+                                        documentId={ typeDocument.id }
+                                        key={ typeDocument.id }
+                                        caption={ typeDocument.title }
+                                        pathUpdate={ '/AdminPanel/UpdateTypeDocument' }
+                                        onUpdateClick={ event => this.updateRecord(event, this.props.typeDocument, this.props.getCurrentTypeDocumentDB) }
+                                        onDeleteClick={ this.deleteTypeDocument }
+                                        isNotOpen={ true }
+                                        isNotArraw={ true }
+                                        popoverChange={ popoverChangeTypeDocument }
+                                        popoverDelete={ popoverDeleteTypeDocument }
+                                    />
+                                }) }
+                            </Folder>
+                        </div>
+                        :
+                        <CenterScreenBlock>
+                            <h2>
+                                Вы не были авторизированы как администратор.<br/>
+                                Если Вы действительно являетесь администратором,<br/>
+                                пожалуйста, авторизируйтесь под своим аккаунтом<br/>
+                            </h2>
+                            <Link to={ '/authorization' }>
+                                <Button className={ 'button-back' } >
+                                    <i className="glyphicon glyphicon-hand-left"></i>
+                                    Авторизоваться
+                                </Button>
+                            </Link>
+                        </CenterScreenBlock>
+                }
             </div>
         );
     }

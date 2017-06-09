@@ -4,6 +4,10 @@ import { connect } from 'react-redux';
 // Import components
 import Updater from '../Updater/Updater';
 import { position } from '../adminPanelData';
+import Button from '../../../components/Button/Button'
+import CenterScreenBlock from '../../../components/CenterScreenBlock/CenterScreenBlock'
+
+import '../AdminPanel.scss';
 
 class UpdatePosition extends React.Component {
 
@@ -25,7 +29,20 @@ class UpdatePosition extends React.Component {
                 </div>
             )
         } else {
-            return null;
+            return (
+                <CenterScreenBlock>
+                    <h2>
+                        Индификатор должности был утерян,<br/>
+                        возможно вы перезагрузили страницу, пожалуйста,<br/>
+                        вернитесь к списку справочников и нажмите<br/>
+                        на изменение необходимоой должности снова
+                    </h2>
+                    <Button onClick={ event => window.history.back() } className={ 'button-back' } >
+                        <i className="glyphicon glyphicon-hand-left"></i>
+                        Назад
+                    </Button>
+                </CenterScreenBlock>
+            );
         }
     }
 

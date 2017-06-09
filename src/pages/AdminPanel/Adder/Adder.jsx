@@ -1,16 +1,19 @@
 import React, { PropTypes } from 'react';
 import { Link } from 'react-router';
 import $ from 'jquery';
+
 // Import components
 import CenterScreenBlock from '../../../components/CenterScreenBlock/CenterScreenBlock';
 import Form from '../../../components/Form/Form';
 import Input from '../../../components/Input/Input';
 import Button from '../../../components/Button/Button';
 import Spinner from '../../../components/Spinner/Spinner';
+import MessageBox from '../../../components/MessageBox/MessageBox';
 import '../AdminPanel.scss';
 
 import AForm from '../../../classes/AForm';
 import Async from '../../../classes/Async';
+import Animation from '../../../classes/Animation';
 
 class Adder extends AForm {
 
@@ -104,6 +107,8 @@ class Adder extends AForm {
                             buttonSpinnerStyle.display = 'none';
                         }, 1000);
 
+                        Animation.showMessageBox(this.props.messageByAdd);
+
                         const inputDepartment = document.getElementById(adder.id);
 
                         inputDepartment.value = '';
@@ -120,24 +125,27 @@ class Adder extends AForm {
 
         return (
             <CenterScreenBlock>
-                <Form header={ this.props.headerForm }>
-                    <Input
-                        inputId={ adderData.id }
-                        placeholder={ adderData.messageDefault }
-                        icon={ adderData.icon }
-                        onBlur={ event => {
-                            this.checkDepartmentOnExist(adderData, this.props.pathCheck);
-                        } }
-                        onFocus={ event => this.focusInput(event, adderData.messageDefault) }
-                    />
-                    <div className='add-button__container'>
-                        <div className='registration__button_container'>
-                            <div className='registration__button_spinner'></div>
-                            <Button type={ 'button' } onClick={ event => this.addDepartment(event, adderData, this.props.pathCheck, this.props.pathAdd) }>Создать</Button>
+                <div className='form_container'>
+                    <Form header={ this.props.headerForm }>
+                        <Input
+                            inputId={ adderData.id }
+                            placeholder={ adderData.messageDefault }
+                            icon={ adderData.icon }
+                            onBlur={ event => {
+                                this.checkDepartmentOnExist(adderData, this.props.pathCheck);
+                            } }
+                            onFocus={ event => this.focusInput(event, adderData.messageDefault) }
+                        />
+                        <div className='add-button__container'>
+                            <div className='registration__button_container'>
+                                <div className='registration__button_spinner'></div>
+                                <Button type={ 'button' } onClick={ event => this.addDepartment(event, adderData, this.props.pathCheck, this.props.pathAdd) }>Создать</Button>
+                            </div>
+                            <Link to='/AdminPanel'>К списку справочников</Link>
                         </div>
-                        <Link to='/AdminPanel'>К списку справочников</Link>
-                    </div>
-                </Form>
+                    </Form>
+                    <MessageBox></MessageBox>
+                </div>
             </CenterScreenBlock>
         );
     }
@@ -148,7 +156,8 @@ Adder.propTypes = {
     pathCheck: PropTypes.string.isRequired,
     pathAdd: PropTypes.string.isRequired,
     adderData: PropTypes.object.isRequired,
-    headerForm: PropTypes.string.isRequired
+    headerForm: PropTypes.string.isRequired,
+    messageByAdd: PropTypes.string.isRequired
 };
 
 export default Adder;

@@ -8,13 +8,13 @@
   &__icon {
     font-size: 20px;
     cursor: pointer;
+
     @include put_transition();
 
-    &_pencil {
+    color: $headerColor;
+
+    &:hover {
       color: $mainColor;
-      &:hover {
-        color: darken($mainColor, 10%);
-      }
     }
 
     &_garbage {
@@ -32,10 +32,6 @@
 
     position: relative;
     z-index: 1;
-
-    &:hover {
-      background-color: lighten($borderColor, 30%);
-    }
   }
 
   &__icon {

@@ -16,6 +16,7 @@ export const inputsData = {
         type: 'password',
         icon: 'glyphicon-lock',
         patternOk: /^.{6,}$/,
+        patternOk: /^.{6,}$/,
         messageDefault: 'Введите пароль',
         messageOk: '',
         messageError: 'Пароль слишком короткий'

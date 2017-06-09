@@ -20,6 +20,7 @@ import { inputsData } from './inputsData';
 
 import AForm from '../../classes/AForm';
 import ObjectHandler from '../../classes/ObjectHandler';
+import Animation from '../../classes/Animation';
 
 import { registrationUserDB } from './actions';
 
@@ -36,31 +37,19 @@ class Registration extends AForm {
         this.inputsData = inputsData;
 
         this.registrationUser = this.registrationUser.bind(this);
-        this.showMessageBox = this.showMessageBox.bind(this);
+        this.onKeyPressEnter = this.onKeyPressEnter.bind(this);
     }
 
-    showMessageBox(message) {
-        // отображаем notification
-        let messageBox = $('.message-box');
-        let messageBoxText = $('.message-box__text span');
-
-        messageBox.css('display', 'inline-block');
-
-        messageBoxText.text(message);
-
-        setTimeout(() => {
-            let messageBox = $('.message-box');
-            messageBox.css('display', 'none');
-        }, 3000);
+    onKeyPressEnter(event) {
+        if (event.which === 13 || event.keyCode === 13) {
+            this.registrationUser();
+        }
     }
 
     /**
      * Метод отправляет AJAX запрос и регистрирует пользоватея в базе данных
-     * @param event — объект события клика по кнопке
      */
-    registrationUser(event) {
-        event.preventDefault();
-
+    registrationUser() {
         const eventBlur             = new Event('blur'),
               eventFocus            = new Event('focus');
 
@@ -85,36 +74,37 @@ class Registration extends AForm {
               selectPosition        = document.getElementById(position.id);
 
         if (!lastName.patternOk.test(inputLastName.value)) {
+            Animation.showMessageBox('Введите фамилию');
             return inputLastName.dispatchEvent(eventBlur);
         }
 
         if (!firstName.patternOk.test(inputFirstName.value)) {
+            Animation.showMessageBox('Введите имя');
             return inputFirstName.dispatchEvent(eventBlur);
         }
 
-        if (!middleName.patternOk.test(inputMiddleName.value)) {
-            return inputMiddleName.dispatchEvent(eventBlur);
-        }
-
         if (!email.patternOk.test(inputEmail.value)) {
+            Animation.showMessageBox('Введите email');
             return inputEmail.dispatchEvent(eventBlur);
         }
 
         if (!password.patternWarn.test(inputPassword.value)) {
+            Animation.showMessageBox('Введите пароль');
             return inputPassword.dispatchEvent(eventBlur);
         }
 
         if (inputPassword.value !== inputPasswordAgain.value) {
+            Animation.showMessageBox('Повторите пароль');
             return inputPasswordAgain.dispatchEvent(eventBlur);
         }
 
-        if (selectDepartment.value === 0) {
-            this.showMessageBox('Вы не выбрали отдел');
+        if (selectDepartment.value === '0') {
+            Animation.showMessageBox('Вы не выбрали отдел');
             return selectDepartment.dispatchEvent(eventFocus);
         }
 
-        if (selectPosition.value === 0) {
-            this.showMessageBox('Вы не выбрали должность');
+        if (selectPosition.value === '0') {
+            Animation.showMessageBox('Вы не выбрали должность');
             return selectPosition.dispatchEvent(eventFocus);
         }
 
@@ -174,18 +164,21 @@ class Registration extends AForm {
                             icon={ lastName.icon }
                             onBlur={ event => this.checkValidTextInput(event, lastName.patternOk, lastName.messageOk, lastName.messageError, lastName.messageDefault)}
                             onFocus={ event => this.focusInput(event, lastName.messageDefault) }
+                            onKeyPress={ this.onKeyPressEnter }
                         />
                         <Input
                             placeholder={ firstName.messageDefault }
                             inputId={ firstName.id }
                             onBlur={ event => this.checkValidTextInput(event, firstName.patternOk, firstName.messageOk, firstName.messageError, firstName.messageDefault) }
                             onFocus={ event => this.focusInput(event, firstName.messageDefault) }
+                            onKeyPress={ this.onKeyPressEnter }
                         />
                         <Input
                             placeholder={ middleName.messageDefault }
                             inputId={ middleName.id }
                             onBlur={ event => this.checkValidTextInput(event, middleName.patternOk, middleName.messageOk, middleName.messageError, middleName.messageDefault) }
                             onFocus={ event =>this.focusInput(event, middleName.messageDefault) }
+                            onKeyPress={ this.onKeyPressEnter }
                         />
                         <Input
                             type={ 'email' }
@@ -193,6 +186,7 @@ class Registration extends AForm {
                             inputId={ email.id }
                             onBlur={ event => this.checkValidEmailInput(event, email.patternOk) }
                             onFocus={ event => this.checkValidEmailInput(event, email.patternOk, email.messageOk, email.messageError, email.messageDefault) }
+                            onKeyPress={ this.onKeyPressEnter }
                         />
                         <Input
                             type={ password.type }
@@ -202,6 +196,7 @@ class Registration extends AForm {
                             onBlur={ event => this.checkValidPasswordInput(event, password.patternOk, password.patternWarn) }
                             onChange={ event => this.checkValidPasswordInput(event, password.patternOk, password.patternWarn) }
                             onFocus={ event => this.focusInput(event, password.messageDefault) }
+                            onKeyPress={ this.onKeyPressEnter }
                         />
                         <Input
                             type={ passwordAgain.type }
@@ -211,10 +206,12 @@ class Registration extends AForm {
                             onBlur={ () => this.checkEqualsInputs(passwordAgain.id, password.id) }
                             onChange={ () => this.checkEqualsInputs(passwordAgain.id, password.id) }
                             onFocus={ event => this.focusInput(event, passwordAgain.messageDefault) }
+                            onKeyPress={ this.onKeyPressEnter }
                         />
                         <SelectInput
                             selectId={ department.id }
                             placeholder={ department.placeholder }
+                            onKeyPress={ this.onKeyPressEnter }
                         >
                             { departments.map(department => {
                                 return <option key={ department.id } value={ department.id }>{ department.title }</option>
@@ -223,6 +220,7 @@ class Registration extends AForm {
                         <SelectInput
                             selectId={ position.id }
                             placeholder={ position.placeholder }
+                            onKeyPress={ this.onKeyPressEnter }
                         >
                             { positions.map(position => {
                                 return <option key={ position.id } value={ position.id }>{ position.title }</option>

@@ -18,15 +18,6 @@ class StartPage extends React.Component {
                 </div>
 
                 <CenterScreenBlock bgImage={ 'img/startBackground3.jpeg' }>
-                    <div className='start-page__center-block'>
-                        {
-                            this.props.userData.authorization ?
-                                <Link to={ '/documents' }><Button className={ 'start-page__btn-get-started' }>Начать</Button></Link>
-                                :
-                                <Link to={ '/authorization' }><Button className={ 'start-page__btn-get-started' }>Начать</Button></Link>
-                        }
-
-                    </div>
                 </CenterScreenBlock>
             </main>
         );

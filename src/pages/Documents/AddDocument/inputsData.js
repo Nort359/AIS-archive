@@ -5,7 +5,7 @@ export const inputsData = {
     documentTitle: {
         id: 'documentTitle',
         icon: 'glyphicon-bookmark',
-        patternOk: /^[a-zA-Zа-яА-Яёй ]{3,}$/i,
+        patternOk: /^.{3,40}$/i,
         messageDefault: 'Название документа',
         messageOk: 'Название введёно корректно',
         messageError: 'Название введёно неккоректно'
@@ -25,12 +25,10 @@ export const inputsData = {
     documentDateEnd: {
         id: 'documentDateEnd',
         type: 'date',
-        icon: 'glyphicon-calendar',
     },
     documentDateSignature: {
         id: 'documentDateSignature',
         type: 'date',
-        icon: 'glyphicon-calendar'
     },
     documentType: {
         id: 'documentType',

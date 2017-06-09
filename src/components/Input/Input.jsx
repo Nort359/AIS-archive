@@ -16,7 +16,8 @@ class Input extends React.Component {
         return (
             <div className={ 'input-animated__container' }>
                 <input
-                    className={ 'input-animated' }
+                    className={ 'input-animated ' + this.props.inputClassName }
+
                     type={ this.props.type || 'text' }
                     placeholder={ this.props.placeholder }
                     value={  this.state.inputValue }
@@ -29,6 +30,7 @@ class Input extends React.Component {
                     } }
                     onFocus={ this.props.onFocus }
                     onBlur={ this.props.onBlur }
+                    onKeyPress={ this.props.onKeyPress }
                     id={ this.props.inputId }
                     name={ this.props.inputId }
                 />
@@ -37,7 +39,11 @@ class Input extends React.Component {
                 </p>
                 <div className='input-animated__underline'></div>
 
-                <i className={ `glyphicon ${this.props.icon} input-animated__icon` } aria-hidden="true"></i>
+                <i
+                    className={ `glyphicon ${this.props.icon} input-animated__icon` }
+                    aria-hidden="true"
+                    onClick={ this.props.onClickIcon }
+                ></i>
                 <i className='input-animated__icon-status glyphicon'></i>
             </div>
         );
@@ -52,7 +58,10 @@ Input.propTypes = {
     inputId: React.PropTypes.string,
     onChange: React.PropTypes.func,
     onBlur: React.PropTypes.func,
-    onFocus: React.PropTypes.func
+    onFocus: React.PropTypes.func,
+    onKeyPress: React.PropTypes.func,
+    onClickIcon: React.PropTypes.func,
+    inputClassName: React.PropTypes.string
 };
 
 Input.defaultProps = {
