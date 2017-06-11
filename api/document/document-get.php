@@ -9,9 +9,9 @@
 
 		$documents = R::getAll( 'SELECT *
 									FROM document
-										WHERE user_id = ?
+										WHERE users LIKE ?
 										ORDER BY title ASC',
-	        [ $userId ]
+	        [ '%' . $userId . '%' ]
 	    );
 
 		if ($documents > 0)

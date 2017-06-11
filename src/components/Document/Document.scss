@@ -17,6 +17,14 @@
       color: $mainColor;
     }
 
+    &_ok, &_ok:hover {
+      color: $greenColor;
+    }
+
+    &_rejected, &_rejected:hover {
+      color: $redColor;
+    }
+
     &_garbage {
       &:hover {
         color: $redColor;
@@ -32,6 +40,9 @@
 
     position: relative;
     z-index: 1;
+    clear: both;
+    display: block;
+    margin-top: 15px;
   }
 
   &__icon {

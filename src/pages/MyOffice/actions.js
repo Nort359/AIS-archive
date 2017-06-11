@@ -30,6 +30,11 @@ export const getNotificationForDocument = data => dispatch => {
                     type: GET_NOTIFICATION_FOR_DOCUMENT,
                     notifications
                 });
+            } else {
+                dispatch({
+                    type: GET_NOTIFICATION_FOR_DOCUMENT,
+                    notifications: {}
+                });
             }
         })
         .catch(error => console.error(error));

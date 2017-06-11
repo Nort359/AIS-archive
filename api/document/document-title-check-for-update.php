@@ -7,7 +7,7 @@
 	$document_title = $_POST['title'];
 	$user_id = $_POST[ 'userId' ];
 
-	$document = R::findOne( 'document', 'title = ? AND user_id = ?', [ $document_title, $user_id ] );
+	$document = R::findOne( 'document', 'title = ? AND users LIKE ?', [ $document_title, '%' . $user_id . '%' ] );
 
 	$current_document_id = $_POST[ 'currentDocument' ];
 

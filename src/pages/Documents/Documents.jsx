@@ -6,6 +6,7 @@ import { Popover } from 'react-bootstrap';
 import moment from 'moment';
 import axios from 'axios';
 import querystring from 'querystring';
+
 import SideBar from '../../components/SideBar/SideBar';
 import Input from '../../components/Input/Input';
 import Button from '../../components/Button/Button';
@@ -45,15 +46,9 @@ class Documents extends React.Component {
         this.downloadDocument = this.downloadDocument.bind(this);
     }
 
-    downloadDocument() {
-        const id = event.currentTarget.getAttribute('data-document-id'),
-              record = {
-                  id
-              };
-
-        axios.post( '/api/document/document-download.php' )
-            .then(response => response.data)
-            .catch( error => console.log( error ) );
+    downloadDocument(event) {
+        const id = event.currentTarget.getAttribute('data-document-id');
+        window.open( `/api/document/document-download.php?id=${id}` );
     }
 
     showOldDocuments(event, id) {
@@ -125,8 +120,8 @@ class Documents extends React.Component {
         }
         const user = this.props.userData;
 
-        let documents = ObjectHandler.getArrayFromObject(this.props.document),
-            typeDocuments = ObjectHandler.getArrayFromObject(this.props.typeDocument);
+        let documents       = ObjectHandler.getArrayFromObject(this.props.document),
+            typeDocuments   = ObjectHandler.getArrayFromObject(this.props.typeDocument);
 
         let documentCountInFolder = {};
 
@@ -191,6 +186,15 @@ class Documents extends React.Component {
             </Popover>
         );
 
+        const popoverUsers = (
+            <Popover
+                id="popover-trigger-hover-focus"
+                title="Подсказка"
+            >
+                Кликнув по этой иконке Вы <strong>перейдёте на страницу со списком всех ответственных пользователей за этот документ</strong>
+            </Popover>
+        );
+
         return (
             <div>
                 {
@@ -228,9 +232,15 @@ class Documents extends React.Component {
 
                                     { documents.map(document => {
                                         if ( document.type_id === typeDocument.id ) {
-                                            if ( document.document_old === '1' ) {
-                                                oldDocs[ document.old_id ][ document.id ] = document;
-                                            } else if ( document.document_old === '0' ) {
+                                            if ( document.document_old === '1' || document.old_id !== '0' ) {
+
+                                                if ( document.document_old === '1' ) {
+                                                    oldDocs[ document.old_id ][ document.id ] = document;
+                                                } else if ( document.document_old === '0' && document.old_id !== '0' ) {
+                                                    oldDocs[ document.id][ document.id ] = document;
+                                                }
+
+                                            } else if ( document.document_old === '0' && document.old_id === '0' ) {
                                                 let expansionFile = /\.[^\.]*$/.exec(document.path); // расширение
                                                 return (
                                                     <div className='document-container'>
@@ -242,15 +252,18 @@ class Documents extends React.Component {
                                                                 isReplace={ true }
                                                                 isAddUser={ true }
                                                                 isDownload={ true }
+                                                                isUsers={ true }
                                                                 onReplace={ event => this.replaceDocument(event, this.props.document, this.props.getCurrentDocumentDB, '/public/#/documents/ReplaceDocument') }
                                                                 onUpdateClick={ event => this.replaceDocument(event, this.props.document, this.props.getCurrentDocumentDB, '/public/#/documents/UpdateDocument') }
                                                                 onAddUser={ event => this.replaceDocument(event, this.props.document, this.props.getCurrentDocumentDB, '/public/#/documents/UserList') }
                                                                 onDownload={ event => this.downloadDocument(event) }
+                                                                onUsersClick={ event => this.replaceDocument(event, this.props.document, this.props.getCurrentDocumentDB, '/public/#/documents/UserListInDocument') }
                                                                 popoverChange={ popoverChange }
                                                                 popoverDelete={ popoverDelete }
                                                                 popoverReplace={ popoverReplace }
                                                                 popoverAdd={ popoverAdd }
                                                                 popoverDownload={ popoverDownLoad }
+                                                                popoverUsers={ popoverUsers }
                                                             >
                                                                 <p><span>Полное название документа:</span> { document.path }</p>
                                                                 <p><span>Краткое описание документа:</span> { document.description !== '' ? document.description : '[Описание отсутствует]'  }</p>
@@ -289,6 +302,7 @@ class Documents extends React.Component {
                                                                                     popoverReplace={ popoverReplace }
                                                                                     popoverAdd={ popoverAdd }
                                                                                     popoverDownload={ popoverDownLoad }
+                                                                                    onDownload={ event => this.downloadDocument(event) }
                                                                                 >
                                                                                     <p><span>Полное название документа:</span> { d.path }</p>
                                                                                     <p><span>Краткое описание документа:</span> { d.description !== '' ? d.description : '[Описание отсутствует]'  }</p>
@@ -301,26 +315,6 @@ class Documents extends React.Component {
                                                                     } else {
                                                                         return (
                                                                             <div>
-                                                                                <div className='document-old'>
-                                                                                    <Document
-                                                                                        documentId={ d.id }
-                                                                                        key={ d.id }
-                                                                                        caption={ d.title + ` (${expansionFile})` + ' (не актуален)' }
-                                                                                        isUpdate={ true }
-                                                                                        isDownload={ true }
-                                                                                        popoverChange={ popoverChange }
-                                                                                        popoverDelete={ popoverDelete }
-                                                                                        popoverReplace={ popoverReplace }
-                                                                                        popoverAdd={ popoverAdd }
-                                                                                        popoverDownload={ popoverDownLoad }
-                                                                                    >
-                                                                                        <p><span>Полное название документа:</span> { d.path }</p>
-                                                                                        <p><span>Краткое описание документа:</span> { d.description !== '' ? d.description : '[Описание отсутствует]'  }</p>
-                                                                                        <p><span>Дата добавления документа:</span> { moment( d.datebegin ).format('LL') }</p>
-                                                                                        <p><span>Дата подписания документа:</span> { moment( d.datesignature ).format('LL') }</p>
-                                                                                        <p><span>Дата пересмотра документа:</span> { moment( d.dateend ).format('LL') }</p>
-                                                                                    </Document>
-                                                                                </div>
                                                                                 <div className='document-active'>
                                                                                     <Document
                                                                                         documentId={ document.id }
@@ -332,14 +326,18 @@ class Documents extends React.Component {
                                                                                         onUpdateClick={ event => this.replaceDocument(event, this.props.document, this.props.getCurrentDocumentDB, '/public/#/documents/UpdateDocument') }
                                                                                         onAddUser={ event => this.replaceDocument(event, this.props.document, this.props.getCurrentDocumentDB, '/public/#/documents/UserList') }
                                                                                         onClickDocument={ event => this.showOldDocuments(event, document.id) }
+                                                                                        onDownload={ event => this.downloadDocument(event) }
+                                                                                        onUsersClick={ event => this.replaceDocument(event, this.props.document, this.props.getCurrentDocumentDB, '/public/#/documents/UserListInDocument') }
                                                                                         oldDocsIsOpen={ false }
                                                                                         isAddUser={ true }
                                                                                         isDownload={ true }
+                                                                                        isUsers={ true }
                                                                                         popoverChange={ popoverChange }
                                                                                         popoverDelete={ popoverDelete }
                                                                                         popoverReplace={ popoverReplace }
                                                                                         popoverAdd={ popoverAdd }
                                                                                         popoverDownload={ popoverDownLoad }
+                                                                                        popoverUsers={ popoverUsers }
                                                                                     >
                                                                                         <p><span>Полное название документа:</span> { document.path }</p>
                                                                                         <p><span>Краткое описание документа:</span> { document.description !== '' ? document.description : '[Описание отсутствует]'  }</p>
@@ -385,14 +383,18 @@ class Documents extends React.Component {
                                                         isReplace={ true }
                                                         isAddUser={ true }
                                                         isDownload={ true }
+                                                        isUsers={ true }
                                                         onReplace={ event => this.replaceDocument(event, this.props.document, this.props.getCurrentDocumentDB, '/public/#/documents/ReplaceDocument') }
                                                         onUpdateClick={ event => this.replaceDocument(event, this.props.document, this.props.getCurrentDocumentDB, '/public/#/documents/UpdateDocument') }
                                                         onAddUser={ event => this.replaceDocument(event, this.props.document, this.props.getCurrentDocumentDB, '/public/#/documents/UserList') }
+                                                        onDownload={ event => this.downloadDocument(event) }
+                                                        onUsersClick={ event => this.replaceDocument(event, this.props.document, this.props.getCurrentDocumentDB, '/public/#/documents/UserListInDocument') }
                                                         popoverChange={ popoverChange }
                                                         popoverDelete={ popoverDelete }
                                                         popoverReplace={ popoverReplace }
                                                         popoverAdd={ popoverAdd }
                                                         popoverDownload={ popoverDownLoad }
+                                                        popoverUsers={ popoverUsers }
                                                     >
                                                         <p><span>Полное название документа:</span> { document.path }</p>
                                                         <p><span>Краткое описание документа:</span> { document.description !== '' ? document.description : '[Описание отсутствует]'  }</p>
@@ -430,6 +432,7 @@ class Documents extends React.Component {
                                                                             popoverReplace={ popoverReplace }
                                                                             popoverAdd={ popoverAdd }
                                                                             popoverDownload={ popoverDownLoad }
+                                                                            onDownload={ event => this.downloadDocument(event) }
                                                                         >
                                                                             <p><span>Полное название документа:</span> { d.path }</p>
                                                                             <p><span>Краткое описание документа:</span> { d.description !== '' ? d.description : '[Описание отсутствует]'  }</p>
@@ -454,6 +457,7 @@ class Documents extends React.Component {
                                                                                 popoverReplace={ popoverReplace }
                                                                                 popoverAdd={ popoverAdd }
                                                                                 popoverDownload={ popoverDownLoad }
+                                                                                onDownload={ event => this.downloadDocument(event) }
                                                                             >
                                                                                 <p><span>Полное название документа:</span> { d.path }</p>
                                                                                 <p><span>Краткое описание документа:</span> { d.description !== '' ? d.description : '[Описание отсутствует]'  }</p>
@@ -469,11 +473,14 @@ class Documents extends React.Component {
                                                                                 caption={ document.title + ` (${expansionFile = /\.[^\.]*$/.exec(document.path)})` }
                                                                                 isReplace={ true }
                                                                                 linkForUpdate={ false }
+                                                                                isUsers={ true }
                                                                                 onReplace={ event => this.replaceDocument(event, this.props.document, this.props.getCurrentDocumentDB, '/public/#/documents/ReplaceDocument') }
                                                                                 onUpdateClick={ event => this.replaceDocument(event, this.props.document, this.props.getCurrentDocumentDB, '/public/#/documents/UpdateDocument') }
                                                                                 onAddUser={ event => this.replaceDocument(event, this.props.document, this.props.getCurrentDocumentDB, '/public/#/documents/UserList') }
                                                                                 onClickDocument={ event => this.showOldDocuments(event, document.id) }
+                                                                                onDownload={ event => this.downloadDocument(event) }
                                                                                 oldDocsIsOpen={ false }
+                                                                                onUsersClick={ event => this.replaceDocument(event, this.props.document, this.props.getCurrentDocumentDB, '/public/#/documents/UserListInDocument') }
                                                                                 isAddUser={ true }
                                                                                 isDownload={ true }
                                                                                 popoverChange={ popoverChange }
@@ -481,6 +488,7 @@ class Documents extends React.Component {
                                                                                 popoverReplace={ popoverReplace }
                                                                                 popoverAdd={ popoverAdd }
                                                                                 popoverDownload={ popoverDownLoad }
+                                                                                popoverUsers={ popoverUsers }
                                                                             >
                                                                                 <p><span>Полное название документа:</span> { document.path }</p>
                                                                                 <p><span>Краткое описание документа:</span> { document.description !== '' ? document.description : '[Описание отсутствует]'  }</p>

@@ -37,6 +37,33 @@ class UserList extends React.Component {
 
         this.searchDocument = this.searchDocument.bind(this);
         this.addUserToDocument = this.addUserToDocument.bind(this);
+        this.resetNotification = this.resetNotification.bind(this);
+    }
+
+    resetNotification(event, currentDocument, user) {
+        const idChosenUser = event.currentTarget.getAttribute('data-document-id');
+
+        const data = {
+            documentId: currentDocument,
+            userFromId: user.id,
+            userToId: idChosenUser
+        };
+
+        axios.post( '/api/document/document-reset-user.php', querystring.stringify( data ) )
+            .then(response => response.data)
+            .then(answer => {
+                console.log('answer = ', answer);
+
+                if ( answer !== 'Error' ) {
+                    const doc = {
+                        documentId: answer
+                    };
+                    console.log('doc = ', doc);
+
+                    this.props.getNotificationForDocumentDB(doc);
+                }
+            } )
+            .catch(error => console.error(error));
     }
 
     addUserToDocument(event, currentDocument, user) {
@@ -48,13 +75,19 @@ class UserList extends React.Component {
             userToId: idChosenUser
         };
 
-        event.target.classList.remove('glyphicon-plus');
-        event.target.classList.add('glyphicon-ok');
-        event.target.style.color = '#53B73F';
-
         axios.post( '/api/document/document-add-user.php', querystring.stringify( data ) )
             .then(response => response.data)
-            .then(answer => console.log('answer', answer) )
+            .then(answer => {
+                console.log('answer', answer);
+
+                if ( answer !== 'Error' ) {
+                    const doc = {
+                        documentId: answer
+                    };
+
+                    this.props.getNotificationForDocumentDB(doc);
+                }
+            } )
             .catch(error => console.error(error));
     }
 
@@ -92,7 +125,7 @@ class UserList extends React.Component {
     render() {
         let users = ObjectHandler.getArrayFromObject(this.props.userList),
             departments = ObjectHandler.getArrayFromObject(this.props.department),
-            notifications = ObjectHandler.getArrayFromObject(this.props.notifications);
+            notifications = ObjectHandler.getArrayFromObject(this.props.notification);
 
         const currentUser = this.props.userData;
 
@@ -137,6 +170,15 @@ class UserList extends React.Component {
             </Popover>
         );
 
+        const popoverOk = (
+            <Popover
+                id="popover-trigger-hover-focus"
+                title="Подсказка"
+            >
+                Кликнув по этой иконке, Вы отмените заявку, отправлнную Вами ранее
+            </Popover>
+        );
+
         return (
             <div>
                 {
@@ -154,13 +196,13 @@ class UserList extends React.Component {
                                             let isAdded = false;
 
                                             for ( let i = 0; i < notifications.length; i++ ) {
-                                                if (notifications[i].id === user.id) {
+                                                if (notifications[i].user_to_id === user.id) {
                                                     isAdded = true;
+                                                    break;
                                                 }
                                             }
 
                                             if ( isAdded === true ) {
-                                                // TODO: нужно вернуть пользователя с галочкой переделав компонент документа на галочку
                                                 return (
                                                     <div className='user-list'>
                                                         <div className='user-list__card'>
@@ -171,13 +213,14 @@ class UserList extends React.Component {
                                                                 isUpdate={ true }
                                                                 isNotDelete={ true }
                                                                 isUserIcon={ true }
-                                                                isAddUser={ true }
+                                                                isOk={ true }
                                                                 userIcon={ <img src={ user.photo }
                                                                                 alt='Фото пользователя'
                                                                                 className='user-list__card_photo'
                                                                 /> }
-                                                                popoverAdd={ popoverAdd }
-                                                                onAddUser={ event => this.addUserToDocument(event, currentDocument.id, currentUser) }
+                                                                popoverOk={ popoverOk }
+                                                                popoverPosition={ 'right' }
+                                                                onOk={ event => this.resetNotification(event, currentDocument.id, currentUser) }
                                                             >
                                                                 <p><span>Email пользователя:</span> { user.email }</p>
                                                                 <p><span>Отдел пользователя:</span> { user.department }</p>
@@ -203,6 +246,7 @@ class UserList extends React.Component {
                                                                                 className='user-list__card_photo'
                                                                 /> }
                                                                 popoverAdd={ popoverAdd }
+                                                                popoverPosition={ 'right' }
                                                                 onAddUser={ event => this.addUserToDocument(event, currentDocument.id, currentUser) }
                                                             >
                                                                 <p><span>Email пользователя:</span> { user.email }</p>

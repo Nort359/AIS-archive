@@ -7,7 +7,7 @@
 	$document_title = $_POST['title'];
 	$user_id = $_POST[ 'userId' ];
 
-	if ( R::findOne( 'document', 'title = ? AND user_id = ?', [ $document_title, $user_id ] ) > 0 )
+	if ( R::findOne( 'document', 'title = ? AND users LIKE ?', [ $document_title, '%' . $user_id . '%' ] ) > 0 )
 		echo 'Error';
 	else
 		echo 'Ok';

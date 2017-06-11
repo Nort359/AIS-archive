@@ -35,7 +35,7 @@
 
 			$user_name_file = str2translit( $user->surname . '-' . $user->name . '-' . $user->middlename );
 
-			$file_name = $user_name_file . '__' . rand(00000, 9999999) . $_FILES[ 'file' ][ 'name' ];
+			$file_name = $user_name_file . '__' . time() . $_FILES[ 'file' ][ 'name' ];
 
 			$final_path = $_SERVER['DOCUMENT_ROOT'] . '/user_files/' . $file_name;
 
@@ -68,9 +68,7 @@
 
 			$document->type_id 			= $type;
 
-			$document->user_id 			= $_POST[ 'user' ];
-
-			$document->document_old 				= false;
+			$document->document_old 	= false;
 			$document->old_id 			= $document_old_id;
 
 			return R::store( $document );

@@ -225,6 +225,8 @@ class AddDocument extends AForm {
                             messageBoxText.text(data);
                         }
 
+                        console.log('data = ', data);
+
                         setTimeout(() => {
                             let messageBox = $('.message-box');
                             messageBox.css('display', 'none');

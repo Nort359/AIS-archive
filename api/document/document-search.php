@@ -22,9 +22,9 @@
 
 		$findString 		= 'SELECT *
 								FROM document
-									WHERE user_id = ?';
+									WHERE users LIKE ?';
 
-		$findArray = array( $id );
+		$findArray = array( '%' . $id . '%' );
 
 		if ( !empty( $search ) ) {
 			$findString .= ' AND title LIKE ?';

@@ -4,6 +4,10 @@
 
 	require_once $_SERVER['DOCUMENT_ROOT'] . '/api/config.php';
 
+	$document_id = $_GET[ 'id' ];
+
+	$document = R::findOne( 'document', 'id = ?', [ $document_id ] );
+
 	/**
 	 * Отдаёт файл на закачку пользователю
 	 * @param  [ string ] $file — Путь к нужному файлу
@@ -35,6 +39,11 @@
 	  }
 	}
 
-
+	if ( !empty( $_GET ) ) {
+		file_force_download( $_SERVER['DOCUMENT_ROOT'] . '/user_files/' . $document->path );
+		echo "Ok";
+	} else {
+		echo "Error";
+	}
 
 ?>

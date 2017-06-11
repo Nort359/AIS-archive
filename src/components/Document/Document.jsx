@@ -123,11 +123,43 @@ class Document extends Component {
                         }
                         {
                             this.props.isAddUser ?
-                                <OverlayTrigger trigger={['hover', 'focus']} placement="top" overlay={ this.props.popoverAdd }>
+                                <OverlayTrigger
+                                    trigger={['hover', 'focus']}
+                                    placement={ this.props.popoverPosition ? this.props.popoverPosition : "top" }
+                                    overlay={ this.props.popoverAdd }
+                                >
                                     <i
                                         className='document__icon document__icon_add-user glyphicon glyphicon-plus'
                                         data-document-id={ this.props.documentId }
                                         onClick={ this.props.onAddUser }
+                                    ></i>
+                                </OverlayTrigger>
+                                :
+                                null
+                        }
+                        {
+                            this.props.isOk ?
+                                <OverlayTrigger
+                                    trigger={['hover', 'focus']}
+                                    placement={ this.props.popoverPosition ? this.props.popoverPosition : "top" }
+                                    overlay={ this.props.popoverOk }
+                                >
+                                    <i
+                                        className='document__icon document__icon_ok glyphicon glyphicon-ok'
+                                        data-document-id={ this.props.documentId }
+                                        onClick={ this.props.onOk }
+                                    ></i>
+                                </OverlayTrigger>
+                                :
+                                null
+                        }
+                        {
+                            this.props.isRejected ?
+                                <OverlayTrigger trigger={['hover', 'focus']} placement="top" overlay={ this.props.popoverRejected }>
+                                    <i
+                                        className='document__icon document__icon_rejected glyphicon glyphicon-remove'
+                                        data-document-id={ this.props.documentId }
+                                        onClick={ this.props.onDownload }
                                     ></i>
                                 </OverlayTrigger>
                                 :
@@ -140,6 +172,18 @@ class Document extends Component {
                                         className='document__icon document__icon_download glyphicon glyphicon-download-alt'
                                         data-document-id={ this.props.documentId }
                                         onClick={ this.props.onDownload }
+                                    ></i>
+                                </OverlayTrigger>
+                                :
+                                null
+                        }
+                        {
+                            this.props.isUsers ?
+                                <OverlayTrigger trigger={['hover', 'focus']} placement="top" overlay={ this.props.popoverUsers }>
+                                    <i
+                                        className='document__icon document__icon_download glyphicon glyphicon-user'
+                                        data-document-id={ this.props.documentId }
+                                        onClick={ this.props.onUsersClick }
                                     ></i>
                                 </OverlayTrigger>
                                 :
@@ -166,6 +210,9 @@ Document.propTypes = {
     onReplace:          PropTypes.func,
     onAddUser:          PropTypes.func,
     onDownload:         PropTypes.func,
+    onOk:               PropTypes.func,
+    onRejected:         PropTypes.func,
+    onUsersClick:       PropTypes.func,
     pathUpdate:         PropTypes.string,
     pathReplace:        PropTypes.string,
     isNotOpen:          PropTypes.bool,
@@ -175,16 +222,23 @@ Document.propTypes = {
     linkForUpdate:      PropTypes.bool,
     isUpdate:           PropTypes.bool,
     isAddUser:          PropTypes.bool,
+    isOk:               PropTypes.bool,
+    isRejected:         PropTypes.bool,
     isUserIcon:         PropTypes.bool,
     isNotDelete:        PropTypes.bool,
     isDownload:         PropTypes.bool,
+    isUsers:            PropTypes.bool,
     userIcon:           PropTypes.any,
     popoverArrow:       PropTypes.any,
     popoverChange:      PropTypes.any,
     popoverDelete:      PropTypes.any,
     popoverReplace:     PropTypes.any,
     popoverAdd:         PropTypes.any,
-    popoverDownload:    PropTypes.any
+    popoverDownload:    PropTypes.any,
+    popoverOk:          PropTypes.any,
+    popoverRejected:    PropTypes.any,
+    popoverUsers:       PropTypes.any,
+    popoverPosition:    PropTypes.string
 };
 
 export default Document;

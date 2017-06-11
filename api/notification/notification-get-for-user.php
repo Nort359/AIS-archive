@@ -15,14 +15,17 @@
     	
 		$notification_with_user[] = array(
 			'id' 					=> $item->id,
+			'title'					=> $item->title,
 			'text' 					=> $item->text,
 			'date_sended' 			=> $item->date_sended,
+			'document_id' 			=> $item->document_id,
 			'user_from_id' 			=> $item->user_from_id,
 			'user_to_id' 			=> $item->user_to_id,
 			'readed' 				=> $item->readed,
 			'user_from_name' 		=> $user->name,
 			'user_from_surname' 	=> $user->surname,
-			'user_from_middlename' 	=> $user->middlename
+			'user_from_middlename' 	=> $user->middlename,
+			'user_from_email' 		=> $user->email
 		);
     }
 

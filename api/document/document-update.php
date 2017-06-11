@@ -21,8 +21,6 @@
 
 		$document->type_id 			= $type;
 
-		$document->user_id 			= $_POST[ 'user' ];
-
 		return R::store( $document );
 	}
 
