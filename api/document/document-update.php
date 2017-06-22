@@ -8,6 +8,8 @@
 	function update_document() {
 		$old_document 				= $_POST[ 'oldDocument' ];
 
+		$doc 						= R::findOne( 'document', 'id = ?', [ $old_document ] );
+
 		$document 					= R::load( 'document', $old_document );
 
 		$document->title 			= $_POST[ 'title' ];
@@ -16,6 +18,7 @@
 		$document->datebegin 		= date( 'Y-m-d' );
 		$document->dateend 			= $_POST[ 'dateEnd' ];
 		$document->datesignature 	= $_POST[ 'dateSignature' ];
+		$document->users 			= $doc->users;
 
 		$type = empty( $_POST[ 'type' ] ) ? 0 : $_POST[ 'type' ];
 

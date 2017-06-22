@@ -7,6 +7,8 @@ import querystring from 'querystring';
 export const GET_DOCUMENTS = 'GET_DOCUMENTS';
 export const GET_CURRENT_DOCUMENT = 'GET_CURRENT_DOCUMENT';
 export const GET_DOCUMENTS_BY_SEARCH = 'GET_DOCUMENTS_BY_SEARCH';
+export const PUT_VISIBLE_DOCS = 'PUT_VISIBLE_DOCS';
+export const GET_USERS_AND_DOCUMENTS = 'GET_USERS_AND_DOCUMENTS';
 
 export const getDocuments = user => dispatch => {
     axios.post('/api/document/document-get.php', querystring.stringify(user))
@@ -16,6 +18,11 @@ export const getDocuments = user => dispatch => {
                 dispatch({
                     type: GET_DOCUMENTS,
                     documents
+                });
+            } else {
+                dispatch({
+                    type: GET_DOCUMENTS,
+                    documents: {}
                 });
             }
         })
@@ -45,6 +52,32 @@ export const getCurrentDocument = (document, path) => dispatch => {
         })
         .then(() => {
             window.location = path;
+        })
+        .catch(error => console.error(error));
+};
+
+export const visibleDocs = value => dispatch => {
+    dispatch({
+        type: PUT_VISIBLE_DOCS,
+        value
+    });
+};
+
+export const getUserAndDocuments = user => dispatch => {
+    axios.post('/api/document/document-get-and-user.php', querystring.stringify(user))
+        .then(response => response.data)
+        .then(documents => {
+            if (typeof documents === 'object') {
+                dispatch({
+                    type: GET_USERS_AND_DOCUMENTS,
+                    documents
+                });
+            } else {
+                dispatch({
+                    type: GET_USERS_AND_DOCUMENTS,
+                    documents: {}
+                });
+            }
         })
         .catch(error => console.error(error));
 };

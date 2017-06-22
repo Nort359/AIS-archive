@@ -1,5 +1,7 @@
 <?php
 
+	error_reporting(0);
+
 	function connect_db() {
 		$db = mysqli_connect(HOST, USER, PASSWORD, DB);
 
@@ -29,9 +31,11 @@
 		$tabs = array(
 			"department",
 			"position",
+			"expansion",
 			"documenttype",
 			"user",
-			"document"
+			"document",
+			"notification"
 		);
 
 		return $tabs;
@@ -39,7 +43,7 @@
 
 	function get_dump( $db, $tables ) {
 		if (  is_array( $tables ) ) {
-			$fp = fopen( DIR_SQL . time() . '_dump.sql', 'w' );
+			$fp = fopen( DIR_SQL . date( "Y-m-d H-i-s" ) . '_dump.sql', 'w' );
 
 			$text = "-- SQL DUMP\n" .
 			  ltrim("-- my_version: 1.00\n") .

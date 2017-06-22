@@ -9,7 +9,7 @@ class SideBar extends Component {
     constructor(props) {
         super(props);
 
-        this.isOpenSideBar = false;
+        this.isOpenSideBar = this.props.isOpen;
 
         this.openSideBar = this.openSideBar.bind(this);
     }
@@ -36,7 +36,7 @@ class SideBar extends Component {
                 <div className='sidebar__hamburger_container'>
                     <i
                         className='sidebar__hamburger_icon glyphicon glyphicon-menu-hamburger'
-                        onClick={ this.openSideBar }
+                        onClick={ this.props.onOpenSideBar }
                     ></i>
                 </div>
                 { this.props.children }
@@ -47,7 +47,9 @@ class SideBar extends Component {
 }
 
 SideBar.propTypes = {
-    children: PropTypes.any.isRequired
+    children: PropTypes.any.isRequired,
+    isOpen: PropTypes.bool,
+    onOpenSideBar: PropTypes.func.isRejected
 };
 
 export default SideBar;

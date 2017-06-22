@@ -34,6 +34,13 @@ class MyOffice extends React.Component {
 
         let notifications = ObjectHandler.getArrayFromObject(this.props.notification);
 
+        let notificationCount = 0;
+
+        notifications.map(notification => {
+            if ( notification.readed === '0' || notification.readed === '3' )
+                notificationCount++;
+        });
+
         return (
             <div className='my-office__container'>
                 {
@@ -65,7 +72,7 @@ class MyOffice extends React.Component {
                                     <Link to="/my-office/Notifications">
                                         <div className='my-office__data_notification'>
                                             <i className='my-office__data_notification_icon  glyphicon glyphicon-bell'></i>
-                                            <h2 className="my-office__data_notification_count">{ notifications.length } новых уведомлений</h2>
+                                            <h2 className="my-office__data_notification_count">{ notificationCount !== 0 ? `${notificationCount} новых уведомлений` : 'нет новых уведомлений'  } </h2>
                                         </div>
                                     </Link>
                                 </div>

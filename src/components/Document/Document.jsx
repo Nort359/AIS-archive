@@ -44,14 +44,16 @@ class Document extends Component {
         return (
             <div className='document__container'>
                 <div className='document' data-old-docs-open={ this.props.oldDocsIsOpen } id={ `document-${this.props.documentId}` }>
-                    <div className='document__caption' onClick={ event => {
-                        if ( !this.props.isNotOpen ) {
-                            this.showMoreInformation(event, this.props.documentId);
-                        }
+                    <div className='document__caption'
+                         data-document-id={ this.props.documentId }
+                         onClick={ event => {
+                            if ( !this.props.isNotOpen ) {
+                                this.showMoreInformation(event, this.props.documentId);
+                            }
 
-                        if ( typeof this.props.onClickDocument === 'function' ) {
-                            this.props.onClickDocument(event);
-                        }
+                            if ( typeof this.props.onClickDocument === 'function' ) {
+                                this.props.onClickDocument(event);
+                            }
                     } }>
                         {
                             this.props.isNotArraw ?
@@ -63,9 +65,13 @@ class Document extends Component {
                         }
                         {
                             this.props.isUserIcon ?
-                                this.props.userIcon
+                                <OverlayTrigger trigger={['hover', 'focus']} placement="top" overlay={ this.props.popoverMainIcon }>
+                                    { this.props.userIcon }
+                                </OverlayTrigger>
                                 :
-                                <i className='document__icon document__icon_list glyphicon glyphicon-list-alt'></i>
+                                <OverlayTrigger trigger={['hover', 'focus']} placement="top" overlay={ this.props.popoverMainIcon }>
+                                    <i className='document__icon document__icon_list glyphicon glyphicon-list-alt'></i>
+                                </OverlayTrigger>
                         }
                         { this.props.caption }
                     </div>
@@ -96,18 +102,6 @@ class Document extends Component {
                                             ></i>
                                     }
                                 </span>
-                        }
-                        {
-                            this.props.isNotDelete ?
-                                null
-                                :
-                                <OverlayTrigger trigger={['hover', 'focus']} placement="top" overlay={ this.props.popoverDelete }>
-                                    <i
-                                        className='document__icon document__icon_garbage glyphicon glyphicon-trash'
-                                        data-document-id={ this.props.documentId }
-                                        onClick={ this.props.onDeleteClick }
-                                    ></i>
-                                </OverlayTrigger>
                         }
                         {
                             this.props.isReplace ?
@@ -159,7 +153,7 @@ class Document extends Component {
                                     <i
                                         className='document__icon document__icon_rejected glyphicon glyphicon-remove'
                                         data-document-id={ this.props.documentId }
-                                        onClick={ this.props.onDownload }
+                                        onClick={ this.props.onRejected }
                                     ></i>
                                 </OverlayTrigger>
                                 :
@@ -188,6 +182,18 @@ class Document extends Component {
                                 </OverlayTrigger>
                                 :
                                 null
+                        }
+                        {
+                            this.props.isNotDelete ?
+                                null
+                                :
+                                <OverlayTrigger trigger={['hover', 'focus']} placement="top" overlay={ this.props.popoverDelete }>
+                                    <i
+                                        className='document__icon document__icon_garbage glyphicon glyphicon-trash'
+                                        data-document-id={ this.props.documentId }
+                                        onClick={ this.props.onDeleteClick }
+                                    ></i>
+                                </OverlayTrigger>
                         }
                     </div>
                     <div className='document__more'>
@@ -238,6 +244,7 @@ Document.propTypes = {
     popoverOk:          PropTypes.any,
     popoverRejected:    PropTypes.any,
     popoverUsers:       PropTypes.any,
+    popoverMainIcon:    PropTypes.any,
     popoverPosition:    PropTypes.string
 };
 

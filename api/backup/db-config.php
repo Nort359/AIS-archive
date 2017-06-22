@@ -1,9 +1,11 @@
 <?php
 
+	error_reporting(0);
+
 	define('HOST', 'localhost');
 	define('USER', 'root');
 	define('PASSWORD', '');
-	define('DB', 'ais_archive');
+	define('DB', 'archive');
 	
 	define('DIR_SQL', 'sql/');
 	define('FOR_WRITE', 10);

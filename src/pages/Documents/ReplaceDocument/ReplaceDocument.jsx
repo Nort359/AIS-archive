@@ -40,7 +40,7 @@ class ReplaceDocument extends AForm {
         this.checkFile = this.checkFile.bind(this);
     }
 
-    checkFile() {
+    checkFile(expansion) {
         const file = this.inputsData.documentFile;
 
         let $input = $(`#${file.id}`);
@@ -49,14 +49,12 @@ class ReplaceDocument extends AForm {
         if (typeof fileData === 'object') {
             let expansionFile = /\.[^\.]*$/.exec(fileData.name);
 
-            const expansions = [
-                '.jpg', '.jpeg', '.docx', '.psd'
-            ];
+            const expansions = expansion;
 
             let expansionExist = false;
 
             for(let i = 0; i < expansions.length; i++) {
-                if ( expansions[i] == expansionFile ) {
+                if ( '.' + expansions[i].title == expansionFile[0] ) {
                     expansionExist = true;
                     break;
                 }
@@ -74,7 +72,7 @@ class ReplaceDocument extends AForm {
         }
     }
 
-    addDocument(event, user, currentDocument) {
+    addDocument(event, user, currentDocument, expansion) {
         event.preventDefault();
 
         const eventBlur             = new Event('blur'),
@@ -95,7 +93,7 @@ class ReplaceDocument extends AForm {
         let fd = new FormData;
         let fileData = $input.prop('files')[0];
 
-        let messageFromCheckFile = this.checkFile();
+        let messageFromCheckFile = this.checkFile(expansion);
 
         if ( messageFromCheckFile !== true ) {
             let messageBox = $('.message-box');
@@ -215,7 +213,8 @@ class ReplaceDocument extends AForm {
 
         const currentDocument = this.props.document.currentDocument;
 
-        let typeDocuments = ObjectHandler.getArrayFromObject(this.props.typeDocument);
+        let typeDocuments = ObjectHandler.getArrayFromObject(this.props.typeDocument),
+            expansion = ObjectHandler.getArrayFromObject(this.props.expansion);
 
         return (
             <CenterScreenBlock>
@@ -235,7 +234,7 @@ class ReplaceDocument extends AForm {
                                     inputId={ file.id }
                                     type={ file.type }
                                     icon={ file.icon }
-                                    onBlur={ this.checkFile }
+                                    onBlur={ () => this.checkFile(expansion) }
                                     onFocus={ event => this.focusInput(event, file.messageDefault) }
                                 />
                                 <p className="form-after-input-text">Введите дату пересмотра:</p>
@@ -303,7 +302,7 @@ class ReplaceDocument extends AForm {
 
                                 <div className='registration__button_container'>
                                     <div className='registration__button_spinner'></div>
-                                    <Button type='button' onClick={ event => this.addDocument(event, user, currentDocument) }>Заменить</Button>
+                                    <Button type='button' onClick={ event => this.addDocument(event, user, currentDocument, expansion) }>Заменить</Button>
                                 </div>
                                 <Link to='/documents'>К списку документов</Link>
                             </Form>
@@ -374,7 +373,8 @@ export default connect(
     state => ({
         document: state.document,
         userData: state.userData,
-        typeDocument: state.typeDocument
+        typeDocument: state.typeDocument,
+        expansion: state.expansion
     }),
     dispatch => ({
         addUserDataBase: (userData) => {

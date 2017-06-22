@@ -17,8 +17,7 @@
 		$notification->title 		= "Ваша должность переименована";
 		$notification->text 		= "Должность, к которой Вы относитесь была переименована в " . $position_title;
 		$notification->date_sended  = date( 'Y-m-d' );
-		$notification->readed 		= false;
-		$notification->document_id  = 0;
+		$notification->readed 		= 3;
 		$notification->user_from_id = $admin_id;
 		$notification->user_to_id 	= $item->id;
 

@@ -254,7 +254,7 @@ class Registration extends AForm {
                     btnText={ 'Ок' }
                     btnEvent={ () => {
                         setTimeout(() => {
-                            window.location = '/public/#/'; // TODO Убрать хэш, когда в роутах его не будет
+                            window.location = '/public/#/documents/'; // TODO Убрать хэш, когда в роутах его не будет
                         }, 1000);
                     } }
                 >

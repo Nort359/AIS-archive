@@ -35,8 +35,6 @@ class UserListInDocument extends React.Component {
     render() {
         let users = ObjectHandler.getArrayFromObject(this.props.userListInDocument);
 
-        const currentUser = this.props.userData;
-
         const currentDocument = this.props.document.currentDocument;
 
         if ( typeof currentDocument === 'object' ) {
@@ -60,6 +58,9 @@ class UserListInDocument extends React.Component {
                 {
                     typeof currentDocument === 'object' ?
                         <div>
+
+                            <h2 className='documents__header'>Ответственные пользователи за документ: "{ currentDocument.title }"</h2>
+
                             { users.map(user => {
                                 return (
                                     <div className='user-list'>

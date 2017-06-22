@@ -74,8 +74,8 @@ class Adder extends AForm {
         ])
             .then(answer => {
                 if (answer[0] !== 'Ok') {
-                    this.showMessageBox('Такой отдел существует');
-                    this._rejectInput(adder.id, 'Такой отдел существует');
+                    this.showMessageBox(this.props.adderData.messageExist);
+                    this._rejectInput(adder.id, this.props.adderData.messageExist);
                     return false;
                 }
 
@@ -135,11 +135,19 @@ class Adder extends AForm {
                                 this.checkDepartmentOnExist(adderData, this.props.pathCheck);
                             } }
                             onFocus={ event => this.focusInput(event, adderData.messageDefault) }
+                            onKeyPress={ event => {
+                                if (event.which === 13 || event.keyCode === 13) {
+                                    this.addDepartment(event, adderData, this.props.pathCheck, this.props.pathAdd);
+                                }
+                            } }
                         />
                         <div className='add-button__container'>
                             <div className='registration__button_container'>
                                 <div className='registration__button_spinner'></div>
-                                <Button type={ 'button' } onClick={ event => this.addDepartment(event, adderData, this.props.pathCheck, this.props.pathAdd) }>Создать</Button>
+                                <Button
+                                    type={ 'button' }
+                                    onClick={ event => this.addDepartment(event, adderData, this.props.pathCheck, this.props.pathAdd) }
+                                >Добавить</Button>
                             </div>
                             <Link to='/AdminPanel'>К списку справочников</Link>
                         </div>

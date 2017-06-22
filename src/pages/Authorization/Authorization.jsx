@@ -1,6 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router';
 import { connect } from 'react-redux';
+import axios from 'axios';
+import querystring from 'querystring';
 import $ from 'jquery';
 
 // Import components
@@ -35,6 +37,7 @@ class Authorization extends AForm {
 
         this.authorizationUser = this.authorizationUser.bind(this);
         this.onKeyPressEnter = this.onKeyPressEnter.bind(this);
+
     }
 
     onKeyPressEnter(event) {
@@ -85,7 +88,7 @@ class Authorization extends AForm {
               password = this.inputsData.password;
 
         return (
-            <CenterScreenBlock>
+            <CenterScreenBlock bgImage={ this.props.bgImage }>
                 <div className='form_container'>
                     <Form header={ 'Авторизация' }>
                         <Input
@@ -112,7 +115,11 @@ class Authorization extends AForm {
                         </div>
 
                         <Link to='/registration'>Ещё нет аккаунта? Создать<i className="glyphicon glyphicon-pencil"></i></Link>
-                        <Link to='/' className={ 'forgot-password' }>Забыли пароль?</Link>
+                        <Link
+                            to='/fogottenPassword'
+                            className={ 'forgot-password' }
+                            onClick={ this.generateKey }
+                        >Забыли пароль?</Link>
 
                     </Form>
                     <MessageBox></MessageBox>
@@ -131,7 +138,7 @@ class Authorization extends AForm {
                     btnText={ 'Ок' }
                     btnEvent={ () => {
                         setTimeout(() => {
-                            window.location = '/public/#/'; // TODO Убрать хэш, когда в роутах его не будет
+                            window.location = '/public/#/documents/'; // TODO Убрать хэш, когда в роутах его не будет
                         }, 1000);
                     } }
                 >
@@ -164,6 +171,10 @@ class Authorization extends AForm {
 }
 
 Authorization.path = '/authorization';
+
+Authorization.propTypes = {
+    bgImage: React.PropTypes.string
+};
 
 export default connect(
     state => ({

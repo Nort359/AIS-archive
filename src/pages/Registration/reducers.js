@@ -2,7 +2,7 @@
  * Created by Nort359@gmail.com on 10.05.2017.
  */
 import { REGISTRATION_USER, AUTHORIZATION_USER } from './actions';
-import { GET_USER } from '../Authorization/actions';
+import { GET_USER, GET_GENERATE_KEY } from '../Authorization/actions';
 import { EXISTS_USER } from '../../actions';
 import { EXIT_USER } from '../../components/Header/actions';
 
@@ -26,6 +26,9 @@ function userReducer(state = [], action) {
 
         case EXIT_USER:
             return [];
+
+        case GET_GENERATE_KEY:
+            return Object.assign({}, state, action.key);
 
         default:
             return state;

@@ -83,8 +83,6 @@ class Updater extends AForm {
     render() {
         const adderData = this.props.adderData;
 
-        console.log('adderData', adderData);
-
         return (
             <CenterScreenBlock>
                 <Form header={ this.props.headerForm }>
@@ -97,6 +95,11 @@ class Updater extends AForm {
                             this.checkDepartmentOnExist(adderData, this.props.pathCheck);
                         } }
                         onFocus={ event => this.focusInput(event, adderData.messageDefault) }
+                        onKeyPress={ event => {
+                            if (event.which === 13 || event.keyCode === 13) {
+                                this.updateRecord(event, adderData, this.props.oldData, this.props.pathCheck, this.props.pathUpdate, this.props.user);
+                            }
+                        } }
                     />
                     <div className='add-button__container'>
                         {

@@ -8,7 +8,7 @@
 	define( 'HOST', 'localhost' );
 	define( 'USER', 'root' );
 	define( 'PASSWORD', '' );
-	define( 'DB', 'ais_archive' );
+	define( 'DB', 'archive' );
 
 	R::setup( 'mysql:host=' . HOST . ';dbname=' . DB ,
         USER, PASSWORD ); // for both mysql or mariaDB

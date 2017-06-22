@@ -151,7 +151,8 @@ class UpdateDocument extends AForm {
             {
                 title: inputTitle.value,
                 currentDocument: currenDocument.id,
-                userId: user.id
+                userId: user.id,
+                isUpdate: true
             }))
             .then(response => response.data)
             .then(answer => {

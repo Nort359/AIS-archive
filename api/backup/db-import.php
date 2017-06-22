@@ -1,5 +1,7 @@
 <?php
 
+	error_reporting(0);
+
 	require_once 'db-config.php';
 	require_once 'db-functions.php';
 	require_once 'db-creater.php';

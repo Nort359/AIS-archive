@@ -1,7 +1,6 @@
 /**
  * Created by Nort359@gmail.com on 22.05.2017.
  */
-
 export const department = {
     pathServerAdd: '/api/admin/department/department-add.php',
     pathServerUpdate: '/api/admin/department/department-update.php',
@@ -42,6 +41,21 @@ export const typeDocument = {
         patternOk: /^[a-zA-Zа-яА-Я \-ёЁйЙ]{3,40}$/i,
         messageDefault: 'Название типа документа',
         messageExist: 'Такой тип документа существует',
+        messageOk: 'Корректно',
+        messageError: 'Неккоректно'
+    }
+};
+
+export const expansion = {
+    pathServerAdd: '/api/admin/expansion/expansion-add.php',
+    pathServerUpdate: '/api/admin/expansion/expansion-update.php',
+    pathServerCheckExist: '/api/admin/expansion/expansion-check-exist.php',
+    inputValid: {
+        id: 'typeDocument-title',
+        icon: 'glyphicon-asterisk',
+        patternOk: /^[a-zA-Zа-яА-Я \-ёЁйЙ]{2,10}$/i,
+        messageDefault: 'Расширение документа',
+        messageExist: 'Такое расширение существует',
         messageOk: 'Корректно',
         messageError: 'Неккоректно'
     }

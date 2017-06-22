@@ -1,5 +1,7 @@
 <?php
 
+	error_reporting(0);
+
 	require_once 'db-config.php';
 
 	$mysqli = new mysqli(HOST, USER, PASSWORD);

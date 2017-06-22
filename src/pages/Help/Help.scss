@@ -1,0 +1,65 @@
+@import "../../scss_partian/config";
+
+.help-center {
+  margin: 0 auto;
+  width: $containerWidth;
+}
+
+.tabs-center {
+  margin: 0 auto;
+  width: 1000px;
+
+  #uncontrolled-tab-example {
+    margin: 0 auto 25px auto;
+    width: 600px;
+
+    li {
+      border: none;
+      a {
+        border: none;
+        font-size: 18px;
+        color: $mainColor;
+
+      }
+    }
+
+    li.active {
+      background-color: $mainColor;
+      border: none;
+
+      a {
+        border: none;
+        background-color: $mainColor;
+        color: $formColor;
+        font-weight: bold;
+      }
+    }
+  }
+}
+
+.help {
+  &__text {
+    &_above-picture {
+      font-size: 18px;
+      margin-bottom: 25px;
+      margin-top: 25px;
+      text-indent: 35px;
+    }
+
+    &_signature-picture {
+      font-size: 18px;
+      text-align: center;
+      text-indent: 35px;
+    }
+
+    &_under-picture {
+      font-size: 18px;
+      margin-top: 25px;
+      text-indent: 35px;
+    }
+  }
+
+  &__picture {
+    width: 100%;
+  }
+}

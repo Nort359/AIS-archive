@@ -12,6 +12,9 @@ import { getUserFromSession } from './actions';
 import { getDepartment } from './pages/AdminPanel/Department/actions';
 import { getPosition } from './pages/AdminPanel/Position/actions';
 import { getTypeDocument } from './pages/AdminPanel/TypeDocument/actions';
+import { getExpansion } from './pages/AdminPanel/Expansion/actions';
+import { getDocuments } from './pages/Documents/actions';
+import { getAllUsers } from './pages/Documents/UserList/actions';
 
 class App extends React.Component {
 
@@ -19,7 +22,8 @@ class App extends React.Component {
         super(props);
 
         this.state = {
-            noDataBase: false
+            noDataBase: false,
+            isGetDocs: false
         };
 
         window.setInterval(
@@ -37,10 +41,16 @@ class App extends React.Component {
             10000
         );
 
+        axios.get( '/api/notification/notification-email.php' )
+            .then(response => response.data)
+            .catch(error => console.error(error));
+
         this.props.getUserSession();
         this.props.getDepartmentDB();
         this.props.getPositionDB();
         this.props.getTypeDocumentDB();
+        this.props.getAllUsersDB();
+        this.props.getExpansionDB();
 
         this.getDataBase = this.getDataBase.bind(this);
     }
@@ -63,10 +73,20 @@ class App extends React.Component {
      * @private
      */
     _renderNotification() {
+        const user = this.props.userData;
+        if ( typeof user === 'object' ) {
+            if ( parseInt(user.id) > 0 ) {
+                if ( this.state.isGetDocs === false ) {
+                    this.props.getDocumentsDB( { userId: user.id } );
+                    this.setState({ isGetDocs: true });
+                }
+            }
+        }
+
         return (
             <CenterScreenBlock>
                 <Notification
-                    header={ 'Вы успешно зарегистрировались' }
+                    header={ 'База данных не найдена' }
                     btnText={ 'Ок' }
                     isNotButton={ true }
                     btnEvent={ () => {
@@ -87,6 +107,7 @@ class App extends React.Component {
 
     render() {
 
+
         return (
             <div>
                 <Header />
@@ -98,7 +119,6 @@ class App extends React.Component {
                             { this.props.children }
                         </div>
                 }
-                <DevTools/>
             </div>
         );
     }
@@ -111,7 +131,8 @@ export default connect(
     state => ({
         userData: state.userData,
         department: state.department,
-        position: state.position
+        position: state.position,
+        document: state.document
     }),
     dispatch => ({
         getUserSession: () => {
@@ -125,6 +146,15 @@ export default connect(
         },
         getTypeDocumentDB: () => {
             dispatch(getTypeDocument());
+        },
+        getDocumentsDB: user => {
+            dispatch(getDocuments(user));
+        },
+        getAllUsersDB: () => {
+            dispatch(getAllUsers());
+        },
+        getExpansionDB: () => {
+            dispatch(getExpansion());
         }
     })
 )(App);

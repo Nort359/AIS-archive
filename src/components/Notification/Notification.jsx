@@ -14,9 +14,12 @@ class Notification extends React.Component {
         this.onKeyPressEnter = this.onKeyPressEnter.bind(this);
     }
 
+    componentDidMount() {
+        const notification = document.getElementsByClassName('notification_btn')[0];
+        notification.focus();
+    }
+
     onKeyPressEnter(event) {
-        console.log('event.which', event.which);
-        console.log('event.keyCode', event.keyCode);
         if (event.which === 13 || event.keyCode === 13) {
             this.closeNotification();
         }
@@ -46,10 +49,15 @@ class Notification extends React.Component {
                     this.props.isNotButton ?
                         null
                         :
-                        <Button onClick={ event => {
-                            this.closeNotification(event);
-                            { this.props.btnEvent() }
-                        } }>{ this.props.btnText }</Button>
+                        <Button
+                            className={ 'notification_btn' }
+                            onClick={ event => {
+
+                                this.closeNotification(event);
+                                { this.props.btnEvent() }
+                        } }>
+                            { this.props.btnText }
+                            </Button>
                 }
             </div>
         );

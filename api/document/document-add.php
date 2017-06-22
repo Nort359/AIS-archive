@@ -25,6 +25,7 @@
 			$user_name_file = str2translit( $user->surname . '-' . $user->name . '-' . $user->middlename );
 
 			$file_name = $user_name_file . '__' . time() . $_FILES[ 'file' ][ 'name' ];
+			$file_name = str2translit( $file_name );
 
 			$final_path = $_SERVER['DOCUMENT_ROOT'] . '/user_files/' . $file_name;
 

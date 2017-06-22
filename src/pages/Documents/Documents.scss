@@ -34,6 +34,12 @@ a:hover {
       margin-bottom: 20px;
     }
   }
+
+  &__generate-report {
+    width: 300px;
+    margin: 0 0 15px 0;
+    float: left;
+  }
 }
 
 .document {
@@ -55,5 +61,70 @@ a:hover {
   &_container {
     margin-left: 140px;
     width: 600px;
+    float: left;
   }
+}
+
+.sidebar {
+  &__visiblity {
+    &_par {
+      padding-right: 30px;
+      font-size: 36px;
+
+      input {
+        font-size: 30px;
+      }
+    }
+  }
+}
+
+.sidebar__visiblity {
+
+  p {
+    padding-right: 60px;
+
+    label {
+      margin-left: 15px;
+      font-weight: 400;
+
+      span {
+        position: relative;
+        bottom: 5px;
+        left: 15px;
+      }
+    }
+  }
+
+  input {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+.docs-caption {
+  clear: both;
+  margin-left: 140px;
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+.btn-report.my-office__btn-update_user-data {
+  margin-left: 0;
+}
+
+.modal-par {
+  input {
+    width: 20px;
+    height: 20px;
+  }
+
+  span {
+    font-size: 18px;
+    font-weight: 400;
+    margin-left: 15px;
+  }
+}
+
+.horiz-line {
+  @include put_border($mainColor);
 }

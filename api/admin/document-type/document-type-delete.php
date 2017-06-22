@@ -1,6 +1,6 @@
 <?php
 
-	error_reporting(-1);
+	error_reporting(0);
 
 	require_once $_SERVER['DOCUMENT_ROOT'] . '/api/config.php';
 	require_once $_SERVER['DOCUMENT_ROOT'] . '/api/admin/functions/delete_record_directory.php';
